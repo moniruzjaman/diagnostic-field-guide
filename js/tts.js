@@ -18,9 +18,11 @@
         isPlaying: false,
         isPaused: false,
         utterance: null,
+        sentenceEls: [],
         onProgress: null,
         onEnd: null,
         onStart: null,
+        onSentenceClick: null,
 
         init() {
             if (!this.synth) {
@@ -80,8 +82,55 @@
             this.currentChunkIndex = 0;
             this.isPlaying = true;
             this.isPaused = false;
+            this.clearHighlights();
             if (this.onStart) this.onStart(chapterId);
             this._speakNext();
+        },
+
+        speakSentence(index) {
+            if (!this.synth) return;
+            if (index < 0 || index >= this.currentChunks.length) return;
+            this.stop();
+            this.currentChunkIndex = index;
+            this.isPlaying = true;
+            this.isPaused = false;
+            this.clearHighlights();
+            this._speakNext();
+        },
+
+        setSentenceElement(index, el) {
+            this.sentenceEls[index] = el;
+            if (el) {
+                el.dataset.ttsIndex = index;
+                el.addEventListener('click', () => {
+                    if (this.onSentenceClick) this.onSentenceClick(index);
+                });
+            }
+        },
+
+        clearHighlights() {
+            this.sentenceEls.forEach((el, i) => {
+                if (el) {
+                    el.classList.remove('tts-active', 'tts-done');
+                }
+            });
+        },
+
+        highlightSentence(index) {
+            this.clearHighlights();
+            const el = this.sentenceEls[index];
+            if (el) {
+                el.classList.add('tts-active');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            }
+        },
+
+        markSentenceDone(index) {
+            const el = this.sentenceEls[index];
+            if (el) {
+                el.classList.remove('tts-active');
+                el.classList.add('tts-done');
+            }
         },
 
         _speakNext() {
@@ -99,6 +148,7 @@
             u.volume = 1.0;
 
             u.onstart = () => {
+                this.highlightSentence(this.currentChunkIndex);
                 if (this.onProgress) {
                     this.onProgress({
                         chapterId: this.currentChapter,
@@ -111,12 +161,13 @@
             };
             u.onend = () => {
                 if (!this.isPlaying) return;
+                this.markSentenceDone(this.currentChunkIndex);
                 this.currentChunkIndex++;
                 this._speakNext();
             };
             u.onerror = (e) => {
                 console.warn('TTS error:', e);
-                // Skip to next chunk
+                this.markSentenceDone(this.currentChunkIndex);
                 this.currentChunkIndex++;
                 this._speakNext();
             };
@@ -145,6 +196,7 @@
             this.isPaused = false;
             this.currentChunkIndex = 0;
             this.utterance = null;
+            this.clearHighlights();
         },
 
         setSpeed(speed) {

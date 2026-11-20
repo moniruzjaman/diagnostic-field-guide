@@ -98,6 +98,8 @@
   </div>
 </header>
 
+<div class="reading-progress" id="readingProgress"></div>
+
 <aside class="toc-sidebar" id="tocSidebar">
   <div class="toc-sidebar-header">
     <h2 class="toc-sidebar-title">সূচিপত্র</h2>
@@ -152,6 +154,10 @@
       <button class="theme-btn theme-night" data-theme="night">
         <span class="theme-swatch theme-swatch-night"></span>
         <span>রাত</span>
+      </button>
+      <button class="theme-btn theme-highcontrast" data-theme="highcontrast">
+        <span class="theme-swatch theme-swatch-hc"></span>
+        <span>উচ্চ কনট্রাস্ট</span>
       </button>
     </div>
   </div>
@@ -359,10 +365,45 @@
 
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" id="btnLightboxClose" aria-label="বন্ধ করুন">✕</button>
+  <div class="lightbox-controls">
+    <button class="lightbox-ctrl" id="btnLightboxReset">↻ জুম রিসেট</button>
+  </div>
   <figure class="lightbox-fig">
     <img id="lightboxImg" src="" alt="">
     <figcaption id="lightboxCaption"></figcaption>
+    <div class="lightbox-zoom-hint">পঞ্জ করে জুম করুন · টান স্ক্যান করুন · ডাবল-ট্যাপ জুম</div>
   </figure>
+</div>
+
+<!-- First-user onboarding -->
+<div class="onboarding" id="onboarding">
+  <div class="onboarding-card">
+    <div class="onboarding-step active">
+      <div class="onboarding-icon">📖</div>
+      <h3>পড়া ও শোনা</h3>
+      <p>কোনো অধ্যায় খুলুন, তারপর “শুনুন” টিপুন। বর্তমান লাইন সবুজ রঙে হাইলাইট হবে — অডিও ও টেক্স্ট একসাথে বুঝতে সহজ হবে।</p>
+    </div>
+    <div class="onboarding-step">
+      <div class="onboarding-icon">🔊</div>
+      <h3>একক লাইন শুনুন</h3>
+      <p>পড়ার সময় কোনো বাক্যের ওপর ট্যাপ করুন — শুধু সেই লাইনটি আবার শোনা যাবে। ক্ষেতে দ্রুত পুনরালোচনার জন্য উপযোগী।</p>
+    </div>
+    <div class="onboarding-step">
+      <div class="onboarding-icon">🔍</div>
+      <h3>ছবি বড় করুন</h3>
+      <p>যেকোনো রোগনির্ণয়ের ছবি ট্যাপ করুন; প بھی জুম, টান করে স্ক্যান এবং ডাবল-ট্যাপে বড়-ছোট করুন।</p>
+    </div>
+    <div class="onboarding-step">
+      <div class="onboarding-icon">📂</div>
+      <h3>অধ্যায় ভাঁজ করুন</h3>
+      <p>অধ্যায়ের শিরোনামে ট্যাপ করলে সামগ্রী গুচ্ছে যায় — একসাথে একাধিক অধ্যায় তুলনা করতে সুবিধা।</p>
+    </div>
+    <div class="onboarding-nav">
+      <button class="onboarding-skip" id="onboardingSkip">বাতিল করুন</button>
+      <div class="onboarding-dots" id="onboardingDots"></div>
+      <button class="onboarding-btn" id="onboardingNext">আগে »</button>
+    </div>
+  </div>
 </div>
 
 <script src="js/content.js" defer></script>

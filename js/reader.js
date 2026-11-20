@@ -26,6 +26,19 @@
             isPlaying: false,
             speed: 1.0,
         },
+        reading: {
+            progressKey: 'ebook-reading-progress',
+            get chapter() { return localStorage.getItem('ebook-reading-chapter') || null; },
+            set chapter(v) { localStorage.setItem('ebook-reading-chapter', v); },
+            get scrollTop() {
+                try { return parseInt(localStorage.getItem('ebook-scroll-' + this.chapter) || '0', 10); }
+                catch (_) { return 0; }
+            },
+            set scrollTop(v) {
+                if (!this.chapter) return;
+                try { localStorage.setItem('ebook-scroll-' + this.chapter, String(v)); } catch (_) {}
+            }
+        },
     };
 
     // ── Render book content ────────────────────────────────────
@@ -108,6 +121,73 @@
         }
 
         root.innerHTML = html.join('\n');
+
+        // Wrap every visible sentence in <span class="tts-sentence"> for
+        // read-along highlighting + click-to-hear (field-workers tap a line).
+        wrapSentences();
+    }
+
+    // ── Sentence-level read-along wrapping ──────────────────
+    const SENTENCE_RE = /(?<=[।?!;])\s+|\n\n+/;
+
+    function splitIntoSentences(text) {
+        const parts = text.split(SENTENCE_RE);
+        const out = [];
+        let cur = '';
+        for (const p of parts) {
+            if (!p.trim()) continue;
+            if ((cur + ' ' + p).length > 220) {
+                if (cur) out.push(cur.trim());
+                cur = p;
+            } else {
+                cur = cur ? cur + ' ' + p : p;
+            }
+        }
+        if (cur) out.push(cur.trim());
+        return out;
+    }
+
+    function wrapSentences() {
+        $$('.chapter-body').forEach((body, bodyIdx) => {
+            const chId = body.id.replace('body-', '');
+            const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, null, false);
+            const textNodes = [];
+            let node;
+            while ((node = walker.nextNode())) textNodes.push(node);
+
+            let sentenceIndex = 0;
+            textNodes.forEach(tn => {
+                const sentences = splitIntoSentences(tn.textContent);
+                if (sentences.length <= 1) {
+                    // Still register the single sentence so it's tappable
+                    if (tn.textContent.trim()) {
+                        const span = document.createElement('span');
+                        span.className = 'tts-sentence';
+                        span.textContent = tn.textContent;
+                        EBOOK_TTS.setSentenceElement(sentenceIndex, span);
+                        tn.parentNode.replaceChild(span, tn);
+                        sentenceIndex++;
+                    }
+                    return;
+                }
+                const frag = document.createDocumentFragment();
+                sentences.forEach((s, si) => {
+                    const span = document.createElement('span');
+                    span.className = 'tts-sentence';
+                    span.textContent = s;
+                    EBOOK_TTS.setSentenceElement(sentenceIndex, span);
+                    frag.appendChild(span);
+                    if (si < sentences.length - 1) {
+                        // preserve a separating space
+                        frag.appendChild(document.createTextNode(' '));
+                    }
+                    sentenceIndex++;
+                });
+                tn.parentNode.replaceChild(frag, tn);
+            });
+            // Persist mapping: chapter id -> base sentence index offset
+            body.dataset.ttsBase = sentenceIndex;
+        });
     }
 
     // ── Render TOC sidebar ─────────────────────────────────────
@@ -282,6 +362,7 @@
         }
         if (current && current.id !== state.currentChapter) {
             state.currentChapter = current.id;
+            state.reading.chapter = current.id;   // remember which chapter we're reading
             updateActiveToc(current.id);
             const data = current.dataset;
             if (data && data.num) {
@@ -289,6 +370,21 @@
             } else if (current.id === 'hero') {
                 $('#topbarChapter').textContent = EBOOK_CONTENT.subtitle;
             }
+        }
+
+        // Persist scroll position per chapter (auto-resume on return)
+        if (state.reading.chapter) state.reading.scrollTop = scrollTop;
+
+        // Per-chapter reading progress bar (top of screen)
+        if (current && current.id !== 'hero') {
+            const rect = current.getBoundingClientRect();
+            const chapterTop = rect.top + scrollTop;
+            const chapterHeight = current.scrollHeight || window.innerHeight;
+            const chProgress = docHeight > 0 ? ((scrollTop - chapterTop + window.innerHeight) / chapterHeight) * 100 : 0;
+            $('#readingProgress').style.width = Math.min(100, Math.max(0, chProgress)) + '%';
+            $('#readingProgress').style.display = 'block';
+        } else {
+            $('#readingProgress').style.display = 'none';
         }
     }
 
@@ -319,7 +415,119 @@
     function closeLightbox() {
         $('#lightbox').classList.remove('open');
         document.body.style.overflow = '';
+        resetLightboxZoom();
     }
+
+    // ── Lightbox pinch-zoom / drag-pan (field diagnosis detail) ───
+    const lbState = { scale: 1, x: 0, y: 0, dx: 0, dy: 0, pinching: false, dist: 0 };
+    const lbImg = $('#lightboxImg');
+
+    function resetLightboxZoom() {
+        lbState.scale = 1; lbState.x = 0; lbState.y = 0; lbState.dx = 0; lbState.dy = 0;
+        lbImg.style.transform = 'scale(1) translate(0,0)';
+        lbImg.style.cursor = 'grab';
+    }
+
+    function applyLightboxTransform() {
+        lbImg.style.transform = `scale(${lbState.scale}) translate(${lbState.x + lbState.dx}px, ${lbState.y + lbState.dy}px)`;
+    }
+
+    function clampLightbox() {
+        const imgRect = lbImg.getBoundingClientRect();
+        const boxRect = $('.lightbox-fig').getBoundingClientRect();
+        const scaledW = imgRect.width * lbState.scale;
+        const scaledH = imgRect.height * lbState.scale;
+        let maxX = Math.max(0, (scaledW - boxRect.width) / 2);
+        let maxY = Math.max(0, (scaledH - boxRect.height) / 2);
+        lbState.x = Math.max(-maxX, Math.min(maxX, lbState.x));
+        lbState.y = Math.max(-maxY, Math.min(maxY, lbState.y));
+        applyLightboxTransform();
+    }
+
+    // Pointer down (drag start)
+    lbImg.addEventListener('pointerdown', (e) => {
+        if (lbState.scale <= 1) return;
+        lbState.pinching = false;
+        lbState.dx = lbState.x; lbState.dy = lbState.y;
+        lbImg.style.cursor = 'grabbing';
+    });
+    window.addEventListener('pointermove', (e) => {
+        if (!lbState.pinching && e.pointerId === lbImg._downId && lbState.scale > 1) {
+            lbState.x = lbState.dx + (e.clientX - lbImg._startX);
+            lbState.y = lbState.dy + (e.clientY - lbImg._startY);
+            clampLightbox();
+        }
+    });
+    window.addEventListener('pointerup', () => {
+        lbImg.style.cursor = lbState.scale > 1 ? 'grab' : 'grab';
+    });
+
+    // Double tap = toggle zoom
+    lbImg.addEventListener('dblclick', (e) => {
+        const fig = $('.lightbox-fig');
+        const rect = fig.getBoundingClientRect();
+        const cx = e.clientX - rect.left;
+        const cy = e.clientY - rect.top;
+        if (lbState.scale <= 1) {
+            lbState.scale = 2.5;
+            // center zoom on tap point
+            lbState.x = -(cx - rect.width / 2) / lbState.scale;
+            lbState.y = -(cy - rect.height / 2) / lbState.scale;
+        } else {
+            lbState.scale = 1; lbState.x = 0; lbState.y = 0;
+        }
+        clampLightbox();
+    });
+
+    // Pinch zoom
+    let lastDist = 0;
+    lbImg.addEventListener('pointerdown', (e) => { lbImg._downId = e.pointerId; lbImg._startX = e.clientX; lbImg._startY = e.clientY; }, { once: false });
+    window.addEventListener('pointerdown', (e) => {
+        if (e.target !== lbImg) return;
+        if (!lbState.pinching && e.pointerType !== 'mouse') {
+            // second finger
+        }
+    });
+    // Track two-finger distance via touch events (simpler & reliable)
+    lbImg.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            lbState.pinching = true;
+            lastDist = touchDist(e.touches);
+            lbState.dx = lbState.x; lbState.dy = lbState.y;
+        }
+    }, { passive: false });
+    lbImg.addEventListener('touchmove', (e) => {
+        if (!lbState.pinching || e.touches.length !== 2) return;
+        e.preventDefault();
+        const dist = touchDist(e.touches);
+        const scaleFactor = dist / lastDist;
+        let newScale = lbState.scale * scaleFactor;
+        newScale = Math.min(4, Math.max(1, newScale));
+        const fig = $('.lightbox-fig');
+        const rect = fig.getBoundingClientRect();
+        const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+        const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+        // zoom around midpoint
+        lbState.scale = newScale;
+        lbState.x = (lbState.dx + lbState.x - cx) * scaleFactor + cx - rect.width / 2;
+        lbState.x = lbState.x / lbState.scale;
+        lbState.y = (lbState.dy + lbState.y - cy) * scaleFactor + cy - rect.height / 2;
+        lbState.y = lbState.y / lbState.scale;
+        lastDist = dist;
+        clampLightbox();
+    }, { passive: false });
+    lbImg.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) lbState.pinching = false;
+    });
+
+    function touchDist(touches) {
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    // Zoom reset button
+    $('#btnLightboxReset')?.addEventListener('click', resetLightboxZoom);
 
     // ── Offline toast + install prompt + image precache ───────
     function updateOnlineStatus() {
@@ -524,7 +732,17 @@
                 expandChapter(target);           // TOC always opens the chapter it points to
                 closeToc();
                 setTimeout(() => {
-                    document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' });
+                    const sec = document.getElementById(target);
+                    if (sec) {
+                        sec.scrollIntoView({ behavior: 'smooth' });
+                        // Auto-resume: restore last scroll position in this chapter
+                        const saved = state.reading.scrollTop;
+                        if (saved > 0) {
+                            window.scrollTo({ top: saved, behavior: 'smooth' });
+                        } else {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    }
                     history.replaceState(null, '', '#' + target);
                 }, 200);
             }
@@ -587,7 +805,55 @@
         }
 
         if (window.EBOOK_TTS) EBOOK_TTS.init();
+        if (window.EBOOK_TTS) {
+            // Click any sentence to hear just that line (field-worker friendly)
+            EBOOK_TTS.onSentenceClick = (index) => {
+                EBOOK_TTS.speakSentence(index);
+                setAudioPlayIcon(true);
+                state.audio.isPlaying = true;
+                showAudioBar();
+                $('#audioTitle').textContent = $(`#${EBOOK_TTS.currentChapter} .chapter-title`)?.textContent || 'অধ্যায় শুনুন';
+            };
+        }
         updateOnlineStatus();
+
+        // ── First-user onboarding ─────────────────────────────
+        const onboarding = $('#onboarding');
+        const onboardingNext = $('#onboardingNext');
+        const onboardingSkip = $('#onboardingSkip');
+        const onboardingDots = $('#onboardingDots');
+        let obStep = 0;
+        const OB_TOTAL = 4;
+
+        function renderDots() {
+            onboardingDots.innerHTML = '';
+            for (let i = 0; i < OB_TOTAL; i++) {
+                const d = document.createElement('button');
+                d.className = 'onboarding-dot' + (i === obStep ? ' active' : '');
+                d.onclick = () => { obStep = i; showObStep(); };
+                onboardingDots.appendChild(d);
+            }
+        }
+        function showObStep() {
+            $$('.onboarding-step').forEach((el, i) => {
+                el.classList.toggle('active', i === obStep);
+            });
+            renderDots();
+        }
+        if (onboarding && !localStorage.getItem('ebook-onboarded')) {
+            onboarding.classList.remove('onboarding-hidden');
+            showObStep();
+        }
+        onboardingNext?.addEventListener('click', () => {
+            obStep++;
+            if (obStep >= OB_TOTAL) finishOnboarding();
+            else showObStep();
+        });
+        onboardingSkip?.addEventListener('click', finishOnboarding);
+        function finishOnboarding() {
+            localStorage.setItem('ebook-onboarded', '1');
+            if (onboarding) onboarding.classList.add('onboarding-hidden');
+        }
 
         // Precache book photos in the background (full offline support)
         if (!localStorage.getItem('ebook-precache-attempted')) {
