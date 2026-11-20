@@ -36,28 +36,29 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2212, U+FEFF, U+FFFD;
 }
 
-/* ── Theme tokens ──────────────────────────────────────────── */
+/* ── Theme tokens (Bangladesh official: bottle green #006A4E, flag red #F42A41,
+      gold accent, white paper) ───────────────────────────────── */
 :root {
-    --c-paper:        #FBFAF6;
-    --c-paper-alt:    #F4F1EA;
-    --c-ink:          #1F2937;
-    --c-ink-soft:     #4B5563;
-    --c-muted:        #6B7280;
-    --c-line:         #E5E7EB;
-    --c-primary:      #145A32;
-    --c-primary-2:    #1E8449;
-    --c-primary-50:   #E9F7EF;
-    --c-primary-100:  #D5F5E3;
-    --c-accent:       #B7950B;
-    --c-accent-soft:  #FEF9E7;
-    --c-info:         #2E86C1;
-    --c-info-soft:    #EBF5FB;
-    --c-danger:       #C0392B;
-    --c-danger-soft:  #FDEDEC;
-    --c-success:      #1E8449;
-    --c-success-soft: #E9F7EF;
-    --c-warning:      #D4AC0D;
-    --c-warning-soft: #FEF9E7;
+    --c-paper:        #FFFFFF;
+    --c-paper-alt:    #F3F7F4;
+    --c-ink:          #1C2B24;
+    --c-ink-soft:     #44574D;
+    --c-muted:        #6C8076;
+    --c-line:         #DFE8E2;
+    --c-primary:      #006A4E;
+    --c-primary-2:    #038B66;
+    --c-primary-50:   #E8F5F0;
+    --c-primary-100:  #CFEAE0;
+    --c-accent:       #B8912A;
+    --c-accent-soft:  #FBF3DA;
+    --c-info:         #1F6FA8;
+    --c-info-soft:    #E9F3FA;
+    --c-danger:       #F42A41;
+    --c-danger-soft:  #FDEAEC;
+    --c-success:      #038B66;
+    --c-success-soft: #E8F5F0;
+    --c-warning:      #D4A017;
+    --c-warning-soft: #FBF3DA;
 
     --font-serif-bn: 'NotoSerifBengali', 'Noto Serif Bengali', serif;
     --font-sans-bn:  'NotoSansBengali',  'Noto Sans Bengali',  sans-serif;
@@ -73,7 +74,7 @@
     --w-content: 720px;
 }
 
-/* Theme: sepia */
+/* Theme: sepia (bottle-green tinted parchment) */
 [data-theme="sepia"] {
     --c-paper:        #F4ECD8;
     --c-paper-alt:    #ECE1C5;
@@ -81,10 +82,12 @@
     --c-ink-soft:     #5C4A33;
     --c-muted:        #8A7355;
     --c-line:         #D9C8A4;
-    --c-primary:      #6B4423;
-    --c-primary-2:    #8B5A2B;
-    --c-primary-50:   #EBD9B5;
-    --c-primary-100:  #DCC597;
+    --c-primary:      #35604C;
+    --c-primary-2:    #4A7A62;
+    --c-primary-50:   #E4DCC0;
+    --c-primary-100:  #D8CFB0;
+    --c-accent:       #A67C1B;
+    --c-danger:       #C21F34;
 }
 
 /* Theme: night */
@@ -95,17 +98,17 @@
     --c-ink-soft:     #B0B5C0;
     --c-muted:        #7A8290;
     --c-line:         #2E3548;
-    --c-primary:      #6FCF97;
-    --c-primary-2:    #58C685;
-    --c-primary-50:   #1F2E25;
-    --c-primary-100:  #2A3D31;
-    --c-accent:       #F1C40F;
+    --c-primary:      #45D6A4;
+    --c-primary-2:    #2FBF8C;
+    --c-primary-50:   #142E24;
+    --c-primary-100:  #1C3D30;
+    --c-accent:       #F0C24B;
     --c-accent-soft:  #2E2710;
     --c-info:         #5DADE2;
     --c-info-soft:    #1B2A3B;
-    --c-danger:       #EC7063;
+    --c-danger:       #FF6B7A;
     --c-danger-soft:  #3A1F1D;
-    --c-success:      #58C685;
+    --c-success:      #2FBF8C;
     --c-success-soft: #1F2E25;
     --c-warning:      #F5B041;
     --c-warning-soft: #2E2510;
@@ -671,10 +674,11 @@ button {
     line-height: 1.5;
 }
 
-/* ── Hero (landing) ──────────────────────────────────────── */
+/* ── Hero (landing) — Bangladesh official palette + authentic
+      Plantwise cover branding ───────────────────────────────── */
 .hero {
     min-height: calc(100vh - var(--topbar-h));
-    background: linear-gradient(160deg, #0E3D22 0%, #145A32 55%, #1E8449 100%);
+    background: linear-gradient(160deg, #003D2C 0%, #006A4E 58%, #01765A 100%);
     color: white;
     position: relative;
     overflow: hidden;
@@ -684,13 +688,23 @@ button {
     align-items: center;
     padding: 40px 24px 20px 24px;
 }
+/* BD flag ribbon: bottle-green band with the red disc */
+.flag-ribbon {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background:
+        radial-gradient(circle at 38% 50%, #F42A41 0 7px, transparent 8px),
+        linear-gradient(90deg, #006A4E, #038B66);
+    z-index: 3;
+}
 .hero::before {
     content: "";
     position: absolute;
     top: -150px; right: -150px;
     width: 380px; height: 380px;
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(82, 190, 128, 0.25), transparent 65%);
+    background: radial-gradient(circle at 30% 30%, rgba(69, 214, 164, 0.22), transparent 65%);
     pointer-events: none;
 }
 .hero::after {
@@ -699,15 +713,49 @@ button {
     bottom: -180px; left: -180px;
     width: 420px; height: 420px;
     border-radius: 50%;
-    background: radial-gradient(circle at 70% 70%, rgba(174, 214, 142, 0.15), transparent 65%);
+    background: radial-gradient(circle at 70% 70%, rgba(240, 194, 75, 0.12), transparent 65%);
     pointer-events: none;
 }
 .hero-card {
     position: relative;
     z-index: 2;
     text-align: center;
-    max-width: 600px;
+    max-width: 640px;
     width: 100%;
+}
+.hero-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    text-align: left;
+}
+.hero-main { flex: 1 1 auto; min-width: 0; text-align: center; }
+.cover-thumb {
+    flex: 0 0 auto;
+    margin: 0;
+    text-align: center;
+}
+.cover-thumb img {
+    width: clamp(96px, 22vw, 150px);
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(240, 194, 75, 0.55);
+    display: block;
+}
+.cover-thumb figcaption {
+    font-family: var(--font-head);
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    color: #B9E8D4;
+    margin-top: 8px;
+    max-width: 150px;
+    line-height: 1.5;
+}
+@media (max-width: 560px) {
+    .hero-layout { gap: 16px; }
+    .cover-thumb img { width: 88px; }
+    .cover-thumb figcaption { max-width: 88px; font-size: 8px; }
 }
 .hero-tag {
     display: inline-block;
@@ -715,43 +763,76 @@ button {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 3px;
-    color: #A9DFBF;
-    border: 1px solid rgba(169, 223, 191, 0.5);
+    color: #8FE3C4;
+    border: 1px solid rgba(143, 227, 196, 0.5);
     padding: 6px 16px;
     border-radius: 999px;
     margin-bottom: 26px;
 }
 .hero-title {
     font-family: var(--font-head);
-    font-size: clamp(40px, 8vw, 64px);
+    font-size: clamp(38px, 8vw, 60px);
     font-weight: 900;
-    line-height: 1.1;
+    line-height: 1.12;
     color: white;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
     letter-spacing: -1px;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
 }
 .hero-rule {
-    width: 80px; height: 4px;
-    background: #A9DFBF;
+    width: 110px; height: 5px;
     margin: 0 auto 22px auto;
-    border-radius: 2px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #F42A41 0 26%, #F0C24B 26% 40%, #8FE3C4 40% 100%);
 }
 .hero-subtitle {
     font-family: var(--font-body);
     font-size: clamp(18px, 4vw, 22px);
     font-style: italic;
-    color: #D5F5E3;
+    color: #CFF3E4;
     margin-bottom: 18px;
 }
 .hero-tagline {
     font-family: var(--font-head);
     font-size: 13px;
-    color: #A9DFBF;
+    color: #8FE3C4;
     letter-spacing: 1.5px;
     padding: 10px 0;
-    border-top: 1px solid rgba(169, 223, 191, 0.3);
-    border-bottom: 1px solid rgba(169, 223, 191, 0.3);
-    margin-bottom: 30px;
+    border-top: 1px solid rgba(143, 227, 196, 0.3);
+    border-bottom: 1px solid rgba(143, 227, 196, 0.3);
+    margin-bottom: 16px;
+}
+/* Authentic publisher strip (from the source PDF) */
+.brand-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 26px;
+    flex-wrap: wrap;
+}
+.brand-logo-pill {
+    background: white;
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+.brand-logo-pill img { height: 24px; width: auto; display: block; }
+.brand-meta {
+    font-family: var(--font-head);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #CFF3E4;
+    text-align: left;
+    line-height: 1.7;
+}
+.brand-meta strong { color: #F0C24B; font-weight: 700; letter-spacing: 1.5px; }
+.brand-meta .bm-red { color: #FF8B98; font-weight: 700; letter-spacing: 2px; }
+@media (max-width: 560px) {
+    .brand-strip { flex-direction: column; gap: 8px; }
+    .brand-meta { text-align: center; }
 }
 .hero-actions {
     display: flex;
@@ -767,7 +848,7 @@ button {
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     padding-top: 18px;
-    border-top: 1px solid rgba(169, 223, 191, 0.3);
+    border-top: 1px solid rgba(143, 227, 196, 0.3);
 }
 @media (max-width: 480px) {
     .hero-stats { grid-template-columns: repeat(2, 1fr); }
@@ -781,14 +862,14 @@ button {
     font-family: var(--font-head);
     font-size: 26px;
     font-weight: 900;
-    color: #A9DFBF;
+    color: #F0C24B;
     line-height: 1;
 }
 .hero-stat-label {
     display: block;
     font-family: var(--font-head);
     font-size: 11px;
-    color: #D5F5E3;
+    color: #CFF3E4;
     letter-spacing: 1px;
     margin-top: 4px;
 }
@@ -802,7 +883,7 @@ button {
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    color: rgba(169, 223, 191, 0.7);
+    color: rgba(143, 227, 196, 0.7);
     font-family: var(--font-head);
     font-size: 10px;
     letter-spacing: 2px;
@@ -869,17 +950,64 @@ button {
 }
 .chapter:last-child { border-bottom: none; }
 
+/* Collapsible chapter header (authentic Plantwise kicker + BD accents) */
 .chapter-header {
-    margin-bottom: 28px;
-    padding-bottom: 18px;
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
     border-bottom: 2px solid var(--c-primary);
+    margin-bottom: 28px;
+    padding: 0 0 18px 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
     position: relative;
+    transition: background 0.2s ease;
+}
+button.chapter-header:focus-visible {
+    outline: 3px solid var(--c-danger);
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+.chapter-kicker {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--c-accent);
+    margin-bottom: 8px;
+}
+.chapter-head-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.chapter-head-text { flex: 1 1 auto; min-width: 0; }
+.ch-chevron {
+    flex: 0 0 auto;
+    width: 34px; height: 34px;
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--c-primary-50);
+    color: var(--c-primary);
+    transition: transform 0.25s ease, background 0.2s ease, color 0.2s ease;
+}
+.chapter-header:hover .ch-chevron {
+    background: var(--c-primary);
+    color: #FFFFFF;
 }
 .chapter-num {
     font-family: var(--font-head);
     font-size: 12px;
     font-weight: 700;
-    color: var(--c-accent);
+    color: var(--c-danger);
     letter-spacing: 4px;
     text-transform: uppercase;
     margin-bottom: 10px;
@@ -901,6 +1029,21 @@ button {
     color: var(--c-ink-soft);
     line-height: 1.4;
 }
+/* Collapsed state: hide body, rotate chevron, hint count */
+.chapter.collapsed .chapter-body,
+.chapter.collapsed .epigraph { display: none; }
+.chapter.collapsed .ch-chevron { transform: rotate(-90deg); }
+.chapter.collapsed .chapter-header { border-bottom-style: dashed; margin-bottom: 0; }
+.chapter.collapsed { padding-bottom: 30px; }
+.chapter-hint {
+    font-family: var(--font-head);
+    font-size: 11px;
+    color: var(--c-muted);
+    letter-spacing: 1px;
+    margin-top: 10px;
+    display: none;
+}
+.chapter.collapsed .chapter-hint { display: block; }
 
 .epigraph {
     margin: 0 0 24px 0;
@@ -1762,4 +1905,39 @@ body.audio-visible .offline-toast { bottom: calc(var(--audio-h) + 12px); }
 @media print {
     .offline-toast, .lightbox, .fab-share { display: none !important; }
     .photo-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ── Settings hint (collapsible chapters help) ─────────────── */
+.settings-hint {
+    font-family: var(--font-head);
+    font-size: 11px;
+    color: var(--c-muted);
+    line-height: 1.6;
+    margin: 8px 0 0 0;
+}
+
+/* ── Book-end brand block ──────────────────────────────────── */
+.end-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 18px 0 14px 0;
+}
+.end-brand .brand-logo-pill img { height: 20px; }
+.end-brand-meta {
+    font-family: var(--font-head);
+    font-size: 12px;
+    color: var(--c-ink-soft);
+    letter-spacing: 0.5px;
+}
+.end-brand-meta strong { color: var(--c-danger); letter-spacing: 1.5px; }
+.book-end-foot { position: relative; }
+.cc-badge {
+    height: 26px;
+    width: auto;
+    display: block;
+    margin: 10px auto 0 auto;
+    opacity: 0.85;
 }

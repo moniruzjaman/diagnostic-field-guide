@@ -29,6 +29,51 @@
     };
 
     // ── Render book content ────────────────────────────────────
+    const COLLAPSE_KEY = 'ebook-collapsed-chapters';
+
+    function loadCollapsed() {
+        try { return new Set(JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '[]')); }
+        catch (_) { return new Set(); }
+    }
+    function saveCollapsed(set) {
+        try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...set])); } catch (_) {}
+    }
+    let collapsedSet = loadCollapsed();
+
+    function expandChapter(id, persist = true) {
+        const sec = document.getElementById(id);
+        if (!sec || !sec.classList.contains('chapter')) return;
+        sec.classList.remove('collapsed');
+        sec.querySelector('.chapter-header')?.setAttribute('aria-expanded', 'true');
+        if (collapsedSet.delete(id) && persist) saveCollapsed(collapsedSet);
+    }
+    function collapseChapter(id, persist = true) {
+        const sec = document.getElementById(id);
+        if (!sec || !sec.classList.contains('chapter')) return;
+        // Stop audio if the playing chapter is being folded away
+        if (state.audio.isPlaying && EBOOK_TTS.currentChapter === id) stopAudio();
+        sec.classList.add('collapsed');
+        sec.querySelector('.chapter-header')?.setAttribute('aria-expanded', 'false');
+        collapsedSet.add(id);
+        if (persist) saveCollapsed(collapsedSet);
+    }
+    function toggleChapter(id) {
+        const sec = document.getElementById(id);
+        if (!sec) return;
+        if (sec.classList.contains('collapsed')) {
+            expandChapter(id);
+        } else {
+            collapseChapter(id);
+            // Keep the header in view after the content collapses
+            requestAnimationFrame(() => {
+                const top = sec.getBoundingClientRect().top;
+                if (top < 0 || top > window.innerHeight - 80) {
+                    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        }
+    }
+
     function renderBook() {
         const root = $('#bookContent');
         const html = [];
@@ -37,15 +82,24 @@
             const epigraph = ch.epigraph
                 ? `<div class="epigraph">${ch.epigraph}</div>`
                 : '';
+            const isCollapsed = collapsedSet.has(ch.id) ? ' collapsed' : '';
+            const chevron = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
             return `
-<section class="chapter" id="${ch.id}" data-chapter="${ch.id}" data-num="${ch.numLabel}">
-  <div class="chapter-header">
-    <span class="chapter-num">${ch.numLabel}</span>
-    <h2 class="chapter-title">${ch.title}</h2>
-    <p class="chapter-subtitle">${ch.subtitle}</p>
-  </div>
+<section class="chapter${isCollapsed}" id="${ch.id}" data-chapter="${ch.id}" data-num="${ch.numLabel}">
+  <button type="button" class="chapter-header" data-toggle="${ch.id}" aria-expanded="${isCollapsed ? 'false' : 'true'}" aria-controls="body-${ch.id}">
+    <span class="chapter-kicker">Plantwise · Diagnostic Field Guide · বাংলা</span>
+    <span class="chapter-head-row">
+      <span class="chapter-head-text">
+        <span class="chapter-num">${ch.numLabel}</span>
+        <h2 class="chapter-title">${ch.title}</h2>
+        <p class="chapter-subtitle">${ch.subtitle}</p>
+      </span>
+      <span class="ch-chevron" aria-hidden="true">${chevron}</span>
+    </span>
+    <span class="chapter-hint">ভাঁজ করা আছে — খুলতে ট্যাপ করুন</span>
+  </button>
   ${epigraph}
-  <div class="chapter-body">${ch.html}</div>
+  <div class="chapter-body" id="body-${ch.id}">${ch.html}</div>
 </section>`;
         };
 
@@ -412,6 +466,19 @@
             if (e.target.id === 'lightbox') closeLightbox();
         });
 
+        // Collapsible chapters: header tap folds/unfolds the section
+        document.addEventListener('click', (e) => {
+            const head = e.target.closest('.chapter-header[data-toggle]');
+            if (head) toggleChapter(head.dataset.toggle);
+        });
+        $('#btnExpandAll')?.addEventListener('click', () => {
+            EBOOK_CONTENT.chapters.forEach(ch => expandChapter(ch.id));
+        });
+        $('#btnCollapseAll')?.addEventListener('click', () => {
+            EBOOK_CONTENT.chapters.forEach(ch => collapseChapter(ch.id));
+            document.getElementById('ch1')?.scrollIntoView({ behavior: 'smooth' });
+        });
+
         // Settings: theme
         $$('.theme-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -454,6 +521,7 @@
             if (tocItem) {
                 e.preventDefault();
                 const target = tocItem.dataset.target;
+                expandChapter(target);           // TOC always opens the chapter it points to
                 closeToc();
                 setTimeout(() => {
                     document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' });
@@ -492,6 +560,12 @@
                         startChapterAudio(state.currentChapter);
                     }
                     break;
+                case 'c':
+                case 'C':
+                    if (state.currentChapter && state.currentChapter !== 'hero') {
+                        toggleChapter(state.currentChapter);
+                    }
+                    break;
             }
         });
     }
@@ -520,8 +594,8 @@
             setTimeout(precacheImages, 3000);
         }
 
-        console.log('%c🌿 উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড — বাংলা ই-বুক', 'color:#145A32;font-weight:bold;font-size:14px');
-        console.log('Shortcuts: M=সূচিপত্র · S=সেটিংস · T=শুনুন · Esc=বন্ধ');
+        console.log('%c🌿 উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড — বাংলা ই-বুক', 'color:#006A4E;font-weight:bold;font-size:14px');
+        console.log('Shortcuts: M=সূচিপত্র · S=সেটিংস · T=শুনুন · C=অধ্যায় ভাঁজ · Esc=বন্ধ');
     }
 
     if (document.readyState === 'loading') {

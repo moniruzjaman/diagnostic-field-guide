@@ -8,7 +8,7 @@
 <meta name="description" content="ফসলের সমস্যা নির্ণয় ও ব্যবস্থাপনার সুপারিশ প্রণয়নের হাতে-কলমে নির্দেশিকা। CABI Plantwise Diagnostic Field Guide-এর পূর্ণ বাংলা অনুবাদ — ২৬৫টি রোগনির্ণয়ের ছবি, ১১টি তথ্য-সারণি, অফলাইনে ব্যবহারযোগ্য মোবাইল অ্যাপ।">
 <meta name="author" content="CABI / Plantwise (মূল ইংরেজি) · বাংলা অনুবাদ সংস্করণ">
 <meta name="keywords" content="উদ্ভিদ রোগনির্ণয়, ফিল্ড গাইড, plant doctor, ফসল, কীটপতঙ্গ, প্লান্ট ক্লিনিক, Plantwise, CABI, বাংলা ই-বুক, PWA">
-<meta name="theme-color" content="#145A32">
+<meta name="theme-color" content="#006A4E">
 
 <link rel="canonical" href="https://moniruzjaman.github.io/diagnostic-field-guide/">
 <meta property="og:url" content="https://moniruzjaman.github.io/diagnostic-field-guide/">
@@ -163,6 +163,15 @@
       <button class="font-btn" data-font="sans">স্যান্স (Noto Sans Bengali)</button>
     </div>
   </div>
+
+  <div class="settings-section">
+    <label class="settings-label">অধ্যায় ভাঁজ (কলাপসিবল)</label>
+    <div class="font-grid">
+      <button class="font-btn" id="btnExpandAll">সব খুলুন</button>
+      <button class="font-btn" id="btnCollapseAll">সব ভাঁজ করুন</button>
+    </div>
+    <p class="settings-hint">অধ্যায়ের শিরোনামে ট্যাপ করলে ভাঁজ বা খোলে · কীবোর্ড: C</p>
+  </div>
 </aside>
 <div class="settings-overlay" id="settingsOverlay"></div>
 
@@ -259,12 +268,31 @@
 <main class="reader" id="reader">
 
   <section class="hero" id="hero">
+    <div class="flag-ribbon" aria-hidden="true"></div>
     <div class="hero-card">
-      <div class="hero-tag">ই-বুক · বাংলা · অফলাইন PWA</div>
-      <h1 class="hero-title">উদ্ভিদ রোগনির্ণয়<br>ফিল্ড গাইড</h1>
-      <div class="hero-rule"></div>
-      <p class="hero-subtitle">ফসলের সমস্যা নির্ণয় ও ব্যবস্থাপনার সুপারিশ প্রণয়নের হাতে-কলমে নির্দেশিকা</p>
-      <div class="hero-tagline">CABI Plantwise Diagnostic Field Guide — পূর্ণ বাংলা সংস্করণ</div>
+      <div class="hero-layout">
+        <div class="hero-main">
+          <div class="hero-tag">ই-বুক · বাংলা · অফলাইন PWA</div>
+          <h1 class="hero-title">উদ্ভিদ রোগনির্ণয়<br>ফিল্ড গাইড</h1>
+          <div class="hero-rule"></div>
+          <p class="hero-subtitle">ফসলের সমস্যা নির্ণয় ও ব্যবস্থাপনার সুপারিশ প্রণয়নের হাতে-কলমে নির্দেশিকা</p>
+          <div class="hero-tagline">CABI Plantwise Diagnostic Field Guide — পূর্ণ বাংলা সংস্করণ</div>
+        </div>
+        <figure class="cover-thumb">
+          <img src="img/source-cover.jpg" alt="মূল Plantwise Diagnostic Field Guide বইয়ের প্রচ্ছদ" loading="eager">
+          <figcaption>মূল প্রকাশনার প্রচ্ছদ © CABI / Plantwise</figcaption>
+        </figure>
+      </div>
+      <div class="brand-strip">
+        <span class="brand-logo-pill">
+          <img src="img/plantwise-logo.png" alt="Plantwise লোগো">
+        </span>
+        <span class="brand-meta">
+          <span class="bm-red">LOSE LESS. FEED MORE.</span><br>
+          প্রকাশক: <strong>CABI</strong> (UK), Plantwise-এর পক্ষে · সংকলন: Phil Taylor<br>
+          ISBN 978-1-78064-676-3 · www.plantwise.org · CC BY-NC
+        </span>
+      </div>
       <div class="hero-actions">
         <button class="btn-primary btn-hero" id="btnHeroStart">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -308,7 +336,16 @@
         <button class="btn-primary" id="btnEndShare">এই গাইড শেয়ার করুন</button>
         <button class="btn-secondary" id="btnEndRestart">পুনরায় পড়ুন</button>
       </div>
-      <p class="book-end-foot">CABI Plantwise · বাংলা সংস্করণ · CC BY-NC · বিনামূল্যে বিতরণযোগ্য</p>
+      <div class="end-brand">
+        <span class="brand-logo-pill"><img src="img/plantwise-logo.png" alt="Plantwise লোগো" loading="lazy"></span>
+        <span class="end-brand-meta"><strong>LOSE LESS. FEED MORE.</strong> — Plantwise, CABI</span>
+      </div>
+      <p class="book-end-foot">
+        মূল গ্রন্থ © CAB International 2015 — <em>Plantwise Diagnostic Field Guide</em>,
+        সংকলন: Phil Taylor · প্রকাশক: CABI, UK (Plantwise-এর পক্ষে) · ISBN 978-1-78064-676-3<br>
+        বাংলা অনুবাদ · CC BY-NC · শুধুমাত্র শিক্ষামূলক ও অশাবসায়িক উদ্দেশ্যে বিনামূল্যে ব্যবহারযোগ্য
+        <img class="cc-badge" src="img/cc-by-nc.png" alt="CC BY-NC" loading="lazy">
+      </p>
     </div>
   </section>
 

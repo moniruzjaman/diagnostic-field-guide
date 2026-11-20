@@ -17,55 +17,92 @@
 body { width: 1200px; height: 630px; overflow: hidden; }
 .hero {
   width: 1200px; height: 630px;
-  background: linear-gradient(150deg, #0E3D22 0%, #145A32 55%, #1E8449 100%);
+  background: linear-gradient(150deg, #003D2C 0%, #006A4E 58%, #01765A 100%);
   color: #fff; position: relative;
-  display: flex; flex-direction: column; justify-content: center; padding: 0 90px;
+  display: flex; align-items: center; padding: 0 80px;
   font-family: 'NSB', sans-serif;
 }
+/* BD flag ribbon across the very top */
+.ribbon {
+  position: absolute; top: 0; left: 0; right: 0; height: 10px;
+  background:
+    radial-gradient(circle at 40% 50%, #F42A41 0 11px, transparent 12px),
+    linear-gradient(90deg, #006A4E, #038B66);
+}
 .hero::before {
-  content: ""; position: absolute; top: -160px; right: -160px;
+  content: ""; position: absolute; top: -160px; right: 260px;
   width: 480px; height: 480px; border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(82,190,128,.3), transparent 65%);
+  background: radial-gradient(circle at 30% 30%, rgba(69,214,164,.22), transparent 65%);
 }
 .hero::after {
   content: ""; position: absolute; bottom: -200px; left: -140px;
   width: 520px; height: 520px; border-radius: 50%;
-  background: radial-gradient(circle at 70% 70%, rgba(174,214,142,.18), transparent 65%);
+  background: radial-gradient(circle at 70% 70%, rgba(240,194,75,.14), transparent 65%);
 }
-.leaf { position: absolute; font-size: 150px; opacity: .16; right: 90px; bottom: 60px; }
+.left { flex: 1 1 auto; min-width: 0; position: relative; z-index: 2; }
 .tag {
   display: inline-block; width: fit-content;
-  font-size: 22px; letter-spacing: 2px; color: #A9DFBF;
-  border: 1.5px solid rgba(169,223,191,.55);
-  padding: 8px 24px; border-radius: 999px; margin-bottom: 30px;
+  font-size: 21px; letter-spacing: 2px; color: #8FE3C4;
+  border: 1.5px solid rgba(143,227,196,.55);
+  padding: 8px 24px; border-radius: 999px; margin-bottom: 28px;
 }
-h1 { font-size: 72px; font-weight: 700; line-height: 1.16; margin-bottom: 18px; }
-.sub { font-size: 30px; color: #D5F5E3; margin-bottom: 34px; font-weight: 400; }
+h1 { font-size: 70px; font-weight: 700; line-height: 1.16; margin-bottom: 16px; text-shadow: 0 3px 16px rgba(0,0,0,.35); }
+.rule {
+  width: 150px; height: 6px; border-radius: 3px; margin-bottom: 20px;
+  background: linear-gradient(90deg, #F42A41 0 26%, #F0C24B 26% 42%, #8FE3C4 42% 100%);
+}
+.sub { font-size: 28px; color: #CFF3E4; margin-bottom: 30px; font-weight: 400; }
 .meta {
-  display: flex; gap: 34px; font-size: 21px; color: #A9DFBF;
-  border-top: 1px solid rgba(169,223,191,.35); padding-top: 26px; width: fit-content;
+  display: flex; gap: 30px; font-size: 20px; color: #8FE3C4;
+  border-top: 1px solid rgba(143,227,196,.35); padding-top: 22px; width: fit-content;
 }
-.meta b { color: #fff; }
+.meta b { color: #F0C24B; }
+/* right column: authentic source cover + plantwise logo */
+.right {
+  flex: 0 0 auto; margin-left: 56px; position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+}
+.cover {
+  width: 218px; height: auto; border-radius: 10px;
+  box-shadow: 0 18px 44px rgba(0,0,0,.5), 0 0 0 1.5px rgba(240,194,75,.6);
+  display: block;
+}
+.cover-cap { font-size: 13px; color: #B9E8D4; letter-spacing: .5px; margin-top: -6px; }
+.pw-pill {
+  background: #fff; border-radius: 10px; padding: 10px 16px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.35);
+}
+.pw-pill img { height: 30px; width: auto; display: block; }
+.pw-tag { font-size: 17px; font-weight: 700; color: #FF8B98; letter-spacing: 2px; }
 .badge2 {
-  position: absolute; top: 48px; right: 90px;
-  font-size: 20px; color: #0E3D22; background: #A9DFBF;
-  padding: 10px 22px; border-radius: 10px; font-weight: 700;
+  position: absolute; top: 40px; right: 80px;
+  font-size: 19px; color: #003D2C; background: #F0C24B;
+  padding: 9px 20px; border-radius: 10px; font-weight: 700; z-index: 3;
 }
 </style>
 </head>
 <body>
 <div class="hero">
-  <div class="tag">ই-বুক · বাংলা · অফলাইন PWA</div>
-  <h1>উদ্ভিদ রোগনির্ণয়<br>ফিল্ড গাইড</h1>
-  <div class="sub">ফসলের সমস্যা নির্ণয় ও ব্যবস্থাপনার সুপারিশের হাতে-কলমে নির্দেশিকা</div>
-  <div class="meta">
-    <span>১০০+ <b>পৃষ্ঠা</b></span>
-    <span>২৬৫ <b>রোগনির্ণয়ের ছবি</b></span>
-    <span>১১ <b>তথ্য-সারণি</b></span>
-    <span>CABI <b>Plantwise</b></span>
+  <div class="ribbon"></div>
+  <div class="badge2">বিনামূল্যে · শিক্ষামূলক · CC BY-NC</div>
+  <div class="left">
+    <div class="tag">ই-বুক · বাংলা · অফলাইন PWA</div>
+    <h1>উদ্ভিদ রোগনির্ণয়<br>ফিল্ড গাইড</h1>
+    <div class="rule"></div>
+    <div class="sub">ফসলের সমস্যা নির্ণয় ও ব্যবস্থাপনার সুপারিশের হাতে-কলমে নির্দেশিকা</div>
+    <div class="meta">
+      <span>৭ <b>অধ্যায়</b></span>
+      <span>২৬৫ <b>রোগনির্ণয়ের ছবি</b></span>
+      <span>১১ <b>তথ্য-সারণি</b></span>
+      <span>অফলাইনে <b>পড়ুন ও শুনুন</b></span>
+    </div>
   </div>
-  <div class="leaf">🌿</div>
-  <div class="badge2">বিনামূল্যে · CC BY-NC</div>
+  <div class="right">
+    <img class="cover" src="img/source-cover.jpg" alt="মূল বইয়ের প্রচ্ছদ">
+    <div class="cover-cap">মূল প্রকাশনা © CABI / Plantwise (2015)</div>
+    <div class="pw-pill"><img src="img/plantwise-logo.png" alt="Plantwise"></div>
+    <div class="pw-tag">LOSE LESS. FEED MORE.</div>
+  </div>
 </div>
 </body>
 </html>
