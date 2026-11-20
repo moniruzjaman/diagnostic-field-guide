@@ -1,0 +1,25 @@
+{
+  "name": "উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড",
+  "short_name": "রোগনির্ণয় গাইড",
+  "description": "ফসলের সমস্যা নির্ণয় ও ব্যবস্থাপনার সুপারিশ প্রণয়নের বাংলা নির্দেশিকা — CABI Plantwise Diagnostic Field Guide-এর বাংলা সংস্করণ। অফলাইনে পড়া ও শোনা যায়।",
+  "id": "plantwise-diagnostic-field-guide-bn",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FBFAF6",
+  "theme_color": "#145A32",
+  "lang": "bn-BD",
+  "dir": "ltr",
+  "categories": ["education", "books", "medical", "productivity"],
+  "icons": [
+    {"src": "icons/favicon-32.png", "sizes": "32x32", "type": "image/png"},
+    {"src": "icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"},
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "সূচিপত্র", "url": "./index.html#toc"}
+  ]
+}
