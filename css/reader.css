@@ -127,6 +127,11 @@ html, body {
     text-rendering: optimizeLegibility;
     font-feature-settings: "kern" 1, "liga" 1;
     scroll-behavior: smooth;
+    /* Mobile-first guard: off-canvas drawers (settings panel, TOC) must never
+       widen the page — clamp horizontal overflow. `clip` avoids turning html
+       into a scroll container; `hidden` is the fallback for older Safari. */
+    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 body {
@@ -2157,3 +2162,89 @@ body.audio-visible .offline-toast { bottom: calc(var(--audio-h) + 12px); }
 .annex-grid figure{margin:0;background:var(--c-paper);border:1px solid var(--c-line);border-radius:10px;overflow:hidden}
 .annex-grid img{width:100%;height:auto;display:block;aspect-ratio:4/3;object-fit:cover}
 .annex-grid figcaption{font-size:.68rem;color:var(--c-muted);padding:.3rem .45rem;text-align:center}
+
+/* ── Site footer: companion tool & Bangla edition author ── */
+.site-footer {
+    background: #0B2E21;
+    border-top: 1px solid rgba(169, 223, 191, 0.18);
+    color: #CFF3E4;
+    padding: 34px 20px 44px;
+}
+.footer-grid {
+    max-width: 760px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+.footer-card {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(169, 223, 191, 0.22);
+    border-radius: 14px;
+    padding: 18px;
+    color: inherit;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+.footer-card:hover,
+.footer-card:focus-visible {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(169, 223, 191, 0.55);
+    transform: translateY(-2px);
+}
+.footer-icon {
+    flex: none;
+    width: 46px; height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: rgba(169, 223, 191, 0.12);
+    border-radius: 12px;
+}
+.footer-card-body { display: block; min-width: 0; }
+.footer-kicker {
+    font-family: var(--font-head);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #F0C24B;
+}
+.footer-card h3 {
+    font-family: var(--font-head);
+    font-size: 16.5px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin: 5px 0 6px;
+    line-height: 1.35;
+}
+.footer-card p {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #A9DFBF;
+    margin: 0;
+}
+.footer-cta {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: var(--font-head);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #8FE3C4;
+}
+.footer-note {
+    max-width: 760px;
+    margin: 22px auto 0;
+    padding-top: 18px;
+    border-top: 1px solid rgba(169, 223, 191, 0.15);
+    font-family: var(--font-head);
+    font-size: 11.5px;
+    line-height: 1.8;
+    text-align: center;
+    color: rgba(169, 223, 191, 0.6);
+}
+@media (min-width: 640px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+}

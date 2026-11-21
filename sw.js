@@ -10,7 +10,7 @@
    - navigation fallback: index.html (single-page app)
    ============================================================ */
 
-const VERSION = 'v1.3.0';
+const VERSION = 'v1.4.0';
 const SHELL_CACHE = `pwdfg-shell-${VERSION}`;
 const IMG_CACHE = `pwdfg-img-${VERSION}`;
 
