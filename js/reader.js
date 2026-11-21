@@ -729,18 +729,34 @@
             if (tocItem) {
                 e.preventDefault();
                 const target = tocItem.dataset.target;
-                expandChapter(target);           // TOC always opens the chapter it points to
+                // Anchors (s-*, etc.) live inside a chapter: expand that chapter, not the anchor id
+                let owner = target;
+                const secEl = document.getElementById(target);
+                if (secEl && !secEl.classList.contains('chapter')) {
+                    const host = secEl.closest('.chapter');
+                    if (host) owner = host.id;
+                }
+                expandChapter(owner);            // TOC always opens the chapter it points to
                 closeToc();
+                const wasOwner = state.reading.chapter === owner;
                 setTimeout(() => {
                     const sec = document.getElementById(target);
                     if (sec) {
-                        sec.scrollIntoView({ behavior: 'smooth' });
-                        // Auto-resume: restore last scroll position in this chapter
-                        const saved = state.reading.scrollTop;
-                        if (saved > 0) {
-                            window.scrollTo({ top: saved, behavior: 'smooth' });
-                        } else {
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        // Instant jump + settle corrections: the chapter expansion and
+                        // image decoding keep shifting layout, so re-anchor until stable
+                        const reanchor = setInterval(() => {
+                            const r = sec.getBoundingClientRect();
+                            if (++reanchorTries >= 16 || (r.top > -80 && r.top < window.innerHeight * 0.45)) {
+                                clearInterval(reanchor); return;
+                            }
+                            sec.scrollIntoView({ behavior: 'instant', block: 'start' });
+                        }, 350);
+                        let reanchorTries = 0;
+                        sec.scrollIntoView({ behavior: 'instant', block: 'start' });
+                        // Auto-resume only when returning to the chapter already being read
+                        if (wasOwner) {
+                            const saved = state.reading.scrollTop;
+                            if (saved > 0) window.scrollTo({ top: saved, behavior: 'smooth' });
                         }
                     }
                     history.replaceState(null, '', '#' + target);

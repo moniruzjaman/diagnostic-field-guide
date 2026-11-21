@@ -2122,3 +2122,38 @@ body.audio-visible .offline-toast { bottom: calc(var(--audio-h) + 12px); }
     border-radius: 8px; padding: 6px 10px; font-size: 13px;
     color: var(--c-ink); cursor: pointer;
 }
+
+
+/* ── Exam-prep: clarification cards & quiz ── */
+.clarif{border:1px solid var(--c-line);border-left:4px solid var(--c-primary);border-radius:12px;
+  background:var(--c-paper-alt);margin:1rem 0;overflow:hidden}
+.clarif summary{cursor:pointer;list-style:none;display:flex;gap:.6rem;align-items:flex-start;
+  padding:.85rem 1rem;font-weight:700;font-family:var(--font-head);color:var(--c-ink)}
+.clarif summary::-webkit-details-marker{display:none}
+.clarif summary .ci{font-size:1.25rem;line-height:1.3}
+.clarif summary .chev{margin-left:auto;transition:transform .2s;color:var(--c-muted);flex:none}
+.clarif[open] summary .chev{transform:rotate(180deg)}
+.clarif .clarif-body{padding:0 1rem 1rem;font-size:.95em}
+.clarif .cwrong{color:var(--c-danger);font-size:.72rem;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;display:block;margin-bottom:.2rem}
+.clarif .cok{color:var(--c-primary);font-size:.72rem;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;display:block;margin:.7rem 0 .2rem}
+.clarif .cnever{color:var(--c-ink-soft);font-size:.88em;margin-top:.7rem;padding-top:.6rem;
+  border-top:1px dashed var(--c-line)}
+.clarif .cnever b{color:var(--c-danger)}
+.quiz{border:1px solid var(--c-line);border-radius:12px;background:var(--c-paper);margin:.9rem 0;overflow:hidden}
+.quiz summary{cursor:pointer;list-style:none;padding:.85rem 1rem;font-weight:700;font-family:var(--font-head)}
+.quiz summary::-webkit-details-marker{display:none}
+.quiz summary .qn{color:var(--c-accent);font-weight:800;margin-inline-end:.5rem}
+.quiz .qbody{padding:0 1rem 1rem}
+.quiz .qopt{padding:.35rem .2rem;border-bottom:1px dotted var(--c-line);font-size:.92em}
+.quiz .qans{margin-top:.6rem;padding:.6rem .8rem;background:var(--c-success-soft);
+  border-inline-start:3px solid var(--c-success);border-radius:8px;font-size:.9em}
+.quiz .qans b{color:var(--c-primary)}
+.xp-tip{background:var(--c-primary-50);border:1px solid var(--c-primary-100);border-radius:12px;
+  padding:.85rem 1rem;margin:1rem 0}
+.xp-tip b{color:var(--c-primary)}
+.annex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem;margin:1rem 0}
+.annex-grid figure{margin:0;background:var(--c-paper);border:1px solid var(--c-line);border-radius:10px;overflow:hidden}
+.annex-grid img{width:100%;height:auto;display:block;aspect-ratio:4/3;object-fit:cover}
+.annex-grid figcaption{font-size:.68rem;color:var(--c-muted);padding:.3rem .45rem;text-align:center}
