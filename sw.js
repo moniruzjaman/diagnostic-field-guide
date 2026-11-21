@@ -10,13 +10,14 @@
    - navigation fallback: index.html (single-page app)
    ============================================================ */
 
-const VERSION = 'v1.6.0';
+const VERSION = 'v1.7.0';
 const SHELL_CACHE = `pwdfg-shell-${VERSION}`;
 const IMG_CACHE = `pwdfg-img-${VERSION}`;
 
 const SHELL_ASSETS = [
     './',
     './index.html',
+    './dashboard.html',
     './manifest.webmanifest',
     './css/reader.css',
     './js/content.js',

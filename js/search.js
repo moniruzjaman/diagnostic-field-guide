@@ -35,6 +35,27 @@
 
     function bn(n) { try { return n.toLocaleString('bn-BD'); } catch (e) { return String(n); } }
 
+    // Interactive companion tool (dashboard.html) entries surfaced in results
+    const TOOLS = [
+        { view: 'all', title: 'ফিল্ড ড্যাশবোর্ড — সব ইন্টার‍্যাক্টিভ সূচি', keys: 'ড্যাশবোর্ড dashboard টুল tool ইন্টারাক্টিভ ইন্টার্যাক্টিভ ইন্টার‍্যাক্টিভ সারণি সূচি ইনডেক্স' },
+        { view: 'table3', title: 'সারণি ৩ ইন্টার‍্যাক্টিভ — উপসর্গ বাছাই করে কারণগোষ্ঠী র‍্যাঙ্কিং', keys: 'সারণি ৩ উপসর্গ কারণ প্যাথোজেন জীবাণু ট্রায়াজ ম্যাট্রিক্স র্যাঙ্ক ছত্রাক ব্যাকটেরিয়া ভাইরাস ভিরাস নেমাটোড আগাছা পুষ্টি ভৌত পরিবেশ উইল্ট মোজাইক দাগ কোঁকড়ানো' },
+        { view: 'table12', title: 'সারণি ১–২ ইন্টার‍্যাক্টিভ — কীট ও মাইট অ্যাটলাস (আকৃতি ফিল্টার)', keys: 'সারণি ১ সারণি ২ কীট পোকা মাইট এফিড এফিড থ্রিপস সাদা মাছি বর্ম মৌখিক শনাক্ত আকৃতি অ্যাটলাস aphid mite pest whitefly thrips' },
+        { view: 'table4', title: 'সারণি ৪ ইন্টার‍্যাক্টিভ — খনিজ পুষ্টি ঘাটতি সূচি (১২ উপাদান)', keys: 'সারণি ৪ পুষ্টি ঘাটতি খনিজ সার নাইট্রোজেন ফসফরাস পটাশ পটাসিয়াম জিংক লোহা আয়রন ম্যাগনেসিয়াম ক্যালসিয়াম বোরন সালফার ম্যাঙ্গানিজ কপার তামা মলিবডেনাম ক্লোরিন nitrogen npk deficiency' },
+        { view: 'table5', title: 'সারণি ৫ ইন্টার‍্যাক্টিভ — চিত্র-সূচি ও ফসলভিত্তিক তালিকা', keys: 'সারণি ৫ চিত্র সূচি ফসল ফসলভিত্তিক টমেটো ধান আলু গম ভুট্টা মেইজ বেগুন শিম তরমুজ পেঁয়াজ ব্রাসেলা' },
+        { view: 'field', title: 'মাঠপরীক্ষা, বিভ্রান্তিকর জোড়া ও কেস নোট লগ (CSV রপ্তানি)', keys: 'মাঠ পরীক্ষা বিভ্রান্তি জোড়া কেস নোট লগ সংরক্ষণ রপ্তানি csv স্ট্রিমিং টেস্ট ইনকিউবেশন ডাই টেস্ট ফিল্টার' },
+    ];
+
+    function toolResults(nq) {
+        if (!nq || nq.length < 2) return [];
+        const words = nq.split(' ').filter(w => w.length >= 2);
+        if (!words.length) return [];
+        return TOOLS.filter(t => {
+            const nk = normalize(t.keys);
+            const nt = normalize(t.title);
+            return words.some(w => nk.includes(w) || nt.includes(w));
+        }).map(t => ({ type: 'tool', view: t.view, title: t.title, sub: '🧭 ফিল্ড ড্যাশবোর্ড (সহযোগী টুল) — অফলাইনে চলে' }));
+    }
+
     function chapters() {
         try { return (typeof EBOOK_CONTENT !== 'undefined' && EBOOK_CONTENT.chapters) || []; }
         catch (e) { return []; }
@@ -80,7 +101,7 @@
             else if (item.type === 'image') imgs.push(item);
             else texts.push(item);
         }
-        return { heads: heads.slice(0, 12), imgs: imgs.slice(0, 12), texts: texts.slice(0, 20), total: heads.length + imgs.length + texts.length };
+        return { heads: heads.slice(0, 12), imgs: imgs.slice(0, 12), texts: texts.slice(0, 20), tools: toolResults(nq), total: heads.length + imgs.length + texts.length + toolResults(nq).length };
     }
 
     // mark first occurrence of the query's first word in raw text
@@ -133,7 +154,7 @@
               <span class="search-item-sub">🖼️ ${escapeHtml(item.chLabel)}</span></span>
             </button>`;
                 } else {
-                    const icon = item.type === 'chapter' ? '📖' : item.type === 'heading' ? '📄' : '✏️';
+                    const icon = item.type === 'tool' ? '🧭' : item.type === 'chapter' ? '📖' : item.type === 'heading' ? '📄' : '✏️';
                     html += `<button type="button" class="search-item ${cls}" data-i="${i}">
               <span class="search-item-body"><span class="search-item-title">${icon} ${markSnippet(item.title, q)}</span>
               <span class="search-item-sub">${escapeHtml(item.sub)}</span></span>
@@ -142,6 +163,7 @@
             });
         };
 
+        pushGroup('ইন্টার‍্যাক্টিভ টুল (ড্যাশবোর্ড)', res.tools || [], 'is-tool');
         pushGroup('অধ্যায় ও সেকশন', res.heads, 'is-head');
         pushGroup('ছবি', res.imgs, 'is-img');
         pushGroup('লেখায় মেলা', res.texts, 'is-text');
@@ -206,7 +228,13 @@
             const btn = e.target.closest('.search-item');
             if (!btn) return;
             const item = items[parseInt(btn.dataset.i, 10)];
-            if (item) goTo(item);
+            if (!item) return;
+            if (item.type === 'tool') {
+                closeSearch();
+                window.location.href = 'dashboard.html#view=' + item.view;
+                return;
+            }
+            goTo(item);
         });
 
         document.addEventListener('keydown', (e) => {

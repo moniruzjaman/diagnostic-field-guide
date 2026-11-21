@@ -1,0 +1,3295 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="canopy">
+  <title>ফিল্ড ড্যাশবোর্ড — উদ্ভিদ রোগনির্ণয় ফিল্ড গাইডের ইন্টার‍্যাক্টিভ সারণি টুল</title>
+  <meta name="description" content="উদ্ভিদ রোগনির্ণয় ফিল্ড গাইডের ইন্টার‍্যাক্টিভ সহযোগী টুল — উপসর্গ→কারণ ম্যাট্রিক্স (সারণি ৩), কীট-মাইট অ্যাটলাস (সারণি ১–২), খনিজ পুষ্টি ঘাটতি সূচি (সারণি ৪–৫), মাঠপরীক্ষা ও কেস নোট। অফলাইনে চলে।">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <meta name="theme-color" content="#366948">
+
+  <style>
+
+    /* Local fonts (offline) — replaces Google Fonts CDN */
+    @font-face { font-family:'Noto Sans Bengali'; src:url('fonts/NotoSansBengali-400-bengali.woff2') format('woff2'); font-weight:400; font-display:swap; }
+    @font-face { font-family:'Noto Sans Bengali'; src:url('fonts/NotoSansBengali-400-latin.woff2') format('woff2'); font-weight:400; font-display:swap; }
+    @font-face { font-family:'Noto Sans Bengali'; src:url('fonts/NotoSansBengali-600-bengali.woff2') format('woff2'); font-weight:600; font-display:swap; }
+    @font-face { font-family:'Noto Sans Bengali'; src:url('fonts/NotoSansBengali-600-latin.woff2') format('woff2'); font-weight:600; font-display:swap; }
+    @font-face { font-family:'Noto Sans Bengali'; src:url('fonts/NotoSansBengali-700-bengali.woff2') format('woff2'); font-weight:700; font-display:swap; }
+    @font-face { font-family:'Noto Sans Bengali'; src:url('fonts/NotoSansBengali-700-latin.woff2') format('woff2'); font-weight:700; font-display:swap; }
+    @font-face { font-family:'Noto Serif Bengali'; src:url('fonts/NotoSerifBengali-400-bengali.woff2') format('woff2'); font-weight:400; font-display:swap; }
+    @font-face { font-family:'Noto Serif Bengali'; src:url('fonts/NotoSerifBengali-700-bengali.woff2') format('woff2'); font-weight:700; font-display:swap; }
+
+    /* Back-link to the e-book */
+    .dash-home-link{display:inline-flex;align-items:center;gap:6px;width:fit-content;margin-bottom:var(--space-sm);padding:6px 16px;border-radius:999px;background:var(--primary-container);color:var(--on-primary-container);text-decoration:none;font-family:var(--font-label);font-size:.85rem;font-weight:600;}
+    .dash-home-link:hover{filter:brightness(1.06);}
+
+    /* DOM stacked-bar chart (replaces Chart.js) */
+    .sym-legend{display:flex;flex-wrap:wrap;gap:var(--space-md);align-items:center;font-family:var(--font-label);font-size:.8rem;color:var(--on-surface-variant);padding:var(--space-xs) 0 var(--space-sm);}
+    .sym-legend .lg{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;}
+    .lg-common{background:var(--data-1);}
+    .lg-rare{background:var(--data-2);}
+    .sym-max{margin-left:auto;font-family:var(--font-mono);font-size:.72rem;}
+    .sym-bars{display:flex;flex-direction:column;gap:10px;}
+    .sym-row{display:grid;grid-template-columns:minmax(120px,190px) 1fr 36px;align-items:center;gap:10px;}
+    .sym-label{font-family:var(--font-label);font-size:.8rem;color:var(--on-surface);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .sym-track{display:flex;height:16px;border-radius:8px;background:var(--surface-container-high);overflow:hidden;}
+    .sym-fill{height:100%;min-width:0;}
+    .sym-common{background:var(--data-1);}
+    .sym-rare{background:var(--data-2);}
+    .sym-val{font-family:var(--font-mono);font-size:.78rem;color:var(--on-surface-variant);}
+    @media (max-width:640px){ .sym-row{grid-template-columns:96px 1fr 30px;} }
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces (earth strata - Canopy) */
+      --background: #faf6ef;
+      --surface-container-low: #f0eae0;
+      --surface-container: #e8e0d2;
+      --surface-container-high: #ddd3c2;
+
+      /* Ink */
+      --on-surface: #2a302b;
+      --on-surface-variant: #4a524b;
+
+      /* Lines */
+      --outline: #737872;
+      --outline-variant: #cbc5b8;
+
+      /* Accents */
+      --primary: #366948;
+      --on-primary: #ffffff;
+      --primary-container: #d8efe0;
+      --on-primary-container: #1f4d30;
+      --secondary: #5c635c;
+      --tertiary: #8f5822;
+      --tertiary-container: #f2d4a7;
+      --on-tertiary-container: #6e3f0c;
+      --error: #b83230;
+      --on-error: #ffffff;
+      --error-container: #f7dddd;
+      --on-error-container: #7c1d1b;
+
+      /* Data series */
+      --data-1: #366948;
+      --data-2: #8f5822;
+      --data-3: #a85438;
+      --data-4: #4b6b78;
+      --data-context: #b5b0a3;
+
+      /* Leaf visual illustration tokens */
+      --leaf-healthy: #4e8a5c;
+      --leaf-chlorosis: #e5c95c;
+      --leaf-pale: #c9d988;
+      --leaf-necrosis: #7c4b2d;
+      --leaf-purple: #7d476c;
+      --leaf-white: #f2eedc;
+      --leaf-vein: #2f613b;
+      --pot-soil: #6b4e38;
+
+      /* Fonts (Non-Latin script listed first) */
+      --font-headline: 'Noto Serif Bengali', 'Literata', serif;
+      --font-body: 'Noto Sans Bengali', 'Nunito Sans', sans-serif;
+      --font-label: 'Noto Sans Bengali', 'Geist Mono', monospace;
+      --font-mono: 'Geist Mono', 'Noto Sans Bengali', monospace;
+
+      /* Shape */
+      --rounded: 0.625rem;
+      --rounded-lg: 1rem;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --shadow-soft: 0 4px 20px rgb(42 48 43 / 0.06);
+      --shadow-soft-hover: 0 8px 28px rgb(42 48 43 / 0.09);
+      --border-soft: 1px solid rgb(203 197 184 / 0.65);
+      --focus-glow: 0 0 0 4px rgb(54 105 72 / 0.18);
+
+      /* Shared semantic tokens */
+      --positive: #2d6a42;
+      --positive-bg: #d8efe0;
+      --warning: #8f5822;
+      --warning-bg: #f2d4a7;
+      --info-slate: #4b6b78;
+      --info-slate-bg: #dde7eb;
+      --focus: #366948;
+
+      /* Type scale (Dashboard) */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.35rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.78rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+      box-shadow: var(--focus-glow);
+    }
+
+    .page-grid {
+      display: grid;
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1260px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Typography */
+    h1, h2, h3, h4 {
+      font-family: var(--font-headline);
+      color: var(--on-surface);
+      margin: 0;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+    h1 { font-size: var(--display-size); }
+    h2 { font-size: var(--headline-size); }
+    h3 { font-size: var(--subhead-size); }
+    p { margin: 0; }
+
+    .kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--tertiary);
+      letter-spacing: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .muted {
+      color: var(--on-surface-variant);
+      font-size: 0.92rem;
+    }
+
+    /* Header */
+    .hero-header {
+      display: grid;
+      gap: var(--space-md);
+      padding-bottom: var(--space-md);
+      border-bottom: var(--border-soft);
+    }
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+    }
+    .hero-title-wrap {
+      max-width: 72ch;
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    /* KPI row */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+    .kpi-card {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      display: grid;
+      gap: var(--space-xs);
+      transition: transform var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+    .kpi-label {
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--secondary);
+    }
+    .kpi-value {
+      font-family: var(--font-headline);
+      font-size: clamp(1.5rem, 1.2rem + 1vw, 2.15rem);
+      font-weight: 700;
+      color: var(--primary);
+      font-variant-numeric: lining-nums tabular-nums;
+      line-height: 1.1;
+    }
+    .kpi-note {
+      font-size: 0.82rem;
+      color: var(--tertiary);
+      font-weight: 600;
+    }
+
+    /* Almanac Phenology / Field Workflow Strip (Canopy Defining Treatment #2) */
+    .season-strip {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .season-strip-title {
+      font-family: var(--font-label);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .season-cells {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      align-items: center;
+    }
+    .season-step-btn {
+      font-family: var(--font-label);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 0.8rem;
+      min-height: 44px;
+      border: 0;
+      border-radius: var(--rounded);
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-micro) var(--ease-in-out), transform var(--dur-micro) var(--ease-out);
+    }
+    .season-step-btn:hover {
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+    }
+    .season-step-btn.is-prep {
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+    }
+    .season-step-btn.is-peak {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .step-detail-drawer {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      border-left: 4px solid var(--tertiary);
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .step-detail-list {
+      margin: 0;
+      padding-right: 0;
+      padding-left: var(--space-lg);
+      display: grid;
+      gap: var(--space-xs);
+      color: var(--on-surface-variant);
+      font-size: 0.92rem;
+    }
+
+    /* Cards (Canopy Defining Treatment #1) */
+    .card {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      border: 0;
+    }
+    .card.is-interactive {
+      box-shadow: var(--shadow-soft);
+      transition: transform var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
+    }
+    .card.is-interactive:hover {
+      box-shadow: var(--shadow-soft-hover);
+      transform: translateY(-2px);
+    }
+    .card.is-leaf-highlight {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .card.is-leaf-highlight h3,
+    .card.is-leaf-highlight .kicker,
+    .card.is-leaf-highlight .muted {
+      color: var(--on-primary-container);
+    }
+
+    /* Global Filter & Search Bar */
+    .control-bar {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+      box-shadow: var(--shadow-soft);
+    }
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-md);
+      align-items: end;
+    }
+    .field-group {
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .field-label {
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface);
+    }
+    .input-control, .select-control, .textarea-control {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.55rem 0.85rem;
+      border-radius: var(--rounded);
+      border: var(--border-soft);
+      background: var(--background);
+      color: var(--on-surface);
+      transition: box-shadow var(--dur-micro) var(--ease-in-out), border-color var(--dur-micro) var(--ease-in-out);
+    }
+    .select-control {
+      padding-right: 2rem;
+    }
+    .textarea-control {
+      min-height: 76px;
+      resize: vertical;
+    }
+    .input-control:focus, .select-control:focus, .textarea-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: var(--focus-glow);
+    }
+
+    /* Buttons */
+    .btn {
+      min-height: 44px;
+      padding: 0.55rem 1rem;
+      border-radius: var(--rounded);
+      border: 0;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-micro) var(--ease-in-out), transform var(--dur-micro) var(--ease-out);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      background: var(--on-primary-container);
+    }
+    .btn-secondary {
+      background: var(--surface-container);
+      color: var(--on-surface);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-container-high);
+    }
+    .btn-danger-soft {
+      background: var(--error-container);
+      color: var(--on-error-container);
+    }
+    .btn-sm {
+      min-height: 36px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    /* Navigation Tabs (Section Switcher) */
+    .view-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .view-tab {
+      min-height: 44px;
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--rounded-full);
+      border: 0;
+      background: var(--surface-container);
+      color: var(--on-surface);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-micro) var(--ease-in-out), color var(--dur-micro) var(--ease-in-out);
+    }
+    .view-tab:hover {
+      background: var(--surface-container-high);
+    }
+    .view-tab.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    /* Section Structure */
+    .dashboard-section {
+      display: grid;
+      gap: var(--space-md);
+      padding-top: var(--space-sm);
+    }
+    .dashboard-section.is-hidden {
+      display: none;
+    }
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+      border-bottom: var(--border-soft);
+      padding-bottom: var(--space-sm);
+    }
+    .section-title-group {
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    /* Two-column asymmetric grids */
+    .split-triage {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .split-balanced {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    /* Symptom Chips for Triage */
+    .chip-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .filter-chip {
+      min-height: 44px;
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--rounded-full);
+      border: var(--border-soft);
+      background: var(--background);
+      color: var(--on-surface);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-micro) var(--ease-in-out), border-color var(--dur-micro) var(--ease-in-out);
+    }
+    .filter-chip:hover {
+      background: var(--surface-container);
+    }
+    .filter-chip.is-selected {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    /* Cause Rank Pills */
+    .cause-rank-list {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .cause-rank-item {
+      background: var(--background);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .cause-rank-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .progress-track {
+      height: 8px;
+      border-radius: var(--rounded-full);
+      background: var(--surface-container-high);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: var(--rounded-full);
+      background: var(--primary);
+      transition: width var(--dur-short) var(--ease-out);
+    }
+
+    /* Tables */
+    .table-scroll {
+      overflow-x: auto;
+      background: var(--background);
+      border-radius: var(--rounded-lg);
+      border: var(--border-soft);
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: left;
+    }
+    .data-table thead th {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-weight: 700;
+      padding: 0.65rem 0.6rem;
+      border-bottom: var(--border-soft);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .data-table tbody td {
+      padding: 0.55rem 0.6rem;
+      border-bottom: var(--border-soft);
+      vertical-align: top;
+    }
+    .data-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+    .data-table tbody th.row-sticky,
+    .data-table thead th.row-sticky {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: var(--surface-container-low);
+      font-weight: 700;
+      min-width: 145px;
+      border-right: var(--border-soft);
+    }
+    .data-table tbody tr:hover td {
+      background: var(--surface-container-low);
+    }
+
+    /* Status Badges for Table 3 */
+    .status-cell-btn {
+      width: 100%;
+      min-height: 36px;
+      padding: 0.3rem 0.45rem;
+      border-radius: 6px;
+      border: 0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-in-out);
+    }
+    .status-cell-btn:hover {
+      transform: scale(1.03);
+      box-shadow: var(--shadow-soft);
+    }
+    .status-cell-btn.is-active-cell {
+      outline: 2px solid var(--on-surface);
+      outline-offset: 1px;
+    }
+    .lvl-high {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .lvl-med {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .lvl-low {
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+    }
+    .lvl-ex {
+      background: var(--surface-container);
+      color: var(--on-surface-variant);
+    }
+    .lvl-no {
+      background: var(--background);
+      color: var(--secondary);
+      border: var(--border-soft);
+    }
+
+    /* Detail Inspector Box */
+    .inspector-box {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      border-left: 5px solid var(--primary);
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    /* Pest Cards Grid (Tables 1 & 2) */
+    .pest-filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+      gap: var(--space-md);
+      align-items: end;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(285px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .pest-card {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: grid;
+      gap: var(--space-sm);
+      align-content: start;
+      transition: transform var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
+      cursor: pointer;
+    }
+    .pest-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft-hover);
+    }
+    .pest-card.is-selected-pest {
+      outline: 2px solid var(--primary);
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .pest-card-head {
+      display: grid;
+      grid-template-columns: 78px minmax(0, 1fr);
+      gap: var(--space-md);
+      align-items: center;
+    }
+    .pest-svg-box {
+      width: 78px;
+      height: 78px;
+      border-radius: var(--rounded);
+      background: var(--background);
+      border: var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-xs);
+    }
+    .pest-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--rounded-full);
+      font-size: 0.76rem;
+      font-weight: 700;
+      background: var(--surface-container);
+      color: var(--on-surface);
+    }
+    .tag-pill.is-ochre {
+      background: var(--tertiary-container);
+      color: var(--on-tertiary-container);
+    }
+    .tag-pill.is-green {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .tag-pill.is-danger {
+      background: var(--error-container);
+      color: var(--on-error-container);
+    }
+    .pest-specs {
+      display: grid;
+      gap: 4px;
+      font-size: 0.85rem;
+      border-top: var(--border-soft);
+      padding-top: var(--space-sm);
+    }
+    .pest-spec-line {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+    .pest-spec-key {
+      color: var(--on-surface-variant);
+      font-weight: 600;
+    }
+    .pest-spec-val {
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* Visual Atlas (Table 5) */
+    .atlas-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .plant-diagram-card {
+      background: var(--background);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      border: var(--border-soft);
+      display: grid;
+      gap: var(--space-sm);
+      justify-items: center;
+    }
+    .crop-cards-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .crop-atlas-card {
+      background: var(--background);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      border: var(--border-soft);
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    /* Chart Container */
+    .chart-box {
+      position: relative;
+      min-height: 290px;
+      width: 100%;
+    }
+
+    /* SVG Line Drawing & Leaf styling via CSS tokens */
+    .svg-stroke-ink {
+      stroke: var(--on-surface);
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .svg-fill-ink { fill: var(--on-surface); }
+    .svg-fill-soft { fill: var(--surface-container-high); stroke: var(--on-surface); }
+    .svg-fill-accent { fill: var(--tertiary-container); stroke: var(--tertiary); }
+    .svg-leaf-healthy { fill: var(--leaf-healthy); }
+    .svg-leaf-chlorosis { fill: var(--leaf-chlorosis); }
+    .svg-leaf-pale { fill: var(--leaf-pale); }
+    .svg-leaf-necrosis { fill: var(--leaf-necrosis); }
+    .svg-leaf-purple { fill: var(--leaf-purple); }
+    .svg-leaf-white { fill: var(--leaf-white); }
+    .svg-leaf-vein { stroke: var(--leaf-vein); fill: none; }
+    .svg-stem { stroke: var(--primary); fill: none; }
+    .svg-pot { fill: var(--pot-soil); }
+
+    /* Field Log & Case Notes */
+    .case-item {
+      background: var(--background);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      border: var(--border-soft);
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .case-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+
+    /* Empty state */
+    .empty-state {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl) var(--space-lg);
+      text-align: center;
+      display: grid;
+      gap: var(--space-sm);
+      justify-items: center;
+    }
+
+    /* Footer */
+    .source-footer {
+      border-top: var(--border-soft);
+      padding-top: var(--space-md);
+      color: var(--on-surface-variant);
+      font-size: 0.85rem;
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .badge-mono {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 960px) {
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .split-triage, .split-balanced, .atlas-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .page-grid { padding: var(--space-md); gap: var(--space-md); }
+      .kpi-grid { grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+      .search-row { grid-template-columns: 1fr; }
+      .hero-top { align-items: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-grid" id="app-root">
+    <!-- Top Masthead -->
+    <header class="hero-header">
+      <div class="hero-top">
+        <div class="hero-title-wrap">
+          <a class="dash-home-link" href="./index.html">← গাইডে ফিরুন</a>
+          <span class="kicker">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-8"/><path d="M12 15c-3-1.5-5.5-1-7 1"/><path d="M12 15c1.5-3 1-5.5-1-7"/><path d="M12 15c3-1.5 5.5-1 7 1"/></svg>
+            ক্ষেত্র রোগনির্ণয় ও বালাই ব্যবস্থাপনা · তাৎক্ষণিক সূচি (সারণি ১–৫)
+          </span>
+          <h1>উদ্ভিদ রোগনির্ণয় ফিল্ড ড্যাশবোর্ড</h1>
+          <p class="muted">
+            ফসলের উপসর্গ, কীট ও মাইট পেস্ট, উদ্ভিদ প্যাথোজেন, খনিজ পুষ্টি ঘাটতি এবং ফসলভিত্তিক চিত্র-সূচি ফিল্টার ও অনুসন্ধান করে দ্রুত মাঠপর্যায়ের রোগনির্ণয়ে পৌঁছান।
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button type="button" class="btn btn-secondary" onclick="jumpToSection('sec-field-tests')">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/></svg>
+            মাঠের পরীক্ষা ও বিভ্রান্তি
+          </button>
+          <button type="button" class="btn btn-primary" onclick="jumpToSection('sec-case-log')">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14h6"/><path d="M12 11v6"/></svg>
+            কেস নোট যোগ করুন
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <section class="kpi-grid" aria-label="ড্যাশবোর্ড সারসংক্ষেপ">
+        <div class="kpi-card">
+          <span class="kpi-label">সারণি ৩ · উপসর্গ গোষ্ঠী</span>
+          <span class="kpi-value" id="kpi-symptoms">১০</span>
+          <span class="kpi-note">১১টি জৈব ও অজৈব কারণগোষ্ঠী</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">সারণি ১–২ · কীট ও মাইট</span>
+          <span class="kpi-value" id="kpi-pests">১৪</span>
+          <span class="kpi-note">আকার, ডানা ও রেখাচিত্রসহ</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">সারণি ৪–৫ · খনিজ পুষ্টি</span>
+          <span class="kpi-value" id="kpi-nutrients">১২</span>
+          <span class="kpi-note">৪টি রেফারেন্স ফসলের চিত্র-সূচি</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">সংরক্ষিত ফিল্ড নোট</span>
+          <span class="kpi-value" id="kpi-cases">০</span>
+          <span class="kpi-note" id="kpi-match-status">সব তথ্য প্রদর্শিত হচ্ছে</span>
+        </div>
+      </section>
+
+      <!-- Canopy 4-Step Field Inspection Strip -->
+      <div class="season-strip" role="region" aria-label="মাঠ পরিদর্শনের ৪টি ধাপ">
+        <span class="season-strip-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          মাঠ পরিদর্শন ও বাদ দেওয়ার প্রক্রিয়া:
+        </span>
+        <div class="season-cells" id="field-step-buttons">
+          <button type="button" class="season-step-btn is-peak" onclick="selectFieldStep(0)">ধাপ ১: নিকটদর্শন</button>
+          <button type="button" class="season-step-btn is-prep" onclick="selectFieldStep(1)">ধাপ ২: সম্পূর্ণ গাছ ও মূল</button>
+          <button type="button" class="season-step-btn" onclick="selectFieldStep(2)">ধাপ ৩: জমির বিন্যাস</button>
+          <button type="button" class="season-step-btn" onclick="selectFieldStep(3)">ধাপ ৪: কৃষকের তথ্য</button>
+        </div>
+      </div>
+      <div class="step-detail-drawer" id="field-step-detail" aria-live="polite"></div>
+    </header>
+
+    <!-- Global Search & Section Filter Bar -->
+    <section class="control-bar" aria-label="অনুসন্ধান ও প্যানেল ফিল্টার">
+      <div class="search-row">
+        <div class="field-group">
+          <label class="field-label" for="global-search-input">
+            তাৎক্ষণিক অনুসন্ধান (উপসর্গ, পোকা, রোগজীবাণু, খনিজ বা ফসল লিখুন)
+          </label>
+          <input
+            type="search"
+            id="global-search-input"
+            class="input-control"
+            placeholder="যেমন: এফিড, মোজাইক, আয়রন, উইল্ট, শিকড়, থ্রিপস, টমেটো…"
+            oninput="handleGlobalSearch(this.value)"
+          >
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="resetAllFilters()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          ফিল্টার রিসেট
+        </button>
+      </div>
+
+      <div class="field-group">
+        <span class="field-label">দৃশ্যমান সূচি বাছাই করুন</span>
+        <div class="view-tabs" id="view-tabs" role="tablist">
+          <button type="button" class="view-tab is-active" onclick="setActiveView('all')" data-view="all">সব সূচি (ড্যাশবোর্ড)</button>
+          <button type="button" class="view-tab" onclick="setActiveView('table3')" data-view="table3">সারণি ৩: উপসর্গ ও প্যাথোজেন</button>
+          <button type="button" class="view-tab" onclick="setActiveView('table12')" data-view="table12">সারণি ১–২: কীট ও মাইট</button>
+          <button type="button" class="view-tab" onclick="setActiveView('table4')" data-view="table4">সারণি ৪: খনিজ পুষ্টি ঘাটতি</button>
+          <button type="button" class="view-tab" onclick="setActiveView('table5')" data-view="table5">সারণি ৫: চিত্র-সূচি ও ফসল</button>
+          <button type="button" class="view-tab" onclick="setActiveView('field')" data-view="field">মাঠপরীক্ষা, বিভ্রান্তি ও কেস লগ</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 1: SARONI 3 — Symptom-Based Pathogen & Environment Explorer -->
+    <section class="dashboard-section" id="sec-table3" data-panel="table3">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="kicker">সারণি ৩ ও অধ্যায় ৪ · তাৎক্ষণিক সূচি</span>
+          <h2>উপসর্গভিত্তিক কীট, প্যাথোজেন ও পরিবেশগত কারণ নির্ণয়</h2>
+          <p class="muted">জমিতে দেখা এক বা একাধিক উপসর্গ নির্বাচন করুন—বাদ দেওয়ার প্রক্রিয়ায় সম্ভাব্য কারণগোষ্ঠী র‍্যাঙ্ক হয়ে যাবে।</p>
+        </div>
+        <div class="field-group" style="min-width:210px;">
+          <label class="field-label" for="table3-level-filter">সম্ভাবনার মাত্রা ফিল্টার</label>
+          <select id="table3-level-filter" class="select-control" onchange="renderTable3()">
+            <option value="all">সব মাত্রা দেখান</option>
+            <option value="likely">শুধু হ্যাঁ (খুবই সাধারণ / সাধারণ)</option>
+            <option value="rare">সাধারণ নয় বা ব্যতিক্রমসহ</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Interactive Elimination Triage + Single Pale-Leaf Highlight Card -->
+      <div class="split-triage">
+        <div class="card is-interactive">
+          <div class="field-group" style="margin-bottom: var(--space-md);">
+            <span class="field-label">১. পর্যবেক্ষিত উপসর্গ নির্বাচন করুন (একাধিক বাছাই করা যাবে):</span>
+            <div class="chip-wrap" id="triage-symptom-chips"></div>
+          </div>
+
+          <div class="field-group" style="margin-bottom: var(--space-md);">
+            <span class="field-label">২. টিস্যু ও ক্ষেতের ধরন (জৈব বনাম অজৈব যাচাই):</span>
+            <div class="chip-wrap" id="triage-context-chips">
+              <button type="button" class="filter-chip" onclick="toggleContextMode('biotic')" id="ctx-biotic">সুস্পষ্ট সীমারেখা / নির্দিষ্ট গাছে (সম্ভাব্য জৈব)</button>
+              <button type="button" class="filter-chip" onclick="toggleContextMode('abiotic')" id="ctx-abiotic">সুস্পষ্ট সীমারেখা নেই / সমমিত বা বড় এলাকায় (সম্ভাব্য অজৈব)</button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">সম্ভাব্য কারণগোষ্ঠীর র‍্যাঙ্কিং (নির্বাচিত উপসর্গের ভিত্তিতে):</span>
+            <div class="cause-rank-list" id="triage-cause-ranks"></div>
+          </div>
+        </div>
+
+        <!-- THE ONE Pale-Leaf Highlight Card in this view -->
+        <div class="card is-leaf-highlight" id="triage-spotlight-card">
+          <span class="kicker">প্রাথমিক মাঠ-নির্দেশনা (বাদ দেওয়ার প্রক্রিয়া)</span>
+          <h3 id="spotlight-title" style="margin-top:var(--space-xs);">একটি উপসর্গ বেছে নিন বা নিচের সূচির যেকোনো ঘরে ক্লিক করুন</h3>
+          <p id="spotlight-body" style="margin-top:var(--space-sm); font-size:0.94rem;">
+            সঠিক ও নির্ভুল রোগনির্ণয়ের মধ্যে পার্থক্য মনে রাখুন: আপনি নিশ্চিত না হলে প্রজাতি স্তরে অনুমান না করে আত্মবিশ্বাসের সাথে গোষ্ঠী-স্তরে (যেমন: ছত্রাক, ব্যাকটেরিয়া বা কাণ্ড-খোর পোকা) রোগনির্ণয় করুন।
+          </p>
+          <div id="spotlight-meta" class="pest-meta-row" style="margin-top:var(--space-md);"></div>
+        </div>
+      </div>
+
+      <!-- Table 3 Full Interactive Matrix -->
+      <div class="table-scroll" role="region" aria-label="সারণি ৩: উপসর্গ ও কারণগোষ্ঠীর ম্যাট্রিক্স">
+        <table class="data-table" id="table3-matrix">
+          <thead>
+            <tr id="table3-head-row"></tr>
+          </thead>
+          <tbody id="table3-body"></tbody>
+        </table>
+      </div>
+
+      <!-- Cell Detail Inspector + Visual Breakdown Chart -->
+      <div class="split-triage">
+        <div class="inspector-box" id="table3-inspector" aria-live="polite">
+          <span class="kicker">বিস্তারিত রোগনির্ণয় নোট</span>
+          <h3>সারণি ৩-এর যেকোনো রঙিন ঘরে ক্লিক করলে বিস্তারিত বিবরণ এখানে দেখা যাবে</h3>
+          <p class="muted">প্রতিটি উপসর্গ ও কারণগোষ্ঠীর জন্য হ্যান্ড লেন্স, কাণ্ড চেরা পরীক্ষা, উদাহরণ (যেমন <em>Fusarium</em>, <em>Ralstonia</em>, <em>Phytophthora</em>) এবং বিভ্রান্তির সতর্কতা এখানে প্রদর্শিত হয়।</p>
+        </div>
+        <div class="card">
+          <span class="kicker">কারণগোষ্ঠী অনুযায়ী উপসর্গের বিস্তৃতি</span>
+          <h3 style="margin-bottom:var(--space-sm);">কোন গোষ্ঠী কতগুলো উপসর্গ সৃষ্টি করে</h3>
+          <div class="chart-box">
+            <div id="symptom-overlap-chart" role="img" aria-label="কারণগোষ্ঠী অনুযায়ী উপসর্গ সংখ্যার চার্ট"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 2: SARONI 1 & 2 — Insect & Mite Pest Quick Index + Anatomical Line Drawings -->
+    <section class="dashboard-section" id="sec-table12" data-panel="table12">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="kicker">সারণি ১ ও ২ · কীট ও মাইট পেস্ট</span>
+          <h2>দেহের আকৃতি, আকার ও বৈশিষ্ট্য অনুযায়ী কীট-মাইট শনাক্তকরণ</h2>
+          <p class="muted">হ্যান্ড লেন্স ব্যবহার করে পোকার আকার, ডানা, পা ও ক্ষতিকারক পর্যায় মিলিয়ে গোষ্ঠী-স্তরে শনাক্ত করুন।</p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="togglePestViewMode()" id="pest-view-toggle-btn">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
+          সারণি আকারে দেখুন
+        </button>
+      </div>
+
+      <!-- Pest Filters -->
+      <div class="card">
+        <div class="pest-filters">
+          <div class="field-group">
+            <label class="field-label" for="pest-size-filter">প্রায় আকার</label>
+            <select id="pest-size-filter" class="select-control" onchange="renderPests()">
+              <option value="all">সব আকার</option>
+              <option value="micro">অতি ক্ষুদ্র (১–২ মিমি)</option>
+              <option value="small">ছোট (২–৫ মিমি)</option>
+              <option value="medium">মাঝারি–বড় (৫–৪০ মিমি)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="pest-wing-filter">ডানা আছে কি?</label>
+            <select id="pest-wing-filter" class="select-control" onchange="renderPests()">
+              <option value="all">সব</option>
+              <option value="yes">হ্যাঁ / সীমিত উড়ান</option>
+              <option value="some">কিছু বা শুধু প্রাপ্তবয়স্কতে</option>
+              <option value="no">না (ডানাহীন)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="pest-stage-filter">ক্ষতিকর পর্যায়</label>
+            <select id="pest-stage-filter" class="select-control" onchange="renderPests()">
+              <option value="all">সব পর্যায়</option>
+              <option value="both">উভয় (লার্ভা/নিম্ফ ও প্রাপ্তবয়স্ক)</option>
+              <option value="larva">শুধু লার্ভা পর্যায়</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="pest-feed-filter">খাওয়ার স্থান</label>
+            <select id="pest-feed-filter" class="select-control" onchange="renderPests()">
+              <option value="all">সব স্থান</option>
+              <option value="outside">বাইরে খায় (পাতা/বাঁকানো পাতা)</option>
+              <option value="inside">অভ্যন্তরীণ (কাণ্ড/মূল/ফল)</option>
+              <option value="gall">গ্যাল গঠনকারী</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pest Card Grid (with SVG line drawings representing সারণি ২) -->
+      <div class="card-grid" id="pest-card-grid"></div>
+
+      <!-- Pest Table View (Toggled) -->
+      <div class="table-scroll is-hidden" id="pest-table-wrap" role="region" aria-label="সারণি ১: কীট ও মাইট রোগনির্ণয় সারণি">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="row-sticky">কীট/মাইট গোষ্ঠী</th>
+              <th>প্রায় আকার</th>
+              <th>বয়স্ক অবস্থায় ভিন্ন দেখায়?</th>
+              <th>ডানা আছে কি?</th>
+              <th>বাইরে খায় কি?</th>
+              <th>ক্ষতিকর পর্যায়</th>
+              <th>শিকারী/পরজীবী দল?</th>
+              <th>পা স্পষ্ট?</th>
+              <th>দেহের আকৃতি</th>
+            </tr>
+          </thead>
+          <tbody id="pest-table-body"></tbody>
+        </table>
+      </div>
+
+      <!-- Selected Pest Linked Symptoms Inspector -->
+      <div class="inspector-box" id="pest-inspector" aria-live="polite">
+        <span class="kicker">কীট-উপসর্গ সংযোগ</span>
+        <h3>যেকোনো কীট বা মাইট কার্ডে ক্লিক করুন</h3>
+        <p class="muted">নির্বাচিত কীটটি কোন কোন উপসর্গ তৈরি করতে পারে (যেমন পাতার বিকৃতি, উইল্ট, মোজাইকের মতো দাগ বা গ্যাল) এবং কীভাবে তা রোগজীবাণু থেকে আলাদা করবেন তা এখানে দেখানো হবে।</p>
+      </div>
+    </section>
+
+    <!-- PANEL 3: SARONI 4 — Mineral Nutrient Deficiency Matrix -->
+    <section class="dashboard-section" id="sec-table4" data-panel="table4">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="kicker">সারণি ৪ · খনিজ পুষ্টি উপাদানের অভাব</span>
+          <h2>প্রধান ১২টি পুষ্টি উপাদানের ঘাটতিজনিত লক্ষণের তাৎক্ষণিক সূচি</h2>
+          <p class="muted">উদ্ভিদের কোন অংশে (নিচের না উপরের পাতা, শিরা, প্রান্ত, ডগা বা ফল) লক্ষণ দেখা যাচ্ছে তা ফিল্টার করে সম্ভাব্য ঘাটতি খুঁজুন।</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pest-filters">
+          <div class="field-group">
+            <label class="field-label" for="nut-part-filter">আক্রান্ত উদ্ভিদ অংশ / বৈশিষ্ট্য</label>
+            <select id="nut-part-filter" class="select-control" onchange="renderTable4()">
+              <option value="all">সব অংশ দেখান</option>
+              <option value="lowerLeaves">নিচের (পুরানো) পাতা</option>
+              <option value="upperLeaves">উপরের (নতুন) পাতা</option>
+              <option value="tips">উদ্ভিদের ডগা</option>
+              <option value="distortion">পাতার বিকৃতি</option>
+              <option value="reddening">লাল / বেগুনি হওয়া</option>
+              <option value="veins">পাতার শিরা</option>
+              <option value="interveinal">শিরার মধ্যবর্তী অঞ্চল</option>
+              <option value="margins">পাতার প্রান্ত</option>
+              <option value="size">উদ্ভিদের আকার</option>
+              <option value="fruit">ফল ও বীজ</option>
+              <option value="necrotic">নেক্রোটিক দাগ / প্যাচ</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="nut-ph-filter">মাটির pH উপলব্ধতা (৬.০–৭.৫)</label>
+            <select id="nut-ph-filter" class="select-control" onchange="renderTable4()">
+              <option value="all">সব pH</option>
+              <option value="high">উচ্চ pH-এ কম উপলব্ধ (Fe, Mn, Zn, B, Cu)</option>
+              <option value="low">নিম্ন pH-এ কম উপলব্ধ (Mg, S, Ca, Mo)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="nut-prob-filter">মাঠপর্যায়ে সম্ভাবনা</label>
+            <select id="nut-prob-filter" class="select-control" onchange="renderTable4()">
+              <option value="all">সব সম্ভাবনা</option>
+              <option value="common">খুবই সাধারণ ও সাধারণ</option>
+              <option value="uncommon">বিরল বা সাধারণ নয়</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group" style="margin-top:var(--space-md);">
+          <span class="field-label">তুলনার জন্য পুষ্টি উপাদান বেছে নিন (তালিকা ফিল্টার ও চিত্র-সূচির সাথে সিঙ্ক হবে):</span>
+          <div class="chip-wrap" id="nutrient-selector-chips"></div>
+        </div>
+      </div>
+
+      <!-- Table 4 Data Grid -->
+      <div class="table-scroll" role="region" aria-label="সারণি ৪: খনিজ উপাদানের অভাবের তাৎক্ষণিক সূচি">
+        <table class="data-table">
+          <thead>
+            <tr id="table4-head-row"></tr>
+          </thead>
+          <tbody id="table4-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PANEL 4: SARONI 5 — Visual Photographic Ready Reckoner & 4-Crop Comparison -->
+    <section class="dashboard-section" id="sec-table5" data-panel="table5">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="kicker">সারণি ৫ · চিত্র-সূচি (ফটোগ্রাফিক রেডি রেকনার)</span>
+          <h2>পাতার দৃশ্যমান প্যাটার্ন ও ৪টি রেফারেন্স ফসলে পুষ্টি ঘাটতি তুলনা</h2>
+          <p class="muted">ভুট্টা (মক্কা), ধান (চাল), অড়হর (আড়ধানা/ডাল) ও রিকিন ফসলের প্যাটার্ন তুলনা করে শিরা ও ফলকের বৈপরীত্য যাচাই করুন।</p>
+        </div>
+      </div>
+
+      <div class="atlas-grid">
+        <!-- Interactive Botanical Leaf & Plant Pattern SVG Diagram -->
+        <div class="plant-diagram-card">
+          <span class="kicker" id="atlas-nutrient-kicker">নির্বাচিত খনিজ</span>
+          <h3 id="atlas-nutrient-title">নাইট্রোজেন (N)</h3>
+          <div id="atlas-svg-container" style="width:100%; max-width:260px;"></div>
+          <p class="muted" id="atlas-pattern-summary" style="text-align:center; font-size:0.86rem;"></p>
+          <div class="pest-meta-row" id="atlas-tags" style="justify-content:center;"></div>
+        </div>
+
+        <!-- 4 Crop Cards + Diagnostic Clues from Table 5 -->
+        <div style="display:grid; gap:var(--space-md);">
+          <div class="card">
+            <div class="field-group">
+              <span class="field-label">চিত্র-সূচি অনুযায়ী শনাক্তকরণ সূত্র (সারণি ৫):</span>
+              <p id="atlas-field-clue" style="font-size:0.95rem;"></p>
+            </div>
+            <div class="pest-meta-row" style="margin-top:var(--space-sm);">
+              <span class="tag-pill is-ochre" id="atlas-confusion-pill">বিভ্রান্তি হতে পারে: —</span>
+              <span class="tag-pill is-green" id="atlas-ph-pill">pH প্রভাব: —</span>
+            </div>
+          </div>
+
+          <div class="crop-cards-4" id="atlas-crop-cards"></div>
+
+          <div class="inspector-box" style="border-left-color: var(--tertiary);">
+            <span class="kicker">মাঠের বাস্তবতা ও ল্যাবরেটরি পরামর্শ</span>
+            <p style="font-size:0.9rem;">
+              খনিজ ঘাটতির উপসর্গ বিভিন্ন ফসলে ভিন্নভাবে প্রকাশ পেতে পারে (বিশেষত জিংকের ক্ষেত্রে)। কৃষক যদি মাটি সংশোধনে উল্লেখযোগ্য অর্থ বা শ্রম ব্যয়ের সিদ্ধান্ত নেন, তবে ক্ষেতের প্রাথমিক রোগনির্ণয়কে অবশ্যই ল্যাবরেটরি মাটি বিশ্লেষণের মাধ্যমে নিশ্চিত করা উচিত।
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 5: Field Tests, Table 6 Confusion Pairs & Case Log -->
+    <section class="dashboard-section" id="sec-field-tests" data-panel="field">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="kicker">অধ্যায় ২, ৪ ও ৫ (সারণি ৬) · যাচাই ও বিভ্রান্তি নিরসন</span>
+          <h2>মাঠপর্যায়ের সহজ পরীক্ষা ও বিভ্রান্তিকর কারণ-জোড়া আলাদা করার কৌশল</h2>
+          <p class="muted">কোন কোন রোগ ও বালাই দেখতে একই রকম লাগে এবং ছুরি, বোতল বা হ্যান্ড লেন্স দিয়ে কীভাবে আলাদা করবেন।</p>
+        </div>
+      </div>
+
+      <!-- 4 Field Diagnostic Tests -->
+      <div class="card-grid" id="field-tests-grid"></div>
+
+      <!-- Table 6 Confusion Pair Explorer + Saved Case Log -->
+      <div class="split-balanced" id="sec-case-log">
+        <!-- Confusion Pair Resolver -->
+        <div class="card is-interactive">
+          <span class="kicker">সারণি ৬ · সম্ভাব্য বিভ্রান্তির উৎস</span>
+          <h3 style="margin-bottom:var(--space-sm);">দুটি কারণ-গোষ্ঠীর মধ্যে পার্থক্য করুন</h3>
+          <div class="pest-filters" style="margin-bottom:var(--space-md);">
+            <div class="field-group">
+              <label class="field-label" for="conf-pair-select">বিভ্রান্তিকর জোড়া নির্বাচন করুন</label>
+              <select id="conf-pair-select" class="select-control" onchange="renderConfusionDetail()"></select>
+            </div>
+          </div>
+          <div id="conf-detail-box" class="inspector-box" style="background:var(--background);"></div>
+        </div>
+
+        <!-- Field Case Log (Persisted via notebookAppApi) -->
+        <div class="card is-interactive">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-sm); margin-bottom:var(--space-sm);">
+            <div>
+              <span class="kicker">ফিল্ড ক্লিনিক রেকর্ডবুক</span>
+              <h3>মাঠপর্যায়ের কেস নোট সংরক্ষণ</h3>
+            </div>
+            <div style="display:flex; gap:var(--space-xs);">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="exportCasesCSV()">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                CSV নামান
+              </button>
+              <button type="button" class="btn btn-danger-soft btn-sm" id="clear-cases-btn" onclick="clearAllCases(this)">
+                সব মুছুন
+              </button>
+            </div>
+          </div>
+
+          <form onsubmit="saveFieldCase(event)" style="display:grid; gap:var(--space-sm); margin-bottom:var(--space-md);">
+            <div class="pest-filters">
+              <div class="field-group">
+                <label class="field-label" for="case-crop">ফসলের নাম</label>
+                <input type="text" id="case-crop" class="input-control" placeholder="যেমন: টমেটো / ধান / বেগুন" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="case-symptom">প্রধান উপসর্গ</label>
+                <select id="case-symptom" class="select-control"></select>
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="case-diagnosis">সম্ভাব্য রোগনির্ণয় (বাদ দেওয়ার পর)</label>
+              <input type="text" id="case-diagnosis" class="input-control" placeholder="যেমন: ব্যাকটেরিয়াল উইল্ট (Ralstonia) — স্ট্রিমিং টেস্ট পজিটিভ" required>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="case-note">মাঠ পর্যবেক্ষণ ও ব্যবস্থাপনা পরামর্শ (IPM)</label>
+              <textarea id="case-note" class="textarea-control" placeholder="নমুনার অবস্থা, আক্রান্ত অংশ ও কৃষকের জন্য সুপারিশ লিখুন…"></textarea>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-sm);">
+              <span id="case-form-status" class="muted" aria-live="polite"></span>
+              <button type="submit" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
+                কেস সংরক্ষণ করুন
+              </button>
+            </div>
+          </form>
+
+          <div id="case-list-container" style="display:grid; gap:var(--space-sm);"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sources & Grounding Footer -->
+    <footer class="source-footer">
+      <p>
+        <strong>তথ্যসূত্র ও কৃতজ্ঞতা:</strong> CABI Plantwise Diagnostic Field Guide (সংকলক: ড. ফিল টেলর; অবদানকারী: ড. রবার্ট রিডার, ড. ম্যাথিউ কক, ড. ওয়েড জেনার এবং উলরিখ কুহলম্যান) ও তার বাংলা সংস্করণের অধ্যায় ১–৫ এবং সারণি ১–৬ থেকে সংকলিত।
+      </p>
+      <p>
+        খনিজ পুষ্টি উপাদানের চিত্র-সূচির ফসলভিত্তিক তথ্য: ড. প্রকাশ কুমার ও ড. মনোজ কুমার শর্মা (Nutrient Deficiencies of Field Crops, CABI, 2013) এবং IRRI (ধানের ম্যাঙ্গানিজ ও ম্যাগনেসিয়াম ঘাটতি)।
+      </p>
+      <p>
+        এই ইন্টার‍্যাক্টিভ ড্যাশবোর্ডটি <a href="./index.html"><strong>উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড</strong></a> (বাংলা সংস্করণ)-এর সহযোগী টুল — বাংলা সংস্করণ প্রস্তুতি: Abu Md. Moniruzjaman · CC BY-NC · সম্পূর্ণ অফলাইনে চলে।
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    /* ============================================================
+       DATA MODELS — 100% Grounded in CABI Plantwise Diagnostic Field Guide
+       ============================================================ */
+
+    const FIELD_STEPS = [
+      {
+        title: `ধাপ ১: নিকটবর্তী হওয়া (উপসর্গ ও চিহ্ন পর্যবেক্ষণ)`,
+        summary: `উদ্ভিদের কোন অংশ আক্রান্ত হয়েছে তা সতর্কভাবে দেখুন এবং হ্যান্ড লেন্স ব্যবহার করুন।`,
+        bullets: [
+          `সঠিক পরিভাষা ব্যবহার করে উপসর্গ বর্ণনা করুন (দাগ, উইল্ট, মোজাইক, বিকৃতি, গ্যাল)।`,
+          `আকার, রঙ ও বৃদ্ধির পরিবর্তন এবং সুস্থ-অসুস্থ টিস্যুর সীমারেখা লক্ষ্য করুন।`,
+          `পোকামাকড়, মাইট বা ছত্রাকের ফলিং বডি (fruiting bodies)-এর মতো দৃশ্যমান চিহ্ন খুঁজুন।`
+        ]
+      },
+      {
+        title: `ধাপ ২: সম্পূর্ণ উদ্ভিদ পরীক্ষা করুন (মূলসহ)`,
+        summary: `কেবল উপরের পাতা নয়, কাণ্ড চিরে এবং মাটি থেকে মূল তুলে সম্পূর্ণ গাছ পরীক্ষা করুন।`,
+        bullets: [
+          `উপসর্গ উদ্ভিদের কোন অংশে সীমাবদ্ধ (নিচের পুরানো পাতা, উপরের কচি পাতা, নাকি পুরো গাছ)?`,
+          `কোন বৃদ্ধির পর্যায়ে আক্রমণ হয়েছে এবং উপসর্গ প্রাথমিক থেকে শেষ পর্যায়ে কীভাবে এগোচ্ছে?`,
+          `জাইলেমে গোলাপি বা কালো রঞ্জন, কাণ্ডে বোরার পোকার সুড়ঙ্গ বা মূলে নেমাটোড গ্যাল আছে কি না দেখুন।`
+        ]
+      },
+      {
+        title: `ধাপ ৩: উদ্ভিদের গোষ্ঠী ও জমির বিন্যাস পরীক্ষা করুন`,
+        summary: `একটি গাছের সাথে পাশের অন্যান্য গাছ ও জমির বিস্তার তুলনা করুন।`,
+        bullets: [
+          `আক্রান্ত গাছের হার কত এবং বিস্তার কেমন—এলোমেলো, শুধু জমির প্রান্তে, দলে দলে, নাকি যন্ত্রপাতি চালানোর সারিতে?`,
+          `অজৈব কারণ (খরা, জলাবদ্ধতা, ঠাণ্ডা, হার্বিসাইড ড্রিফট) সাধারণত বড় এলাকা বা একাধিক ফসলের প্রজাতিকে প্রভাবিত করে।`,
+          `উদ্ভিদের জাত, বয়স এবং চাষাবাদ পদ্ধতি বিবেচনায় নিন।`
+        ]
+      },
+      {
+        title: `ধাপ ৪: কৃষক ও স্থানীয় সম্প্রসারণ কর্মীদের সাথে কথা বলুন`,
+        summary: `সমস্যার ইতিহাস জানলে বিভ্রান্তিকর কারণ দ্রুত বাদ দেওয়া যায়।`,
+        bullets: [
+          `সমস্যাটি প্রথম কবে দেখা দিয়েছে এবং আগে কখনো হয়েছিল কি না জেনে নিন।`,
+          `সমস্যার স্থানীয় নাম, মাটির ধরন এবং সাম্প্রতিক আবহাওয়ার ধরন (বৃষ্টি, খরা, শৈত্যপ্রবাহ) নোট করুন।`,
+          `ব্যবহৃত বীজের জাত, সার প্রয়োগ এবং সাম্প্রতিক বালাইনাশক বা হার্বিসাইড স্প্রের ইতিহাস জিজ্ঞাসা করুন।`
+        ]
+      }
+    ];
+
+    const CAUSAL_AGENTS = [
+      { id: `fungi`, name: `ছত্রাক`, en: `Fungi` },
+      { id: `water_mould`, name: `জল-ছত্রাক`, en: `Water moulds` },
+      { id: `bacteria`, name: `ব্যাকটেরিয়া`, en: `Bacteria` },
+      { id: `virus`, name: `ভাইরাস`, en: `Viruses` },
+      { id: `phytoplasma`, name: `ফাইটোপ্লাজমা`, en: `Phytoplasma` },
+      { id: `nematode`, name: `নেমাটোড`, en: `Nematodes` },
+      { id: `insects`, name: `পোকামাকড়`, en: `Insects` },
+      { id: `mites`, name: `মাইট`, en: `Mites` },
+      { id: `mammals`, name: `স্তন্যপায়ী ও পাখি`, en: `Mammals & birds` },
+      { id: `nutrients`, name: `পুষ্টি ঘাটতি`, en: `Nutrient deficiency` },
+      { id: `physical`, name: `ভৌতিক ও হার্বিসাইড`, en: `Physical & herbicides` }
+    ];
+
+    // Table 3 full dataset: 10 symptoms x 11 agents
+    // lvl: 'high' (হ্যাঁ খুবই সাধারণ), 'med' (হ্যাঁ সাধারণ), 'low' (হ্যাঁ সাধারণ নয়), 'ex' ((না) ব্যতিক্রম), 'no' (না)
+    const SYMPTOMS_DATA = [
+      {
+        id: `wilt`,
+        name: `উইল্ট / পাতা নেতিয়ে পড়া`,
+        short: `উইল্ট`,
+        overview: `জল পরিবহন নালিকা (xylem) বন্ধ হলে বা মূল নষ্ট হলে সবুজ অংশ ঝুঁকে পড়ে। রাতে অস্থায়ীভাবে সুস্থ হয়ে পরদিন আবার নেতিয়ে পড়তে পারে।`,
+        cells: {
+          fungi: { lvl: `high`, label: `খুবই সাধারণ`, detail: `সাধারণত Fusarium বা Verticillium প্রজাতি। জাইলেমে জল চলাচল বাধাগ্রস্ত করে। কাণ্ড কেটে দেখলে Fusarium-এ গোলাপি এবং Verticillium-এ কালো দাগ বা রঞ্জন দেখা যায়।` },
+          water_mould: { lvl: `med`, label: `সাধারণ`, detail: `মূলত মূল-আক্রমণকারী Phytophthora বা চারায় Pythium (ড্যাম্পিং অফ)। পাতায় আক্রমণকারী Phytophthora সাধারণত গাছকে নেতিয়ে দেয় না, যদি না আক্রমণ অতি তীব্র হয়।` },
+          bacteria: { lvl: `med`, label: `সাধারণ`, detail: `সোলানেসি (টমেটো, বেগুন, ক্যাপসিকাম, আলু) ও কুকুরবিট ফসলে Ralstonia, Pseudomonas বা Xanthomonas। কাটা কাণ্ড পানিতে রাখলে সাদা ব্যাকটেরিয়া স্ট্রিমিং দেখা যায়।` },
+          virus: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `খুবই বিরল, তবে টমেটো স্পটেড উইল্ট ভাইরাস, আনারস ও ব্রড বিনের কিছু ভাইরাস উইল্ট ঘটাতে পারে—সাধারণত ফলের দাগ বা খর্বাকৃতির সাথে যুক্ত থাকে।` },
+          phytoplasma: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `নারিকেল লেথাল ইয়েলোয়িং একমাত্র প্রধান ব্যতিক্রম, যেখানে ফাইটোপ্লাজমা জল-নালিকা বন্ধ করে দেয়। অন্যথায় উইচেস ব্রুম ও ছোট পাতা বেশি দেখা যায়।` },
+          nematode: { lvl: `high`, label: `খুবই সাধারণ`, detail: `সূক্ষ্ম শিকড় চুল খেয়ে জল শোষণ নষ্ট করে। মূল পরীক্ষা না করে কেবল উপরের অংশ দেখে নেমাটোড শনাক্ত করা প্রায় অসম্ভব।` },
+          insects: { lvl: `med`, label: `সাধারণ`, detail: `কাণ্ডের বোরার লার্ভা (যেমন ইউরোপীয় ভুট্টার বোরার) এবং মূল-খাদক লার্ভা ও প্রাপ্তবয়স্ক পোকা। কাণ্ড চিরে সুড়ঙ্গ ও বর্জ্য খুঁজুন।` },
+          mites: { lvl: `no`, label: `না`, detail: `মাইট সরাসরি উইল্ট বা নেতিয়ে পড়া সৃষ্টি করে না।` },
+          mammals: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `গাছের বাকল বা মূল ক্ষতিগ্রস্ত করে এমন স্তন্যপায়ী প্রাণী ও পাখি গাছ নেতিয়ে পড়ার কারণ হতে পারে।` },
+          nutrients: { lvl: `ex`, label: `(না) বিরল`, detail: `সাধারণত পুষ্টি ঘাটতিতে উইল্ট হয় না, তবে তামার (Cu) তীব্র অভাবে কিছু উদ্ভিদে পাতা নেতিয়ে পড়তে পারে (অত্যন্ত বিরল)।` },
+          physical: { lvl: `high`, label: `খুবই সাধারণ`, detail: `পানির অভাব (খরা) এবং অতিরিক্ত পানি (জলাবদ্ধতা), আগাছা নিড়ানোর সময় শিকড় কাটা এবং কিছু হার্বিসাইড দ্রুত উইল্ট সৃষ্টি করে।` }
+        }
+      },
+      {
+        id: `leaf_spot`,
+        name: `পাতায় দাগ`,
+        short: `পাতায় দাগ`,
+        overview: `জীবাণু সংক্রমণের নির্দিষ্ট স্থান যা ছোট হয়ে শুরু হয় এবং বৃদ্ধি পায়। সুস্থ ও আক্রান্ত টিস্যুর সীমানা এবং দাগগুলোর আকার পার্থক্য করতে সাহায্য করে।`,
+        cells: {
+          fungi: { lvl: `high`, label: `খুবই সাধারণ`, detail: `সবচেয়ে সাধারণ কারণ (রাস্ট পাসচুলসহ)। ছত্রাকের দাগগুলো নির্দিষ্ট সর্বোচ্চ আকারে পৌঁছে থেমে যায়, সুস্পষ্ট সীমানা থাকে এবং পুরানো দাগে হ্যান্ড লেন্সে ফ্রুটিং বডি দেখা যেতে পারে।` },
+          water_mould: { lvl: `med`, label: `সাধারণ`, detail: `যেমন Phytophthora infestans বা ডাউনি মিল্ডিউ। দ্রুত ছড়ায়, সীমানা অনির্দিষ্ট বা জলাবদ্ধ দেখা যায় এবং আর্দ্রতায় প্রান্তে বা নিচে সাদা স্পোরুলেশন হয়; কোনো কালো ফ্রুটিং বডি থাকে না।` },
+          bacteria: { lvl: `high`, label: `খুবই সাধারণ`, detail: `প্রাথমিক পর্যায়ে পাতার শিরার মধ্যে সীমাবদ্ধ (কৌণিক দাগ) এবং প্রায়ই পাতার প্রান্ত বা ক্ষতের সাথে যুক্ত। আলোর বিপরীতে দেখলে জলপূর্ণ প্রান্ত (water-soaked margin) স্পষ্ট হয়।` },
+          virus: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `প্রকৃত মৃত দাগের চেয়ে রিংস্পট (যেমন সাইট্রাস রিংস্পট বা টমেটো স্পটেড উইল্ট) বা ক্রিসেন্ট প্যাটার্ন বেশি দেখা যায়।` },
+          phytoplasma: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `সাধারণত পাতার দাগ সৃষ্টি করে না, তবে পাতায় কিছু চিহ্ন হতে পারে।` },
+          nematode: { lvl: `ex`, label: `(না) বিরল`, detail: `কেবল শোভাবর্ধক (ornamental) উদ্ভিদে পাতার দাগ হতে পারে; খাদ্য বা আঁশজাতীয় ফসলে হয় না।` },
+          insects: { lvl: `low`, label: `সাধারণ নয়`, detail: `মিরিড বা ক্যাপসিডের মতো চোষক পোকা খাওয়ার সময় বিষ প্রবেশ করিয়ে নেক্রোটিক বা হলুদ দাগ তৈরি করতে পারে (যেমন কোকো বা কাজু গাছে)।` },
+          mites: { lvl: `no`, label: `না`, detail: `মাইট প্রকৃত পাতার দাগ তৈরি করে না।` },
+          mammals: { lvl: `no`, label: `না`, detail: `স্তন্যপায়ী ও পাখি পাতার দাগ সৃষ্টি করে না।` },
+          nutrients: { lvl: `low`, label: `সাধারণ নয়`, detail: `তীব্র পটাশিয়াম (K), জিংক (Zn), ম্যাঙ্গানিজ (Mn) ও তামার (Cu) অভাবে নেক্রোটিক দাগ হতে পারে। ক্যালসিয়াম অভাবে টমেটোতে ফুলের প্রান্ত পচন (Blossom end rot) হয়।` },
+          physical: { lvl: `med`, label: `সাধারণ`, detail: `Paraquat বা diquat-এর মতো সংস্পর্শ হার্বিসাইডের ড্রিফট হঠাৎ বাদামি দাগ সৃষ্টি করে। তীব্র সূর্যদাহ (Sunscald) পাতা ও ফলে মৃত দাগের মতো দাগ ফেলে।` }
+        }
+      },
+      {
+        id: `witches_broom`,
+        name: `ডাইনি-ঝাড়ু (Witches' broom)`,
+        short: `ডাইনি-ঝাড়ু`,
+        overview: `গাছের বৃদ্ধির হরমোন ভারসাম্য নষ্ট হয়ে একটি বিন্দু থেকে অস্বাভাবিক ঘন গুচ্ছাকারে অসংখ্য ছোট শাখা বের হয়।`,
+        cells: {
+          fungi: { lvl: `med`, label: `সাধারণ`, detail: `প্রায় সবসময় কাঠের উদ্ভিদে দেখা যায়, গুল্ম বা বর্ষজীবী ফসলে নয় (বিরল ব্যতিক্রম: আমের বিকৃতি রোগ)।` },
+          water_mould: { lvl: `no`, label: `না`, detail: `জল-ছত্রাক ডাইনি-ঝাড়ু সৃষ্টি করে না।` },
+          bacteria: { lvl: `no`, label: `না`, detail: `ব্যাকটেরিয়া ডাইনি-ঝাড়ু সৃষ্টি করে না।` },
+          virus: { lvl: `no`, label: `না`, detail: `ভাইরাস ডাইনি-ঝাড়ু সৃষ্টি করে না।` },
+          phytoplasma: { lvl: `high`, label: `খুবই সাধারণ`, detail: `ফাইটোপ্লাজমার ক্লাসিক উপসর্গ (যেমন লাইমে ডাইনি-ঝাড়ু)। পার্শ্বীয় কলির সুপ্তাবস্থা ভেঙে যায় এবং প্রায়ই ছোট পাতা (little leaf)-এর সাথে যুক্ত থাকে।` },
+          nematode: { lvl: `no`, label: `না`, detail: `নেমাটোড ডাইনি-ঝাড়ু সৃষ্টি করে না।` },
+          insects: { lvl: `no`, label: `না`, detail: `পোকামাকড় সাধারণত ডাইনি-ঝাড়ু সৃষ্টি করে না।` },
+          mites: { lvl: `high`, label: `খুবই সাধারণ`, detail: `অত্যন্ত ক্ষুদ্র মাইট গাছের বর্ধনশীল ডগায় ক্রমাগত খেয়ে ডাইনি-ঝাড়ু তৈরি করে; এরা এত ছোট যে হ্যান্ড লেন্সেও দেখা যায় না।` },
+          mammals: { lvl: `no`, label: `না`, detail: `স্তন্যপায়ী ও পাখি ডাইনি-ঝাড়ু সৃষ্টি করে না।` },
+          nutrients: { lvl: `no`, label: `না`, detail: `খনিজ ঘাটতিতে ডাইনি-ঝাড়ু হয় না।` },
+          physical: { lvl: `med`, label: `সাধারণ`, detail: `শুধুমাত্র যখন আগাছানাশক glyphosate অপরিপূর্ণ মাত্রায় স্প্রে করার পর গাছ পুনরায় গজাতে থাকে (যেমন কফি বা নেটলে)।` }
+        }
+      },
+      {
+        id: `canker`,
+        name: `ক্যান্সার (কাণ্ডের ঘা)`,
+        short: `ক্যান্সার`,
+        overview: `কাঠের উদ্ভিদের কাণ্ডে খোলা ক্ষত; গাছ প্যাথোজেনকে আটকাতে অতিরিক্ত কাঠের টিস্যু তৈরি করায় ক্ষতের কিনারা উঁচু হয়।`,
+        cells: {
+          fungi: { lvl: `high`, label: `খুবই সাধারণ`, detail: `কাঠের উদ্ভিদে ছত্রাকজনিত ক্যান্সার খুবই সাধারণ (যেমন অ্যাশ বা জাট্রোফায়)। সবুজ নরম কাণ্ডে সাধারণত ক্যান্সার গঠিত হয় না।` },
+          water_mould: { lvl: `no`, label: `না`, detail: `জল-ছত্রাক ক্যান্সার তৈরি করে না।` },
+          bacteria: { lvl: `med`, label: `সাধারণ`, detail: `ব্যাকটেরিয়াল ক্যান্সার কাঠের উদ্ভিদে হতে পারে। কৃষি যন্ত্রপাতি বা আগুনের ক্ষত শুকানোর সাথে এটি গুলিয়ে যেতে পারে।` },
+          virus: { lvl: `no`, label: `না`, detail: `ভাইরাস ক্যান্সার সৃষ্টি করে না।` },
+          phytoplasma: { lvl: `no`, label: `না`, detail: `ফাইটোপ্লাজমা ক্যান্সার সৃষ্টি করে না।` },
+          nematode: { lvl: `no`, label: `না`, detail: `নেমাটোড ক্যান্সার সৃষ্টি করে না।` },
+          insects: { lvl: `no`, label: `না`, detail: `পোকামাকড় ক্যান্সার সৃষ্টি করে না।` },
+          mites: { lvl: `no`, label: `না`, detail: `মাইট ক্যান্সার সৃষ্টি করে না।` },
+          mammals: { lvl: `no`, label: `না`, detail: `প্রাণী বাকল তুললে ক্ষত হয়, তবে জীবাণুজনিত ক্যান্সার নয়।` },
+          nutrients: { lvl: `no`, label: `না`, detail: `খনিজ ঘাটতিতে ক্যান্সার হয় না।` },
+          physical: { lvl: `no`, label: `না`, detail: `যান্ত্রিক ক্ষত সেরে ওঠার সময় ক্যান্সারের মতো উঁচু দাগ দেখাতে পারে, তবে প্রকৃত ক্যান্সার নয়।` }
+        }
+      },
+      {
+        id: `mosaic`,
+        name: `মোজাইক (হলুদ-সবুজ মিশ্র নকশা)`,
+        short: `মোজাইক`,
+        overview: `পাতায় সবুজ ও হলুদ রঙের স্পষ্ট ও সুনির্দিষ্ট পার্থক্যযুক্ত অসম প্যাটার্ন, যা প্রায়ই শিরার মাঝে সমতলভাবে থাকে।`,
+        cells: {
+          fungi: { lvl: `no`, label: `না`, detail: `কিছু প্রাথমিক ছত্রাক সংক্রমণ ছোপের মতো দেখাতে পারে, তবে দ্রুত প্রকৃত পাতার দাগে পরিণত হয়।` },
+          water_mould: { lvl: `no`, label: `না`, detail: `ডাউনি মিল্ডিউ স্পোরুলেশনের আগে হলুদ প্যাচ তৈরি করতে পারে, তবে প্রকৃত মোজাইক নয়।` },
+          bacteria: { lvl: `no`, label: `না`, detail: `ব্যাকটেরিয়া মোজাইক সৃষ্টি করে না (প্রাথমিক শিরাবদ্ধ দাগ আলোর বিপরীতে জলপূর্ণ দেখায়)।` },
+          virus: { lvl: `high`, label: `খুবই সাধারণ`, detail: `ভাইরাসের সবচেয়ে ক্লাসিক উপসর্গ। পাতার হলুদ ও সবুজ অংশের সীমানা তীব্র ও স্পষ্ট হয় এবং প্রায়ই পাতার বিকৃতির সাথে থাকে।` },
+          phytoplasma: { lvl: `no`, label: `না`, detail: `ফাইটোপ্লাজমা মোজাইক সৃষ্টি করে না।` },
+          nematode: { lvl: `no`, label: `না`, detail: `নেমাটোড মোজাইক সৃষ্টি করে না।` },
+          insects: { lvl: `ex`, label: `(না) সাদৃশ্য`, detail: `থ্রিপস ও সাদা মাছির মতো ছিদ্রকারী-চোষক পোকার খাদ্যাভ্যাস পাতায় ফোঁটা ফোঁটা বা রুপালি আভা তৈরি করে যা মোজাইকের মতো দেখাতে পারে।` },
+          mites: { lvl: `ex`, label: `(না) সাদৃশ্য`, detail: `ক্যাসাভা ও অন্যান্য ফসলে মাইটের উপরিভাগের ক্ষত (speckling) ভুলবশত ভাইরাল মোজাইক বলে মনে হতে পারে।` },
+          mammals: { lvl: `no`, label: `না`, detail: `স্তন্যপায়ী ও পাখি মোজাইক সৃষ্টি করে না।` },
+          nutrients: { lvl: `med`, label: `সাধারণ`, detail: `জিংক (ভুট্টায় ব্যান্ড/স্ট্রাইপ), আয়রন ও ম্যাঙ্গানিজের অভাবে ছিটাছিটে বা শিরামধ্যস্থ দাগ মোজাইকের মতো দেখায়; তবে খনিজ ঘাটতিতে পাতা খুব কমই বিকৃত হয়।` },
+          physical: { lvl: `no`, label: `না`, detail: `ভৌতিক কারণ বা হার্বিসাইড প্রকৃত মোজাইক তৈরি করে না।` }
+        }
+      },
+      {
+        id: `yellowing`,
+        name: `পাতার হলদে ভাব`,
+        short: `হলদে ভাব`,
+        overview: `প্রায় সব ধরনের চাপের ফলেই পাতা হলুদ হতে পারে। তবে কোন বয়সের পাতা হলুদ হচ্ছে এবং শিরা সবুজ থাকছে কি না তা মূল সূত্র দেয়। (সুস্থ গাছের নিচের বয়স্ক পাতা স্বাভাবিকভাবেই হলুদ হয়ে ঝরে।)`,
+        cells: {
+          fungi: { lvl: `med`, label: `সাধারণ`, detail: `প্রায়ই শিকড়ের রোগ বা কাণ্ডের ক্যান্সারজনিত চাপের সাধারণ নির্দেশক।` },
+          water_mould: { lvl: `med`, label: `সাধারণ`, detail: `শিকড় পচে যাওয়ার চাপ থেকে সাধারণ হলুদ হওয়া, অথবা ডাউনি মিল্ডিউ স্পোরুলেশনের আগে স্পষ্ট হলুদ ছোপ।` },
+          bacteria: { lvl: `med`, label: `সাধারণ`, detail: `উদ্ভিদের সাধারণ অবনতির একটি অনির্দিষ্ট উপসর্গ।` },
+          virus: { lvl: `low`, label: `সাধারণ নয়`, detail: `ভাইরাসে পুরো পাতা সমানভাবে হলুদ হওয়ার চেয়ে মোজাইক হওয়া অনেক বেশি স্বাভাবিক।` },
+          phytoplasma: { lvl: `med`, label: `সাধারণ`, detail: `অপেক্ষাকৃত বিরল প্যাথোজেন হলেও আক্রমণ করলে পাতা হলুদ (কখনো লালচে) ও গাছ খর্বাকৃতির হয়, সাথে ছোট পাতা বা ডাইনি-ঝাড়ু থাকে।` },
+          nematode: { lvl: `med`, label: `সাধারণ`, detail: `শিকড় খাওয়ার কারণে গাছ দুর্বল হয়ে সাধারণ হলদে ভাব দেখায়।` },
+          insects: { lvl: `med`, label: `সাধারণ`, detail: `চোষক পোকার ভারী আক্রমণ বা শিকড়-খাদক পোকার কারণে পাতা হলুদ হয়। হলুদ গাছের মূলও পরীক্ষা করুন।` },
+          mites: { lvl: `med`, label: `সাধারণ`, detail: `অল্প সংখ্যক মাইটও প্রচুর পাতা হলুদ করে দিতে পারে (যেমন নারকেলে পাম মাইট)।` },
+          mammals: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `গাছের বাকল বা শিকড় ক্ষতিগ্রস্ত করলে মৃত্যুর আগে পাতা হলুদ হয়ে যায়।` },
+          nutrients: { lvl: `high`, label: `খুবই সাধারণ`, detail: `হলুদ হওয়ার ধরন (যেমন নাইট্রোজেনে নিচের পাতা, সালফারে উপরের কচি পাতা, আয়রনে সবুজ শিরা রেখে ফলক হলুদ) কোন খনিজের অভাব তা নির্দেশ করে।` },
+          physical: { lvl: `high`, label: `খুবই সাধারণ`, detail: `ঠাণ্ডা আবহাওয়া, জলাবদ্ধতা, খরা বা হার্বিসাইড ড্রিফট কোনো বাড়তি দাগ ছাড়াই পাতা হলুদ বা ফ্যাকাসে করে দেয়।` }
+        }
+      },
+      {
+        id: `distortion`,
+        name: `পাতার বিকৃতি (কুঁকড়ে বা বেঁকে যাওয়া)`,
+        short: `পাতার বিকৃতি`,
+        overview: `পাতার ফলক ও শিরার বৃদ্ধির হারের অসমতা বা রস চুষে নেওয়ার কারণে বর্ধনশীল পাতা অস্বাভাবিক আকার ধারণ করে।`,
+        cells: {
+          fungi: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `সাধারণত ছত্রাক পাতা বিকৃত করে না; তবে Taphrina deformans (পিচ পাতা কার্ল) পাতাকে নাটকীয়ভাবে বিকৃত ও উজ্জ্বল লাল করে।` },
+          water_mould: { lvl: `low`, label: `সাধারণ নয়`, detail: `ডাউনি মিল্ডিউ সিস্টেমিক পর্যায়ে গেলে পাতা মোমের মতো পুরু ও অস্বাভাবিক আকৃতির হতে পারে।` },
+          bacteria: { lvl: `no`, label: `না`, detail: `ব্যাকটেরিয়া পাতার বিকৃতি ঘটায় না।` },
+          virus: { lvl: `high`, label: `খুবই সাধারণ`, detail: `ভাইরাস পাতাকে অদ্ভুত, কোঁচকানো (rugose) বা ফিতার মতো সরু করে দেয়। তবে পাতায় এফিড বা চোষক পোকা দেখেই ভাইরাস ভেবে নেবেন না—পোকাই সরাসরি বিকৃতি ঘটাতে পারে।` },
+          phytoplasma: { lvl: `low`, label: `সাধারণ নয়`, detail: `কখনো বিকৃতি ঘটালেও ফাইটোপ্লাজমায় ডাইনি-ঝাড়ু ও ছোট পাতা অনেক বেশি স্পষ্ট।` },
+          nematode: { lvl: `no`, label: `না`, detail: `নেমাটোড পাতার বিকৃতি সৃষ্টি করে না।` },
+          insects: { lvl: `high`, label: `খুবই সাধারণ`, detail: `এফিড, থ্রিপস বা অন্য চোষক পোকার রস চোষা অথবা ওয়েব গঠনকারী পোকা দ্বারা পাতা পেঁচিয়ে দেওয়ার ফলে বর্ধনশীল পাতা বিকৃত হয়।` },
+          mites: { lvl: `med`, label: `সাধারণ`, detail: `বর্ধনশীল কচি পাতায় মাইটের ক্ষতির কারণে পাতা কুঁকড়ে বা বেঁকে যায়।` },
+          mammals: { lvl: `no`, label: `না`, detail: `স্তন্যপায়ী ও পাখি পাতার বিকৃতি সৃষ্টি করে না।` },
+          nutrients: { lvl: `low`, label: `সাধারণ নয়`, detail: `পাতার কাপিং বা প্লেট কমে যাওয়া বোরন, ক্যালসিয়াম, তামা বা মলিবডেনামের (হুইপটেল) অভাব নির্দেশ করতে পারে।` },
+          physical: { lvl: `med`, label: `সাধারণ`, detail: `কিছু হার্বিসাইডের সংস্পর্শে বা হালকা মাত্রায় পাতা অস্বাভাবিক সরু ও বিকৃত বৃদ্ধির প্যাটার্ন দেখায়।` }
+        }
+      },
+      {
+        id: `little_leaf`,
+        name: `ছোট পাতা (Little leaf)`,
+        short: `ছোট পাতা`,
+        overview: `চাপের কারণে সামগ্রিক বৃদ্ধি কমে যাওয়া নয়—বরং পূর্ণগঠিত কিন্তু অস্বাভাবিক ক্ষুদ্র আকারের পাতা তৈরি হওয়া।`,
+        cells: {
+          fungi: { lvl: `ex`, label: `(না) সতর্কতা`, detail: `চাপের কারণে হ্রাসপ্রাপ্ত বৃদ্ধিকে 'ছোট পাতা' উপসর্গের সাথে গুলিয়ে ফেলবেন না।` },
+          water_mould: { lvl: `low`, label: `সাধারণ নয়`, detail: `ডাউনি মিল্ডিউ সিস্টেমিক পর্যায়ে প্রবেশ করলে পাতা সুস্থ পাতার চেয়ে ছোট, পুরু ও মোমের মতো হতে পারে।` },
+          bacteria: { lvl: `ex`, label: `(না) সতর্কতা`, detail: `ব্যাকটেরিয়া প্রকৃত 'ছোট পাতা' তৈরি করে না।` },
+          virus: { lvl: `low`, label: `সাধারণ নয়`, detail: `ফাইটোপ্লাজমার মতো সাধারণ না হলেও কিছু ভাইরাস (যেমন আলুর পাতা রোল ভাইরাস বা মুগ ডালের ভাইরাস) পাতার আকার অনেক ছোট করে।` },
+          phytoplasma: { lvl: `high`, label: `খুবই সাধারণ`, detail: `ফাইটোপ্লাজমার ক্লাসিক উপসর্গ; প্রায়ই ডাইনি-ঝাড়ুর সাথে একত্রে ছোট শাখায় অসংখ্য ক্ষুদ্র পাতা দেখা যায়।` },
+          nematode: { lvl: `no`, label: `না`, detail: `নেমাটোড ছোট পাতা তৈরি করে না।` },
+          insects: { lvl: `ex`, label: `(না) সতর্কতা`, detail: `চোষক পোকা পাতা সংকুচিত বা বৃদ্ধি ব্যাহত করলেও প্রকৃত ছোট পাতা নয়।` },
+          mites: { lvl: `med`, label: `সাধারণ`, detail: `অতি ক্ষুদ্র মাইট (হ্যান্ড লেন্সেও অদৃশ্য) ডগায় খেয়ে ডাইনি-ঝাড়ু ও ছোট পাতা সৃষ্টি করে।` },
+          mammals: { lvl: `no`, label: `না`, detail: `প্রাণী ও পাখি ছোট পাতা তৈরি করে না।` },
+          nutrients: { lvl: `no`, label: `না`, detail: `জিংক ঘাটতিতে ফলজ গাছে ছোট সূচালো পাতা হতে পারে, তবে মূল সূচি অনুযায়ী সরাসরি 'লিটল লিফ' শ্রেণিতে ধরা হয় না।` },
+          physical: { lvl: `med`, label: `সাধারণ`, detail: `শুধুমাত্র যখন উদ্ভিদ glyphosate হার্বিসাইডের অসম্পূর্ণ ডোজের পর পুনরায় গজাতে থাকে (ছোট ইন্টারনোড ও ছোট পাতা)।` }
+        }
+      },
+      {
+        id: `galls`,
+        name: `গ্যাল ও অস্বাভাবিক ফোলা`,
+        short: `গ্যাল ও ফোলা`,
+        overview: `কীট, মাইট বা জীবাণুর প্রভাবে উদ্ভিদ কোষের অস্বাভাবিক ফোলা অংশ।`,
+        cells: {
+          fungi: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `কাঠের উদ্ভিদে হতে পারে; শস্যের বান্ট ও স্মাট রোগকে গ্যাল হিসেবে বিবেচনা করা যায়।` },
+          water_mould: { lvl: `no`, label: `না`, detail: `জল-ছত্রাক গ্যাল তৈরি করে না।` },
+          bacteria: { lvl: `med`, label: `সাধারণ`, detail: `Agrobacterium দ্বারা সৃষ্ট ক্রাউন গল—চওড়াপাতার উদ্ভিদের গোড়ায় অসংগঠিত ও অমসৃণ ফোলা; ঘাস, কলা বা খেজুরের মতো একবীজপত্রীতে হয় না।` },
+          virus: { lvl: `no`, label: `না`, detail: `ভাইরাস গ্যাল তৈরি করে না।` },
+          phytoplasma: { lvl: `no`, label: `না`, detail: `ফাইটোপ্লাজমা গ্যাল তৈরি করে না।` },
+          nematode: { lvl: `high`, label: `খুবই সাধারণ`, detail: `মূলে ফোলা ও শিকড়তন্ত্রের বিকৃতি। ডালজাতীয় গাছের নাইট্রোজেন ফিক্সিং নোডিউলের সাথে বিভ্রান্ত হবেন না: নেমাটোড গ্যালে মূল গ্যালের ভেতর দিয়ে যায়, নোডিউল পাশে লেগে থাকে ও গোলাপি হয়।` },
+          insects: { lvl: `high`, label: `খুবই সাধারণ`, detail: `ওয়াস্প, সাইলিড, থ্রিপস ও অন্যান্য পোকা পাতা বা কাণ্ডে মসৃণ ও কাঠামোগত গ্যাল তৈরি করে; গ্যাল কাটলে ভেতরে অপরিণত পোকা বা লার্ভা পাওয়া যায়।` },
+          mites: { lvl: `high`, label: `খুবই সাধারণ`, detail: `গ্যাল-মাইটের তৈরি গ্যাল ছোট, মসৃণ, রঙিন এবং এতে সূক্ষ্ম লোমের মতো গঠন থাকতে পারে।` },
+          mammals: { lvl: `no`, label: `না`, detail: `স্তন্যপায়ী ও পাখি গ্যাল তৈরি করে না।` },
+          nutrients: { lvl: `no`, label: `না`, detail: `খনিজ ঘাটতিতে গ্যাল হয় না।` },
+          physical: { lvl: `no`, label: `না`, detail: `ভৌতিক বা হার্বিসাইড প্রভাবে গ্যাল তৈরি হয় না।` }
+        }
+      },
+      {
+        id: `drying`,
+        name: `শুকিয়ে যাওয়া / নেক্রোসিস / ব্লাইট`,
+        short: `শুকানো / ব্লাইট`,
+        overview: `সবুজ রঙ হারিয়ে টিস্যু বাদামি হয়ে মারা যাওয়া (নেক্রোসিস); একাধিক দাগ মিলে বড় অংশ ঝলসে গেলে ব্লাইট হয়।`,
+        cells: {
+          fungi: { lvl: `high`, label: `খুবই সাধারণ`, detail: `বিভিন্ন ছত্রাকের সাথে যুক্ত (যেমন বাঁধাকপিতে Sclerotinia পচন ও শুকানো)।` },
+          water_mould: { lvl: `high`, label: `খুবই সাধারণ`, detail: `পাতা আক্রমণকারী Phytophthora (যেমন কচু বা টমেটো ব্লাইট) ও Pythium অত্যন্ত ধ্বংসাত্মক নেক্রোসিস ও ব্লাইট ঘটায়।` },
+          bacteria: { lvl: `high`, label: `খুবই সাধারণ`, detail: `বিভিন্ন ফসলে ব্যাপক ব্লাইট ও নেক্রোসিস (যেমন ড্রাই বিনে Xanthomonas)।` },
+          virus: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `খুবই বিরল, তবে মেজ লেথাল নেক্রোসিস ও ক্যাসাভা ব্রাউন স্ট্রিপ ভাইরাস মারাত্মক নেক্রোসিস ঘটায়।` },
+          phytoplasma: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `সাধারণত ফাইটোপ্লাজমার প্রধান উপসর্গ নয়, তবে কিছু ব্যতিক্রম রয়েছে।` },
+          nematode: { lvl: `med`, label: `সাধারণ`, detail: `যেসব নেমাটোড গ্যাল তৈরি করে না (যেমন Pratylenchus), তারা মূলের বাইরের অংশ কালো করে পচন ও মৃত্যু ঘটায়।` },
+          insects: { lvl: `med`, label: `সাধারণ`, detail: `কাণ্ডে গর্ত করা বোরার ও মূল-খাদক লার্ভা ডাল বা পুরো গাছ মেরে শুকিয়ে ফেলে।` },
+          mites: { lvl: `no`, label: `না`, detail: `মাইট সরাসরি ব্যাপক ব্লাইট সৃষ্টি করে না।` },
+          mammals: { lvl: `ex`, label: `(না) ব্যতিক্রম`, detail: `বড় প্রাণী গাছের বাকল বা শিকড় খেয়ে ফেললে পাতা নেক্রোটিক হয়ে গাছ মরে যায়।` },
+          nutrients: { lvl: `low`, label: `সাধারণ নয়`, detail: `পুষ্টির অভাব মূলত বৃদ্ধি কমায়; চরম ক্ষেত্রেই কেবল গাছ অকালে শুকিয়ে মরে।` },
+          physical: { lvl: `low`, label: `অনিয়মিত ব্যবহারে`, detail: `অপরিষ্কার স্প্রেয়ার বা diquat / paraquat-এর মতো দ্রুত কার্যকর হার্বিসাইডের ভ্রান্ত ব্যবহারে ফসল দ্রুত ঝলসে শুকিয়ে যায়।` }
+        }
+      }
+    ];
+
+    // Table 1 & 2 dataset: 14 pest & mite groups + anatomical SVG keys
+    const PESTS_DATA = [
+      {
+        id: `aphid`, name: `এফিড (জাবপোকা)`, en: `Aphid`,
+        size: `২–৫ মিমি`, sizeCat: `small`,
+        metamorphosis: `না`,
+        wings: `কিছু সদস্যে ডানা থাকে`, wingCat: `some`,
+        feedsOutside: `হ্যাঁ, তবে প্রায়ই কোঁকড়ানো পাতার ভেতর`, feedCat: `outside`,
+        stage: `উভয় (নিম্ফ ও প্রাপ্তবয়স্ক)`, stageCat: `both`,
+        predatorOrParasite: `না (শিকারী ও পরজীবী দল রয়েছে—পরীক্ষায় খেয়াল রাখুন)`,
+        hasPredators: `আছে (জৈবিক দমন)`,
+        legsVisible: `হ্যাঁ`,
+        shape: `আঁটির/নাশপাতির আকৃতি`,
+        linkedSymptoms: [`distortion`, `yellowing`],
+        fieldNote: `পেটের পেছনে দুটি ছোট নলের মতো সিফনকল (cornicles) থাকে। মধুরস ত্যাগ করায় পাতায় কালো সুটি মোল্ড (sooty mould) জন্মাতে পারে—সত্যিকারের ছত্রাকের বিপরীতে সুটি মোল্ড পাতা থেকে সহজেই মুছে ফেলা যায়।`
+      },
+      {
+        id: `mealybug`, name: `মিলিবাগ (ছাতরা পোকা)`, en: `Mealybug`,
+        size: `২–৪ মিমি`, sizeCat: `small`,
+        metamorphosis: `না`,
+        wings: `না (স্ত্রী ডানাহীন)`, wingCat: `no`,
+        feedsOutside: `হ্যাঁ, প্রায়ই কোঁকড়ানো পাতা বা কাণ্ডের খাঁজে`, feedCat: `outside`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `না`,
+        hasPredators: `আছে`,
+        legsVisible: `না (সাদা মোমের আবরণে ঢাকা)`,
+        shape: `ডিম্বাকৃতি ও সাদা মোমযুক্ত`,
+        linkedSymptoms: [`distortion`, `yellowing`],
+        fieldNote: `দেহ সাদা পাউডার বা মোম-সদৃশ আবরণে ঢাকা থাকে; কান্ড, পাতার নিচে বা ফলের গোড়ায় দলবেঁধে রস শোষণ করে।`
+      },
+      {
+        id: `scale`, name: `স্কেল ইনসেক্ট (খোলস পোকা)`, en: `Scale insect`,
+        size: `২–৪ মিমি`, sizeCat: `small`,
+        metamorphosis: `না`,
+        wings: `না`, wingCat: `no`,
+        feedsOutside: `হ্যাঁ (কাণ্ড ও পাতায় লেগে থাকে)`, feedCat: `outside`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `না`,
+        hasPredators: `আছে`,
+        legsVisible: `না`,
+        shape: `ডিম্বাকৃতি বা গোলাকার খোলস`,
+        linkedSymptoms: [`yellowing`],
+        fieldNote: `চ্যাপ্টা বা গম্বুজের মতো শক্ত বা মোমযুক্ত খোলসের নিচে স্থির হয়ে বসে উদ্ভিদের রস শোষণ করে; মধুরস ও সুটি মোল্ড হতে পারে।`
+      },
+      {
+        id: `psyllid`, name: `সাইলিড`, en: `Psyllid`,
+        size: `২–৫ মিমি`, sizeCat: `small`,
+        metamorphosis: `হ্যাঁ, অনেক ভিন্ন দেখায়`,
+        wings: `হ্যাঁ`, wingCat: `yes`,
+        feedsOutside: `হ্যাঁ (গ্যাল-গঠনকারী প্রজাতি ব্যতীত)`, feedCat: `gall`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `না`,
+        hasPredators: `সীমিত`,
+        legsVisible: `হ্যাঁ (লাফানোর পেছনের পা)`,
+        shape: `বৈচিত্র্যময়; প্রাপ্তবয়স্কদের দেহ লম্বা ও ছাদের মতো ডানা`,
+        linkedSymptoms: [`galls`, `distortion`, `yellowing`],
+        fieldNote: `ক্ষুদ্র সিকাডার মতো দেখতে; নিম্ফ ও প্রাপ্তবয়স্ক উভয়ই ক্ষতি করে এবং কিছু সাইলিড পাতায় গ্যাল তৈরি করে বা রোগবাহক হিসেবে কাজ করে।`
+      },
+      {
+        id: `thrips`, name: `থ্রিপস`, en: `Thrips`,
+        size: `১–২ মিমি`, sizeCat: `micro`,
+        metamorphosis: `অনুজ্জ্বল, তবে অনুরূপ`,
+        wings: `হ্যাঁ (ঝালরযুক্ত সরু ডানা, সীমিত উড়ান)`, wingCat: `yes`,
+        feedsOutside: `হ্যাঁ, তবে প্রায়ই বাঁকানো পাতায় বা গ্যাল-গঠনকারী`, feedCat: `outside`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `কিছু শিকারী থ্রিপস আছে`,
+        hasPredators: `কিছু প্রজাতি`,
+        legsVisible: `হ্যাঁ, কিন্তু খুব ছোট`,
+        shape: `অতি সরু ও লম্বাটে`,
+        linkedSymptoms: [`distortion`, `mosaic`, `galls`],
+        fieldNote: `পাতায় আঁচড়ে রস খাওয়ায় রুপালি আভা বা মোজাইকের মতো দাগ পড়ে; টমেটো স্পটেড উইল্ট ভাইরাসের মতো ভাইরাসও ছড়াতে পারে।`
+      },
+      {
+        id: `plant_bug`, name: `প্ল্যান্ট বাগ (মিরিড / স্টিংক বাগ)`, en: `Plant bug`,
+        size: `৫–১৫ মিমি`, sizeCat: `medium`,
+        metamorphosis: `না (নিম্ফের ডানা কম বা নেই)`,
+        wings: `হ্যাঁ (সামনের ডানা অর্ধেক কঠিন, নিচে ঝিল্লি ডানা)`, wingCat: `yes`,
+        feedsOutside: `হ্যাঁ`, feedCat: `outside`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `হ্যাঁ (কিছু শিকারী বাগ আছে)`,
+        hasPredators: `সতর্কতা: শিকারী বাগ শনাক্ত করুন`,
+        legsVisible: `হ্যাঁ`,
+        shape: `বৈচিত্র্যময় (ঢাল বা ডিম্বাকৃতি)`,
+        linkedSymptoms: [`leaf_spot`, `wilt`, `distortion`],
+        fieldNote: `খাওয়ার সময় বিষাক্ত লালা প্রবেশ করিয়ে পাতা বা ফলে ছত্রাকের মতো নেক্রোটিক দাগ তৈরি করে (যেমন কাজু বা কোকোয় মিরিড ক্ষতি, তামাকে স্টিংক বাগ)।`
+      },
+      {
+        id: `planthopper`, name: `প্ল্যান্ট হপার (ফড়িং/হপার)`, en: `Plant hopper`,
+        size: `৩–১৫ মিমি`, sizeCat: `small`,
+        metamorphosis: `না (নিম্ফের ডানা কম বা নেই)`,
+        wings: `হ্যাঁ`, wingCat: `yes`,
+        feedsOutside: `হ্যাঁ`, feedCat: `outside`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `না`,
+        hasPredators: `প্রাকৃতিক শত্রু দ্বারা নিয়ন্ত্রিত`,
+        legsVisible: `হ্যাঁ`,
+        shape: `নলের মতো / কীলক আকৃতি`,
+        linkedSymptoms: [`yellowing`, `drying`],
+        fieldNote: `উদ্ভিদ নাড়ালে দ্রুত লাফিয়ে বা উড়ে সরে যায়; তীব্র আক্রমণে পাতা হলুদ হয়ে শুকিয়ে যায় এবং ভাইরাস/ফাইটোপ্লাজমা বহন করতে পারে।`
+      },
+      {
+        id: `whitefly`, name: `হোয়াইটফ্লাই (সাদা মাছি)`, en: `Whitefly`,
+        size: `২–৩ মিমি`, sizeCat: `small`,
+        metamorphosis: `হ্যাঁ (নিম্ফ চ্যাপ্টা, ডানা নেই)`,
+        wings: `হ্যাঁ (সাদা, সীমিত উড়ান, পাতার নিচে থাকে)`, wingCat: `yes`,
+        feedsOutside: `হ্যাঁ`, feedCat: `outside`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `না`,
+        hasPredators: `আছে`,
+        legsVisible: `ডানার নিচে অংশত লুকানো`,
+        shape: `প্রাথমিক পর্যায়ে ডিম্বাকৃতি; প্রাপ্তবয়স্কের সাদা ডানা কোণে রাখা`,
+        linkedSymptoms: [`mosaic`, `distortion`, `yellowing`],
+        fieldNote: `পাতায় নাড়া দিলে ক্ষুদ্র সাদা মাছির ঝাঁক উড়ে ওঠে। সরাসরি রস চুষে দুর্বল করার পাশাপাশি মারাত্মক উদ্ভিদ ভাইরাস ছড়ায়।`
+      },
+      {
+        id: `grasshopper`, name: `গ্রাসহপার ও লোকাস্ট (ঘাসফড়িং)`, en: `Grasshopper & Locust`,
+        size: `২০–৪০ মিমি`, sizeCat: `medium`,
+        metamorphosis: `না (নিম্ফ অনুরূপ কিন্তু ডানাহীন)`,
+        wings: `হ্যাঁ (দুর্বল থেকে শক্তিশালী উড়ান)`, wingCat: `yes`,
+        feedsOutside: `হ্যাঁ (পাতা চিবিয়ে খায়)`, feedCat: `outside`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `না`,
+        hasPredators: `পাখি ও পরজীবী`,
+        legsVisible: `হ্যাঁ (বড় লাফানোর পেছনের পা)`,
+        shape: `প্রাপ্তবয়স্ক ঘাসফড়িংয়ের মতো লম্বা দেহ`,
+        linkedSymptoms: [`drying`],
+        fieldNote: `পাতার কিনারা থেকে বড় অংশ চিবিয়ে খেয়ে ফেলে; শিরা বাদে বা পুরো পাতা খেয়ে গাছ পত্রশূন্য করে।`
+      },
+      {
+        id: `wasp`, name: `ওয়াস্প (সফলাই লার্ভা)`, en: `Wasp (Sawfly)`,
+        size: `৩–১৫ মিমি`, sizeCat: `medium`,
+        metamorphosis: `হ্যাঁ (সম্পূর্ণ রূপান্তর)`,
+        wings: `হ্যাঁ (প্রাপ্তবয়স্কতে দুই জোড়া ঝিল্লি ডানা)`, wingCat: `yes`,
+        feedsOutside: `বেশিরভাগ গ্যাল-গঠনকারী; সফলাই বাইরে পাতা খায়`, feedCat: `gall`,
+        stage: `লার্ভা`, stageCat: `larva`,
+        predatorOrParasite: `হ্যাঁ (বহু ওয়াস্প উপকারী পরজীবী!)`,
+        hasPredators: `সতর্কতা: অধিকাংশ ওয়াস্প উপকারী পরজীবী`,
+        legsVisible: `প্রাপ্তবয়স্কতে হ্যাঁ; গ্যাল লার্ভায় সাধারণত না`,
+        shape: `লার্ভার আকৃতি গ্রাব-এর মতো (সফলাই ক্যাটারপিলারের মতো)`,
+        linkedSymptoms: [`galls`],
+        fieldNote: `বোলতা বা ওয়াস্পের বড় একটি অংশ অন্যান্য ক্ষতিকর পোকার পরজীবী (উপকারী)। বালাই ওয়াস্প প্রধানত পাতা বা কাণ্ডে সুগঠিত গ্যাল তৈরি করে।`
+      },
+      {
+        id: `moth`, name: `মথ (ক্যাটারপিলার / লেদা পোকা)`, en: `Moth (Caterpillar)`,
+        size: `লার্ভা ২–৩৫ মিমি`, sizeCat: `medium`,
+        metamorphosis: `হ্যাঁ (সম্পূর্ণ রূপান্তর)`,
+        wings: `হ্যাঁ (প্রাপ্তবয়স্ক মথ শক্তিশালী উড়ানক্ষম)`, wingCat: `yes`,
+        feedsOutside: `অভ্যন্তরীণ (বোরার) ও বাইরে উভয়ই`, feedCat: `inside`,
+        stage: `লার্ভা`, stageCat: `larva`,
+        predatorOrParasite: `প্রায় কোনোটিই নয়`,
+        hasPredators: `প্রাকৃতিক শত্রু আছে`,
+        legsVisible: `হ্যাঁ (বক্ষীয় পা + পেটে প্রোলেগ)`,
+        shape: `লার্ভার আকৃতি ক্যাটারপিলারের মতো`,
+        linkedSymptoms: [`wilt`, `drying`, `distortion`],
+        fieldNote: `সতর্কতা: কাণ্ড ছিদ্রকারী মথের লার্ভার (stem borers) পা ও প্রোলেগ কমে যাওয়ায় উপরে দেখতে মাছির ম্যাগটের মতো মনে হতে পারে। কাণ্ড চিরে সুড়ঙ্গ ও মল (frass) খুঁজুন।`
+      },
+      {
+        id: `beetle`, name: `বিটল (গুবরে পোকা ও গ্রাব)`, en: `Beetle (Grub)`,
+        size: `লার্ভা ৫–৩০ মিমি`, sizeCat: `medium`,
+        metamorphosis: `হ্যাঁ (সম্পূর্ণ রূপান্তর)`,
+        wings: `হ্যাঁ (সামনের ডানা কঠিন খোলস, নিচে ঝিল্লি ডানা)`, wingCat: `yes`,
+        feedsOutside: `অভ্যন্তরীণ ও বাইরে উভয়ই`, feedCat: `inside`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `হ্যাঁ (অনেক শিকারী বিটল উপকারী)`,
+        hasPredators: `যেমন লেডিবার্ড বিটল উপকারী`,
+        legsVisible: `হ্যাঁ`,
+        shape: `লার্ভা C-আকৃতির গ্রাবের মতো; প্রাপ্তবয়স্কের কঠিন ডানার খোলস`,
+        linkedSymptoms: [`wilt`, `drying`],
+        fieldNote: `মাটির নিচে গ্রাব শিকড় খেয়ে গাছ নেতিয়ে দেয় বা মেরে ফেলে। প্রাপ্তবয়স্ক বিটলের শক্ত সামনের ডানা (elytra) পিঠে সোজা দাগ তৈরি করে।`
+      },
+      {
+        id: `fly`, name: `ফ্লাই (মাছি ও ম্যাগট)`, en: `Fly (Maggot)`,
+        size: `লার্ভা ২–১২ মিমি`, sizeCat: `medium`,
+        metamorphosis: `হ্যাঁ (সম্পূর্ণ রূপান্তর)`,
+        wings: `হ্যাঁ (শুধুমাত্র এক জোড়া ডানা)`, wingCat: `yes`,
+        feedsOutside: `বেশিরভাগ অভ্যন্তরীণ (ফল, পাতা বা কাণ্ডের ভেতর)`, feedCat: `inside`,
+        stage: `লার্ভা`, stageCat: `larva`,
+        predatorOrParasite: `হ্যাঁ (উপকারী হোভারফ্লাই ও ট্যাকিনিড মাছি)`,
+        hasPredators: `অনেক মাছি উপকারী পরজীবী`,
+        legsVisible: `শুধু প্রাপ্তবয়স্কতে হ্যাঁ; ম্যাগটের পা নেই`,
+        shape: `লার্ভার আকৃতি পায়হীন সুচালো ম্যাগটের মতো`,
+        linkedSymptoms: [`wilt`, `drying`, `galls`],
+        fieldNote: `ফলের মাছি, লিফমাইনার বা শুট ফ্লাইয়ের ম্যাগট ফসল ভেতর থেকে নষ্ট করে; এদের কোনো মাথা বা পা স্পষ্ট থাকে না এবং এরা ভেতরে থেকে পচন ঘটায়।`
+      },
+      {
+        id: `mite`, name: `মাইট (ক্ষুদ্র মাকড়)`, en: `Mite`,
+        size: `~১ মিমি`, sizeCat: `micro`,
+        metamorphosis: `না`,
+        wings: `না (তবে সুতোয় ঝুলে বাতাসে ছড়ায়)`, wingCat: `no`,
+        feedsOutside: `বাইরে (গ্যাল-গঠনকারী ব্যতীত)`, feedCat: `gall`,
+        stage: `উভয়`, stageCat: `both`,
+        predatorOrParasite: `হ্যাঁ (শিকারী মাইট জৈবিক দমনে কাজ করে)`,
+        hasPredators: `শিকারী মাইট অত্যন্ত উপকারী`,
+        legsVisible: `হ্যাঁ (প্রাপ্তবয়স্কের ৮টি পা), তবে অতি ক্ষুদ্র`,
+        shape: `গোলাকার বা মাকড়ের মতো`,
+        linkedSymptoms: [`witches_broom`, `little_leaf`, `galls`, `distortion`, `yellowing`],
+        fieldNote: `মাইট পোকামাকড় নয় (৮টি পা ও কোনো ডানা/অ্যান্টেনা নেই)। খুব অল্প সংখ্যক মাইটও পাতা হলুদ, বিকৃত বা ডগায় ডাইনি-ঝাড়ু ও গ্যাল তৈরি করতে পারে।`
+      }
+    ];
+
+    // Table 4 & 5 dataset: 12 Mineral Nutrients + 4 Reference Crops (Kumar & Sharma 2013 & IRRI)
+    const NUTRIENTS_DATA = [
+      {
+        id: `N`, symbol: `N`, name: `নাইট্রোজেন (N)`,
+        prob: `খুবই সাধারণ`, probCat: `common`,
+        phEffect: `প্রযোজ্য নয়`, phCat: `neutral`,
+        lowerLeaves: `ফ্যাকাসে ও সমভাবে হলদে হয়ে যায়, প্রায়ই পরে শুকিয়ে পড়ে`,
+        upperLeaves: `সাধারণত সবুজ থাকে, তবে গুরুতর ক্ষেত্রে হলুদ হয়`,
+        tips: `সবুজ`,
+        distortion: `কোনো প্রভাব নেই`,
+        reddening: `অপেক্ষাকৃত কম, মূলত চাপের লক্ষণ`,
+        veins: `পাতার বাকি অংশ থেকে আলাদা নয়`,
+        interveinal: `পাতার বাকি অংশ থেকে আলাদা নয় (পুরো পাতা সমভাবে হলুদ)`,
+        margins: `পাতার বাকি অংশ থেকে আলাদা নয়`,
+        size: `বিক্ষিপ্ত ও খর্বাকৃতি`,
+        fruit: `ছোট এবং ঝরে যাওয়ার সম্ভাবনা বেশি`,
+        necrotic: `না`,
+        confusion: `অনেক ধরনের সাধারণ চাপ ও সালফার ঘাটতি (সালফারে কচি পাতা আগে হলুদ হয়)`,
+        commonCrops: `সব ফসলে`,
+        patternType: `uniform_lower_yellow`,
+        table5Clue: `নিচের বয়স্ক পাতাগুলো সমভাবে ফ্যাকাসে সবুজ থেকে হলুদ হয়ে যায়। সালফার ঘাটতির সাথে পার্থক্য হলো—নাইট্রোজেন উদ্ভিদে চলনশীল বলে ঘাটতি প্রথমে নিচের পুরানো পাতায় দেখা যায়।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): নিচের পাতার ডগা থেকে মধ্যশিরা বরাবর V-আকৃতিতে হলুদ হয়ে শুকিয়ে যায়; গাছ খর্বাকৃতি থাকে।`,
+          rice: `চাল (ধান): নিচের বয়স্ক পাতাগুলো সমভাবে হালকা হলদে-সবুজ হয় এবং কুশি সংখ্যা কমে যায়।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): গাছের নিচের পাতাগুলো ফ্যাকাসে হলদে হয়ে অকালে ঝরে পড়ে; বৃদ্ধি কমে যায়।`,
+          castor: `রিকিন (ক্যাস্টর): নিচের দিকের পুরানো বড় পাতাগুলো সমভাবে ফ্যাকাসে সবুজ ও হলুদ রঙ ধারণ করে।`
+        }
+      },
+      {
+        id: `P`, symbol: `P`, name: `ফসফেট (P)`,
+        prob: `সাধারণ`, probCat: `common`,
+        phEffect: `প্রযোজ্য নয়`, phCat: `neutral`,
+        lowerLeaves: `গাঢ় সবুজ ও ম্লান, নীলাভ-সবুজ ছায়া`,
+        upperLeaves: `বেগুনি বা লালচে আভাসহ গাঢ় সবুজ`,
+        tips: `অন্ধকার সবুজ`,
+        distortion: `কোনো প্রভাব নেই`,
+        reddening: `হ্যাঁ (বৈশিষ্ট্যসূচক লালচে-বেগুনি রঙ)`,
+        veins: `অন্ধকার সবুজ`,
+        interveinal: `নীলাভ-সবুজ ছায়াসহ গাঢ় সবুজ`,
+        margins: `লাল বা বেগুনি হওয়া`,
+        size: `অত্যন্ত খর্বাকৃতি ও সোজা (খেজুর গাছের মতো)`,
+        fruit: `খারাপ ফুল ও ফল; P/N অনুপাত ভুল হলে সাইট্রাসে মোটা খোলস`,
+        necrotic: `না`,
+        confusion: `তরুণ চারা ও শৈত্যপ্রবাহজনিত চাপ`,
+        commonCrops: `গাজর, শাক, লেটুস, ভুট্টা`,
+        patternType: `purple_tint`,
+        table5Clue: `ফসফেট সংকটের সবগুলো চিত্রের সাধারণ বৈশিষ্ট্য হলো পাতায় ও কাণ্ডে গাঢ় নীলাভ-সবুজ ছায়ার ওপর লালচে বা বেগুনি (purplish) রঙের আভা।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): চারা অবস্থায় পাতার কিনারা ও কাণ্ড স্পষ্ট বেগুনি-লাল রঙ ধারণ করে; গাছ ছোট থাকে।`,
+          rice: `চাল (ধান): পাতাগুলো গাঢ় ম্লান সবুজ ও সরু হয়ে সোজা দাঁড়িয়ে থাকে; লালচে-বেগুনি আভা দেখা যেতে পারে।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): নিচের পাতা গাঢ় সবুজ থেকে নীলাভ-সবুজ এবং কিনারায় লালচে-বেগুনি রঙ দেখা যায়।`,
+          castor: `রিকিন (ক্যাস্টর): পুরানো পাতার শিরা ও কিনারায় গাঢ় সবুজের সাথে লালচে-বেগুনি ছাপ স্পষ্ট হয়।`
+        }
+      },
+      {
+        id: `K`, symbol: `K`, name: `পটাশিয়াম (K)`,
+        prob: `সাধারণ`, probCat: `common`,
+        phEffect: `প্রযোজ্য নয়`, phCat: `neutral`,
+        lowerLeaves: `হালকা বর্ণের নেক্রোটিক দাগ ও প্রান্ত পোড়া`,
+        upperLeaves: `সাধারণত স্বাস্থ্যকর সবুজ থাকে`,
+        tips: `সবুজ`,
+        distortion: `ফলজাতীয় গাছে পাতা কুঁচকে যাওয়া`,
+        reddening: `সম্ভব`,
+        veins: `মধ্যশিরার কাছে সবুজ থাকে`,
+        interveinal: `হলদে / নেক্রোটিক`,
+        margins: `প্রান্ত হলুদ হয়ে বাদামি নেক্রোটিক পোড়া দাগ`,
+        size: `সংক্ষিপ্ত ইন্টারনোড (গাট ছোট হয়)`,
+        fruit: `খারাপ ফুল ও ফল; স্বাদ ও সংরক্ষণ কমে`,
+        necrotic: `পাতায় হালকা বর্ণের ছোট দাগ ও প্রান্ত পোড়া`,
+        confusion: `বাতাসে পোড়া / খরা / ছত্রাকজনিত পাতার দাগ`,
+        commonCrops: `আলু, টমেটো, শাক, লুসার্ন`,
+        patternType: `marginal_scorch`,
+        table5Clue: `পটাশিয়াম সংকটের প্রতিটি চিত্রেই নিচের পাতার প্রান্ত (margin) প্রথমে হলুদ হয় এবং পরে প্রান্ত বরাবর বাদামি হয়ে পুড়ে বা মরে যায় (necrosis), সাথে বিক্ষিপ্ত সাদাটে দাগও থাকতে পারে।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): নিচের পাতার কিনারা ও ডগা হলুদ হয়ে বাদামি রঙে শুকিয়ে পোড়া দাগের মতো দেখায়।`,
+          rice: `চাল (ধান): পুরানো পাতার ডগা ও প্রান্ত হলদে-বাদামি হয়ে শুকিয়ে যায়; অনেক সময় মরিচা রঙের দাগ থাকে।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): নিচের পাতার প্রান্ত হলুদ ও বাদামি হয়ে পুড়ে যায়; পাতার মাঝখান তুলনামূলক সবুজ থাকে।`,
+          castor: `রিকিন (ক্যাস্টর): নিচের বড় পাতার প্রান্ত জুড়ে হলুদ ও বাদামি শুকনো পোড়া কিনারা স্পষ্টভাবে দেখা যায়।`
+        }
+      },
+      {
+        id: `Mg`, symbol: `Mg`, name: `ম্যাগনেসিয়াম (Mg)`,
+        prob: `সাধারণ`, probCat: `common`,
+        phEffect: `নিম্ন (অম্লীয়) pH-এ কম উপলব্ধ`, phCat: `low`,
+        lowerLeaves: `'ব্রোঞ্জিং' এবং নেক্রোসিস, প্রায়ই পাতা ঝরে যায়`,
+        upperLeaves: `সাধারণত প্রভাবিত হয় না`,
+        tips: `কোনো প্রভাব নেই`,
+        distortion: `পাতা কার্লিং হতে পারে`,
+        reddening: `হতে পারে, বিশেষ করে তুলায় গুরুতর হলে`,
+        veins: `বেশিরভাগ সবুজ থাকে (বিশেষত মধ্যশিরার কাছে)`,
+        interveinal: `শিরার মধ্যবর্তী অঞ্চলে হলুদ হওয়া বা নেক্রোসিস`,
+        margins: `মারাত্মক হলে প্রান্ত থেকে নেক্রোসিস ছড়ায়`,
+        size: `প্রধান উপসর্গ হওয়া অসম্ভব`,
+        fruit: `গুণমান ও পরিমাণ হ্রাস পায়`,
+        necrotic: `হ্যাঁ, শিরার মধ্যে, প্রায়ই লালচে`,
+        confusion: `প্যাথোজেন আক্রমণ, বোরন বা পটাশিয়াম ঘাটতি`,
+        commonCrops: `টমেটো, তুলা, ধান, ভুট্টা`,
+        patternType: `interveinal_lower`,
+        table5Clue: `নিচের পুরানো পাতায় শিরার মধ্যবর্তী অংশে হলুদ বা লালচে-বাদামি নেক্রোসিস দেখা যায়, যেখানে মূল শিরাগুলো সবুজ থাকে (জপমালার মতো বা ব্রোঞ্জ রঙের আভা)।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): নিচের পাতায় সবুজ শিরার মাঝে হলদে-সাদা ডোরাকাটা দাগ এবং কিনারায় লালচে-বেগুনি রঙ দেখা যায়।`,
+          rice: `চাল (ধান): নিচের পাতার শিরার মাঝখান হলদে-কমলা বা ফ্যাকাসে হয়, পাতা ঝুলে পড়ে (IRRI চিত্র-সূচি)।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): পুরানো পাতায় শিরার মধ্যবর্তী টিস্যু হলুদ হয়ে লালচে-বাদামি ব্রোঞ্জিং দেখায়।`,
+          castor: `রিকিন (ক্যাস্টর): নিচের পাতায় মধ্যশিরা ও প্রধান শিরা সবুজ থেকে শিরার ফাঁকের অংশ হলদে-ব্রোঞ্জ হয়ে যায়।`
+        }
+      },
+      {
+        id: `Mn`, symbol: `Mn`, name: `ম্যাঙ্গানিজ (Mn)`,
+        prob: `সাধারণ`, probCat: `common`,
+        phEffect: `উচ্চ pH ও বালু মাটিতে কম উপলব্ধ`, phCat: `high`,
+        lowerLeaves: `অনেক কম প্রভাবিত`,
+        upperLeaves: `শিরার মধ্যে হলুদ হওয়া ও সাদা/ধূসর দাগ`,
+        tips: `কোনো প্রভাব নেই`,
+        distortion: `কোনো প্রভাব নেই`,
+        reddening: `না`,
+        veins: `সবুজ থাকে (তবে আয়রনের মতো ততটা তীক্ষ্ণ পার্থক্য নয়)`,
+        interveinal: `হলুদ পটভূমিতে সবুজ শিরার স্পষ্ট জাল (netting) তৈরি করে`,
+        margins: `পাতার বাকি অংশ থেকে পার্থক্য নেই`,
+        size: `ছোট এবং সরু কাণ্ড`,
+        fruit: `বিট ও মটরশুটিতে বীজের সাথে নেক্রোসিস`,
+        necrotic: `মারাত্মক ক্ষেত্রে শিরার মধ্যে ছোট মৃত দাগ`,
+        confusion: `প্যাথোজেন আক্রমণ ও ম্যাগনেসিয়াম/আয়রন ঘাটতি`,
+        commonCrops: `পেঁয়াজ, আপেল, মটরশুটি, বিট, ধান`,
+        patternType: `interveinal_net_upper`,
+        table5Clue: `হলুদ পাতার পটভূমিতে সবুজ শিরার একটি সূক্ষ্ম জালের (netting) মতো নকশা দেখা যায়; আয়রনের তুলনায় শিরা ও ফলকের রঙের পার্থক্য কিছুটা কম তীক্ষ্ণ এবং সাথে ধূসর দাগ হতে পারে।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): কচি ও মাঝারি পাতায় শিরার মধ্যবর্তী অংশে ফ্যাকাসে হলদে ডোরা ও ক্ষুদ্র সাদাটে/ধূসর দাগ।`,
+          rice: `চাল (ধান): কচি পাতায় শিরার মাঝে হলদে-সবুজ জালিকা প্যাটার্ন ও পাতার গোড়া থেকে ধূসর নেক্রোটিক দাগ (IRRI)।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): উপরের পাতায় হলুদ পটভূমিতে সবুজ শিরার নেট ও মাঝে ছোট বাদামি দাগ দেখা যায়।`,
+          castor: `রিকিন (ক্যাস্টর): তুলনামূলক কচি পাতায় শিরার মধ্যবর্তী অংশ হালকা হলুদ ও সবুজ শিরা জালের মতো দেখায়।`
+        }
+      },
+      {
+        id: `Fe`, symbol: `Fe`, name: `আয়রন (Fe)`,
+        prob: `সাধারণ`, probCat: `common`,
+        phEffect: `উচ্চ (ক্ষারীয়) pH-এ কম উপলব্ধ`, phCat: `high`,
+        lowerLeaves: `সাধারণত প্রভাবিত হয় না (গুরুতর না হলে)`,
+        upperLeaves: `উপরের কচি পাতায় তীব্র ক্লোরোসিস (আয়রন অচলনশীল)`,
+        tips: `ব্লিচড হলুদ বা সাদাটে`,
+        distortion: `কোনো প্রভাব নেই (কখনো প্রান্ত শুকায়)`,
+        reddening: `সাধারণত না`,
+        veins: `সবুজ থাকে (শিরা ও ফলকের তীব্র বৈপরীত্য)`,
+        interveinal: `তীব্র হলুদ বা সাদা হয়ে যায়, শিরা উজ্জ্বল সবুজ থাকে`,
+        margins: `হলুদ`,
+        size: `গুরুতর হলে গাছ সাদাটে দেখায়`,
+        fruit: `পাতার বাকি অংশ থেকে পার্থক্য নেই`,
+        necrotic: `প্রধান উপসর্গ হওয়া অসম্ভব`,
+        confusion: `উচ্চ pH-জনিত মাটি সমস্যা, ম্যাঙ্গানিজ ঘাটতি বা ভাইরাল ক্লোরোসিস`,
+        commonCrops: `সব ফসল (বিশেষত ডাল, মিষ্টি আলু, ভুট্টা, ধান)`,
+        patternType: `iron_green_veins`,
+        table5Clue: `চারটি ভিন্ন ফসলে আয়রন অভাবের ছবি দেখতে ভিন্ন মনে হলেও প্রতিটি ক্ষেত্রেই পাতার শিরাগুলো স্পষ্ট সবুজ থাকে এবং হলুদ বা প্রায় সাদা পাতার ফলকের সাথে তীব্র বৈসাদৃশ্য তৈরি করে!`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): উপরের কচি পাতার শিরার মাঝের অংশ উজ্জ্বল হলুদ-সাদা ডোরা হয়, কিন্তু শিরাগুলো গাঢ় সবুজ থাকে।`,
+          rice: `চাল (ধান): কচি পাতাগুলো প্রায় পুরোপুরি সাদাটে-হলুদ হয়ে যায়, কেবল সূক্ষ্ম শিরাগুলোতে হালকা সবুজ ভাব থাকে।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): উপরের কচি পাতার শিরাগুলো স্পষ্ট সবুজ থাকে এবং মধ্যবর্তী অংশ উজ্জ্বল হলুদ বা ক্রিম সাদা হয়।`,
+          castor: `রিকিন (ক্যাস্টর): কচি পাতায় শিরাগুলো গাঢ় সবুজ এবং শিরার ফাঁকের পুরো পাতা ফ্যাকাসে হলুদ-সাদা দেখায়।`
+        }
+      },
+      {
+        id: `Zn`, symbol: `Zn`, name: `জিংক (Zn)`,
+        prob: `সাধারণ`, probCat: `common`,
+        phEffect: `উচ্চ pH-এ কম পাওয়া যায়`, phCat: `high`,
+        lowerLeaves: `মধ্যবর্তী ও পূর্ণবয়স্ক পাতায় প্রাথমিক পর্যায়ে লক্ষণ`,
+        upperLeaves: `পাতার গোড়ায় (ভিত্তিতে) হলুদ, বাকি অংশ সবুজ; পাতা ছোট হয়`,
+        tips: `কোনো প্রভাব নেই`,
+        distortion: `চরম ক্ষেত্রে ফার্ন-লিফ বা ছোট সূচালো পাতা (রোসেটিং)`,
+        reddening: `সম্ভব`,
+        veins: `সবুজ/উজ্জ্বল থাকে`,
+        interveinal: `হলুদ/সাদা ব্যান্ড বা স্ট্রাইপ`,
+        margins: `মাঝে মাঝে কুঁচকানো বা ঢেউ খেলানো`,
+        size: `ইন্টারনোড ছোট হয়ে গুরুতর খর্বাকৃতি`,
+        fruit: `ফলের কলি গঠন বাধাগ্রস্ত, লম্বা ও ফাটা ফল`,
+        necrotic: `হ্যাঁ (মরিচা রঙের দাগ)`,
+        confusion: `ফাইটোপ্লাজমা (ছোট পাতা), ফলজ গাছে glyphosate ক্ষতি বা ভাইরাস মোজাইক`,
+        commonCrops: `সাইট্রাস, ভুট্টা, ধান, গম`,
+        patternType: `zinc_bands`,
+        table5Clue: `জিংকের ঘাটতি সব ফসলে এক রকম দেখায় না—ভুট্টায় পাতার গোড়ার দিকে সাদা-হলুদ চওড়া ব্যান্ড (হোয়াইট বাড), ধানে বাদামি মরিচা দাগ (খয়রা) এবং ডাল বা ফলজ গাছে ছোট পাতা ও ইন্টারনোড কমে যাওয়া দেখা যায়।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): কচি পাতার গোড়া থেকে দুই পাশে চওড়া হলদে-সাদা ব্যান্ড বা স্ট্রাইপ দেখা যায়।`,
+          rice: `চাল (ধান): পাতার গোড়া ফ্যাকাসে হয় এবং মধ্যবর্তী পাতায় লালচে-বাদামি মরিচা রঙের দাগ ও খর্বাকৃতি (খয়রা রোগ)।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): পাতা আকারে ছোট, সরু এবং ডগার ইন্টারনোড ছোট হয়ে পাতা গুচ্ছবদ্ধ দেখায়।`,
+          castor: `রিকিন (ক্যাস্টর): জিংক ঘাটতিতে পাতা ছোট ও অসম হয় (দ্রষ্টব্য: মূল চিত্র-সূচিতে রিকিনের ক্ষেত্রে প্রধান ৭টি খনিজ N–S চিত্রিত)।`
+        }
+      },
+      {
+        id: `S`, symbol: `S`, name: `সালফার (S)`,
+        prob: `সাধারণ`, probCat: `common`,
+        phEffect: `নিম্ন pH-এ কম উপলব্ধ`, phCat: `low`,
+        lowerLeaves: `অপেক্ষাকৃত কম আক্রান্ত; মূলত কচি পাতায় বেশি গুরুতর`,
+        upperLeaves: `উপরের অল্পবয়সী পাতা সমভাবে ফ্যাকাসে ও হলুদ`,
+        tips: `ফ্যাকাশে হয়`,
+        distortion: `কোনো প্রভাব নেই`,
+        reddening: `না`,
+        veins: `পাতার বাকি অংশ থেকে আলাদা নয় (শিরাও ফ্যাকাসে হলুদ হয়)`,
+        interveinal: `পুরো পাতা সমভাবে ফ্যাকাসে হলুদ`,
+        margins: `পাতার বাকি অংশ থেকে আলাদা নয়`,
+        size: `খর্বাকৃতি হয়`,
+        fruit: `ছোট এবং ঝরে পড়তে পারে`,
+        necrotic: `না`,
+        confusion: `নাইট্রোজেন ঘাটতি (তবে নাইট্রোজেন নিচের পাতায়, সালফার উপরের কচি পাতায় শুরু হয়)`,
+        commonCrops: `মুগডাল, আলু, মটরশুটি, সরিষা/তেলবীজ`,
+        patternType: `uniform_upper_yellow`,
+        table5Clue: `সালফারের লক্ষণ নাইট্রোজেনের মতোই (পুরো পাতা ও শিরা সমভাবে হলুদ), কিন্তু যেহেতু সালফার উদ্ভিদে কম চলনশীল, তাই সবার আগে উপরের কচি পাতাগুলো ফ্যাকাসে হলুদ হয়।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): উপরের কচি পাতাগুলো শিরা-উপশিরাসহ সমভাবে হালকা হলদে-সবুজ হয়ে যায়।`,
+          rice: `চাল (ধান): কচি পাতাগুলো সমভাবে ফ্যাকাসে হলুদ হয়, গাছ সরু ও ছোট থাকে।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): উপরের নতুন পাতাগুলো শিরা-ফলক নির্বিশেষে সমানভাবে ফ্যাকাসে হলুদ হয়।`,
+          castor: `রিকিন (ক্যাস্টর): গাছের উপরের দিকের কচি পাতাগুলো নিচের সবুজ পাতার তুলনায় স্পষ্ট ফ্যাকাসে হলুদ দেখায়।`
+        }
+      },
+      {
+        id: `Ca`, symbol: `Ca`, name: `ক্যালসিয়াম (Ca)`,
+        prob: `সাধারণ`, probCat: `common`,
+        phEffect: `নিম্ন (অম্লীয়) pH-এ কম উপলব্ধ`, phCat: `low`,
+        lowerLeaves: `কোনো প্রভাব নেই`,
+        upperLeaves: `সঠিকভাবে প্রসারিত নাও হতে পারে`,
+        tips: `ডগা কালো হয়ে মরে যায় ও বৃদ্ধি থামে`,
+        distortion: `নতুন পাতা একসাথে আটকে থাকে, কুঁকড়ে বা হুকের মতো বাঁকে`,
+        reddening: `না`,
+        veins: `কোনো প্রভাব নেই`,
+        interveinal: `কোনো প্রভাব নেই`,
+        margins: `নতুন প্রসারিত পাতার প্রান্তে নেক্রোসিস`,
+        size: `প্রধান লক্ষণ হিসেবে খর্বাকৃতি অসম্ভাব্য`,
+        fruit: `টমেটো ও কুকুরবিটে ফুলের প্রান্ত পচন (Blossom end rot); আপেলে বিটার পিট`,
+        necrotic: `ফলের প্রান্ত পচন, বাঁধাকপি/ফুলকপির প্রান্ত ব্রাউন`,
+        confusion: `ছত্রাক বা ব্যাকটেরিয়া পচন (টমেটোর ব্লসম এন্ড রট দেখে ছত্রাক ভাবা)`,
+        commonCrops: `চিনাবাদাম, টমেটো, লেটুস, আপেল, শাকসবজি`,
+        patternType: `tip_blossom_rot`,
+        table5Clue: `ক্যালসিয়াম উদ্ভিদে অচলনশীল হওয়ায় ডগার কচি পাতা কুঁকড়ে কালো হয় এবং দ্রুত বর্ধনশীল ফলে (যেমন টমেটোর নিচের প্রান্তে) ছত্রাক পচনের মতো কালো মৃত অংশ তৈরি হয়।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): নতুন বের হওয়া পাতার ডগা জড়িয়ে আটকে থাকে এবং প্রান্ত ছিঁড়ে বাদামি হয়।`,
+          rice: `চাল (ধান): কচি পাতার ডগা সাদাটে হয়ে মুচড়ে যায় ও বৃদ্ধির ডগা শুকিয়ে যায়।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): কচি পাতা ঠিকমতো খুলতে পারে না, ডগা ও কিনারা শুকিয়ে যায়।`,
+          castor: `রিকিন (ক্যাস্টর): নতুন পাতার প্রান্তে নেক্রোসিস এবং ফলের বিকাশে ব্যাঘাত ঘটে।`
+        }
+      },
+      {
+        id: `B`, symbol: `B`, name: `বোরন (B)`,
+        prob: `বিরল / স্থানীয়ভাবে গুরুত্বপূর্ণ`, probCat: `uncommon`,
+        phEffect: `উচ্চ pH-এ কম উপলব্ধ`, phCat: `high`,
+        lowerLeaves: `ব্রাসিকাসে কাণ্ড ফাঁপা ও অভ্যন্তরীণ পচন`,
+        upperLeaves: `ছোট ও অসমান্তরাল হতে পারে`,
+        tips: `শুট ডাইব্যাক (ডগা মরা) ও অনেক পার্শ্বীয় শাখা; মূলের ডগা ফোলা`,
+        distortion: `পামে জিগ-জ্যাগ পাতা; ছোট পাতা পাকানো ও ভঙ্গুর`,
+        reddening: `না`,
+        veins: `কাণ্ডের তুলনায় পাতার শিরা গাঢ় হতে পারে`,
+        interveinal: `হলুদ হওয়া ও নেক্রোটিক প্যাচ হতে পারে`,
+        margins: `প্রসারিত হতে ব্যর্থ ও পাতা পাকায়`,
+        size: `ছোট হওয়া ইন্টারনোড ও খর্বাকৃতি`,
+        fruit: `বিকৃত, কর্কশ ও ফাটা ফল (যেমন পেঁপের বিকৃতি); আঙুরে অসম দানা`,
+        necrotic: `কাণ্ড ফাটা ও ফুলকপির কারে বাদামি দাগ`,
+        confusion: `বরফের ক্ষতি বা কাণ্ড বোরার ও ছত্রাকের ডগা মরা`,
+        commonCrops: `পেঁপে, ব্রাসিকাস (বাঁধাকপি/ফুলকপি), টমেটো, লেটুস`,
+        patternType: `tip_dieback_hollow`,
+        table5Clue: `ডগার বৃদ্ধি বিন্দু মরে যাওয়া (shoot dieback), ব্রাসিকাস ফসলে ফাঁপা কাণ্ড এবং পেঁপে বা ফলে কর্কশ, অসমতল ও ফাটা বিকৃতি বোরন ঘাটতির প্রধান লক্ষণ।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): কচি পাতায় স্বচ্ছ সাদা ডোরা, ডগা বিকৃতি ও মোচায় দানা কম ধরা।`,
+          rice: `চাল (ধান): নতুন পাতা সাদাটে ও মুচড়ানো; পরাগায়ন ব্যাহত হয়ে চিটা ধান বাড়ে।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): ডগা মরে গিয়ে পাশ থেকে ছোট ডাল বের হয় এবং ফুল ঝরে পড়ে।`,
+          castor: `রিকিন (ক্যাস্টর): কচি পাতা মোটা, ভঙ্গুর ও কুঁকড়ানো হয়; ডগা শুকিয়ে যায়।`
+        }
+      },
+      {
+        id: `Cu`, symbol: `Cu`, name: `কপার / তামা (Cu)`,
+        prob: `সাধারণ নয়`, probCat: `uncommon`,
+        phEffect: `উচ্চ pH-এ কম উপলব্ধ`, phCat: `high`,
+        lowerLeaves: `কোনো প্রভাব নেই`,
+        upperLeaves: `ছোট, অসমান্তরাল, গাঢ় সবুজ বা নেতিয়ে পড়া`,
+        tips: `ছোট, নিস্তেজ শুট ডাইব্যাক`,
+        distortion: `পাতার পাকানো ও কাপিং; ঘাসে ডগা ঝুলে পতন`,
+        reddening: `না`,
+        veins: `কোনো প্রভাব নেই`,
+        interveinal: `হলুদ ও নেক্রোটিক প্যাচ`,
+        margins: `ঘাসে কচি পাতার ডগা শুকিয়ে সাদা হয়`,
+        size: `প্রধান লক্ষণ হওয়া অসম্ভব`,
+        fruit: `প্রায়ই বিকাশ হয় না; স্বাদ ও চিনির পরিমাণ কমে`,
+        necrotic: `গুরুতর হলে পাতায় হতে পারে`,
+        confusion: `প্যাথোজেন আক্রমণ, হার্বিসাইড ক্ষতি বা খরা-উইল্ট (গমে নেতিয়ে পড়া ও পাকানো)`,
+        commonCrops: `গম, চিনা বাদাম, ডাল, মিষ্টি আলু`,
+        patternType: `copper_wilt_twist`,
+        table5Clue: `গমের মতো শস্যে তামার ঘাটতিতে পাতা নেতিয়ে পড়া (wilt), ডগা সাদা হয়ে পেঁচিয়ে যাওয়া এবং শীষ শূন্য থাকা দেখা যায়—যা অনেক সময় খরার সাথে গুলিয়ে যায়।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): কচি পাতা ফ্যাকাসে হলুদ হয়ে ডগা শুকিয়ে পেঁচিয়ে যায়।`,
+          rice: `চাল (ধান): কচি পাতার ডগা সাদাটে-ধূসর হয়ে সুঁইয়ের মতো পাকিয়ে যায়।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): উপরের পাতা ফ্যাকাসে ও কাপের মতো বেঁকে নেতিয়ে পড়ে।`,
+          castor: `রিকিন (ক্যাস্টর): কচি পাতা অসমানভাবে ছোট ও নেতিয়ে পড়ার প্রবণতা দেখায়।`
+        }
+      },
+      {
+        id: `Mo`, symbol: `Mo`, name: `মলিবডেনাম (Mo)`,
+        prob: `বিরল`, probCat: `uncommon`,
+        phEffect: `নিম্ন (অম্লীয়) pH-এ কম উপলব্ধ`, phCat: `low`,
+        lowerLeaves: `ছিদ্রযুক্ত/মটল হলুদ হওয়া; ব্রাসিকাসে বীজপত্র গাঢ় সবুজ থাকে`,
+        upperLeaves: `ব্রাসিকাসে হালকা সবুজ ও পাতার ফলক কমে যাওয়া`,
+        tips: `নেক্রোসিস`,
+        distortion: `পাতার কাপিং বা রোলিং; ব্রাসিকাসে হুইপটেল (চাবুকের মতো সরু পাতা)`,
+        reddening: `না`,
+        veins: `ফলক কমে যাওয়ায় শিরা বেশি লক্ষণীয়`,
+        interveinal: `পাতার বিকৃতি দেখুন`,
+        margins: `বাদামি হতে পারে (বাতাস বা লবণাক্ততার মতো)`,
+        size: `খর্বাকৃতি`,
+        fruit: `সংরক্ষণ ও চিনির পরিমাণ প্রভাবিত`,
+        necrotic: `না`,
+        confusion: `ডালজাতীয় ফসলে নাইট্রোজেন ঘাটতি (রাইজোবিয়ামের N-ফিক্সেশন কমে যাওয়ায়), ম্যাগনেসিয়াম ঘাটতি`,
+        commonCrops: `ব্রাসিকাস (ফুলকপি/বাঁধাকপি), ডালজাতীয় ফসল`,
+        patternType: `whiptail`,
+        table5Clue: `ব্রাসিকাস ফসলে 'হুইপটেল' (whiptail)—যেখানে পাতার ফলক প্রায় থাকে না, কেবল মধ্যশিরা চাবুকের মতো সরু হয়ে থাকে—এবং অম্লীয় মাটিতে ডালে নাইট্রোজেন ঘাটতির মতো লক্ষণ।`,
+        cropsTable5: {
+          maize: `মক্কা (ভুট্টা): পুরানো পাতায় ছোপ ছোপ হলুদ ও প্রান্তে বাদামি শুকনো দাগ।`,
+          rice: `চাল (ধান): পাতার ফলক সরু ও মটলযুক্ত ফ্যাকাসে হওয়া (অম্লীয় মাটিতে)।`,
+          pigeonpea: `আড়ধানা (অড়হর/ডাল): নাইট্রোজেন সংবদ্ধকরণ ব্যাহত হওয়ায় পুরো গাছ নাইট্রোজেন ঘাটতির মতো ফ্যাকাসে হয়।`,
+          castor: `রিকিন (ক্যাস্টর): পাতায় ছিটছিটে হলুদ ভাব ও কিনারায় শুকিয়ে যাওয়া।`
+        }
+      }
+    ];
+
+    // Field Tests (Chapter 2, 4, 5)
+    const FIELD_TESTS_DATA = [
+      {
+        title: `১. ব্যাকটেরিয়া স্ট্রিমিং টেস্ট (প্লাস্টিক বোতল পরীক্ষা)`,
+        badge: `ব্যাকটেরিয়া বনাম ছত্রাক/জল-ছত্রাক উইল্ট`,
+        steps: [
+          `পরিষ্কার প্লাস্টিকের বোতল বা গ্লাসে স্থির পানি নিন এবং অন্ধকার পটভূমির সামনে রাখুন।`,
+          `আক্রান্ত গাছের গোড়ার কাছ থেকে ১৫ সেমি কাণ্ড ধারালো ছুরি দিয়ে কেটে পাতা সরিয়ে দিন।`,
+          `কাণ্ডের উপরের প্রান্তে একটি ম্যাচস্টিক ঢুকিয়ে বোতলের মুখে ঝুলিয়ে দিন যাতে নিচের কাটা অংশ পানিতে ডোবে।`,
+          `৫ মিনিট স্পর্শ না করে অপেক্ষা করুন: পানিতে সাদা ধোঁয়া বা সুতোর মতো জীবাণুস্রোত নামলে এটি ব্যাকটেরিয়া (যেমন Ralstonia)। (সতর্কতা: পেঁপে বা কিছু গাছ ল্যাটেক্স ছাড়ে, তাই সুস্থ কাণ্ডের সাথে মিলিয়ে দেখুন।)`
+        ]
+      },
+      {
+        title: `২. হ্যান্ড লেন্সে ফ্রুটিং বডি বনাম পোকার মল পরীক্ষা`,
+        badge: `ছত্রাকের পাতার দাগ যাচাই`,
+        steps: [
+          `হ্যান্ড লেন্স চোখের খুব কাছে ধরে নমুনা পাতাটি সামনে-পেছনে সরিয়ে ফোকাস করুন।`,
+          `পুরানো দাগের ভেতরে সূক্ষ্ম কালো বিন্দু (ফ্রুটিং বডি) খুঁজুন—তবে সাবধান, সেগুলো পাতার প্রাকৃতিক বৈশিষ্ট্য বা পোকার মল হতে পারে।`,
+          `যাচাই পরীক্ষা: ভেজা আঙুল দিয়ে বিন্দুগুলোর ওপর আলতো করে মুছুন। যদি সহজে মুছে যায় এবং দাগের বাইরেও থাকে, তবে সেটি পোকার বর্জ্য; না মুছলে ও নতুন দাগে থাকলে ছত্রাক।`
+        ]
+      },
+      {
+        title: `৩. নেমাটোড গ্যাল বনাম নাইট্রোজেন-ফিক্সিং নোডিউল`,
+        badge: `শিম/ডালজাতীয় গাছের মূল পরীক্ষা`,
+        steps: [
+          `উইলিটিং বা হলুদ হওয়া গাছ সতর্কতার সাথে শিকড়সহ খুঁড়ে তুলুন (অল্প মাটিসহ ধুয়ে নিন)।`,
+          `নেমাটোড গ্যাল: শিকড়টি সরাসরি ফোলা গ্যালের ভেতর দিয়ে অতিক্রম করে এবং মূলতন্ত্র বিকৃত হয়ে যায়; সহজে আঙুলে খসে পড়ে না।`,
+          `নাইট্রোজেন নোডিউল (মটর/শিম): শিকড়ের পাশে গোল বলের মতো লেগে থাকে, সহজেই টানলে আলাদা হয় এবং ভেতরটা কাটলে গোলাপি দেখায়।`
+        ]
+      },
+      {
+        title: `৪. জৈব বনাম অজৈব সীমারেখা ও সমমিতি যাচাই`,
+        badge: `প্রাথমিক বাদ দেওয়ার প্রক্রিয়া`,
+        steps: [
+          `জৈব কারণ (পোকামাকড় বা প্যাথোজেন): আক্রান্ত ও সুস্থ টিস্যুর মাঝে প্রায়ই একটি স্পষ্ট ও তীক্ষ্ণ সীমারেখা থাকে (যেমন কাজু পাতার দাগে); জমিতে এলোমেলো বা দলে দলে ছড়ায়।`,
+          `অজৈব কারণ (খরা, জলাবদ্ধতা, পুষ্টি, ঠাণ্ডা, হার্বিসাইড): সুস্থ ও অসুস্থ অংশের মাঝে তীক্ষ্ণ সীমা থাকে না; পাতার মধ্যে প্রতিসম হয় এবং বড় এলাকায় বিভিন্ন প্রজাতির গাছে একসাথে দেখা যায়।`
+        ]
+      }
+    ];
+
+    // Table 6 Confusion Pairs
+    const CONFUSION_PAIRS_DATA = [
+      {
+        id: `fungi_watermould`,
+        pair: `ছত্রাক বনাম জল-ছত্রাক (Fungi vs Water moulds)`,
+        risk: `বিভ্রান্তি হওয়া সম্ভাব্য`,
+        riskClass: `is-danger`,
+        items: [
+          { sym: `পাতার দাগ ও পচন`, diff: `Phytophthora-এর দাগ দ্রুত ছড়ায় ও আকার অনির্দিষ্ট হয়; প্রকৃত ছত্রাকের দাগ নির্দিষ্ট সর্বোচ্চ আকারে থামে ও সীমানা সুস্পষ্ট থাকে। জল-ছত্রাকে প্রান্তে বা নিচে সাদা লোমশ স্পোরুলেশন হয়, কিন্তু কালো ফ্রুটিং বডি থাকে না।` },
+          { sym: `উইল্ট (নেতিয়ে পড়া)`, diff: `কাণ্ড চিরুন: শুধু জাইলেম নলিকার রঞ্জন হলে তা ছত্রাক (Fusarium/Verticillium); আর গোটা কাণ্ডের বাইরের অংশসহ ব্যাপক পচন হলে তা জল-ছত্রাক (Phytophthora/Pythium)।` },
+          { sym: `সাধারণ হলদে ভাব`, diff: `উভয় গোষ্ঠীই চাপজনিত হলদে ভাব ঘটায়; মাঠে আলাদা করা কঠিন—অন্য উপসর্গ বা শিকড় দেখুন।` }
+        ]
+      },
+      {
+        id: `fungi_bacteria`,
+        pair: `ছত্রাক বনাম ব্যাকটেরিয়া (Fungi vs Bacteria)`,
+        risk: `বিভ্রান্তি হওয়া সম্ভাব্য`,
+        riskClass: `is-danger`,
+        items: [
+          { sym: `পাতার দাগ ও পচন`, diff: `ছত্রাকের দাগে ফ্রুটিং বডি বা টার্গেট রিং থাকে এবং সব দাগ একই সর্বোচ্চ আকারের হয়। ব্যাকটেরিয়ার দাগ প্রাথমিক পর্যায়ে শিরার দ্বারা সীমাবদ্ধ কৌণিক আকারের হয়, পাতার প্রান্ত বা ক্ষতের সাথে যুক্ত থাকে এবং আলোর বিপরীতে জলপূর্ণ প্রান্ত দেখায়।` },
+          { sym: `উইল্ট (নেতিয়ে পড়া)`, diff: `ব্যাকটেরিয়া উইল্টে কাটা কাণ্ড পানিতে রাখলে সাদা ব্যাকটেরিয়া স্ট্রিমিং দেখা যায়। ছত্রাক উইল্টে কাণ্ডের ভেতরের টিস্যুতে গাঢ় বা গোলাপি স্ট্রিকিং বেশি দেখা যায়।` }
+        ]
+      },
+      {
+        id: `watermould_bacteria`,
+        pair: `জল-ছত্রাক বনাম ব্যাকটেরিয়া (Water moulds vs Bacteria)`,
+        risk: `বিভ্রান্তি হওয়া সম্ভাব্য`,
+        riskClass: `is-danger`,
+        items: [
+          { sym: `পাতার দাগ ও পচন`, diff: `জল-ছত্রাক উচ্চ আর্দ্রতায় পাতার নিচে সাদা তুলোর মতো স্পোরুলেশন করে (প্রয়োজনে প্লাস্টিক ব্যাগে রাতভর রেখে পরীক্ষা করুন)। ব্যাকটেরিয়ার দাগ শিরাবদ্ধ, কৌণিক ও জলপূর্ণ প্রান্তযুক্ত।` },
+          { sym: `উইল্ট`, diff: `জল-ছত্রাক কাণ্ডের বাইরে ব্যাপক পচন দেখায়, ব্যাকটেরিয়া বাইরে তেমন চিহ্ন না রেখেই পানিতে স্ট্রিমিং টেস্টে ধরা পড়ে।` }
+        ]
+      },
+      {
+        id: `virus_nutrients`,
+        pair: `ভাইরাস বনাম পুষ্টি ঘাটতি (Viruses vs Nutrients)`,
+        risk: `বিভ্রান্তি হওয়া সম্ভাব্য`,
+        riskClass: `is-ochre`,
+        items: [
+          { sym: `মোজাইক ও ছোপ`, diff: `জিংক, আয়রন বা ম্যাঙ্গানিজের অভাব মোজাইক বা ডোরাকাটা দাগ তৈরি করতে পারে। কিন্তু খনিজ ঘাটতি খুব কমই একইসাথে পাতাকে বিকৃত করে; ভাইরাসে মোজাইকের সাথে প্রায়ই পাতা কোঁচকানো বা বিকৃতি থাকে এবং জমিতে এলোমেলোভাবে ছড়ায়।` },
+          { sym: `সাধারণ হলদে ভাব`, diff: `খনিজ ঘাটতিতে পাতার অবস্থান (পুরানো বনাম কচি) ও শিরা অনুযায়ী প্রতিসম প্যাটার্ন দেখা যায় এবং পাশের গাছেও একই পর্যায়ে দেখা দেয়।` }
+        ]
+      },
+      {
+        id: `virus_insects_mites`,
+        pair: `ভাইরাস বনাম পোকামাকড়/মাইট (Viruses vs Insects & Mites)`,
+        risk: `বিভ্রান্তি সম্ভব`,
+        riskClass: `is-ochre`,
+        items: [
+          { sym: `পাতার বিকৃতি ও মোজাইক সাদৃশ্য`, diff: `এফিড, থ্রিপস, সাদা মাছি বা মাইটের খাওয়ার ফলে পাতা কুঁকড়ে বা রুপালি ফোঁটাযুক্ত (mottled) হয়ে ভাইরাসের মতো দেখাতে পারে। পোকার উপস্থিতি দেখেই ভাইরাস ধরে নেবেন না; কেবল কচি বর্ধনশীল পাতা বিকৃত হলে এবং পোকার চিহ্ন থাকলে পোকাই কারণ হতে পারে।` }
+        ]
+      },
+      {
+        id: `nematode_fungi_watermould`,
+        pair: `নেমাটোড বনাম ছত্রাক / জল-ছত্রাক (Nematodes vs Fungi/Water moulds)`,
+        risk: `বিভ্রান্তি সম্ভব (বিশেষত উইল্টে)`,
+        riskClass: `is-ochre`,
+        items: [
+          { sym: `উইল্ট ও হলদে ভাব`, diff: `গাছটি খুঁড়ে মূলে গ্যাল বা সিস্ট দেখুন—গ্যাল থাকলে নিশ্চিতভাবে নেমাটোড। গ্যালহীন নেমাটোড শিকড় কালো ও পচিয়ে দেয়, তবে নেমাটোড মাটির উপরে দূরে আক্রমণ করে না, যেখানে ছত্রাক বা জল-ছত্রাক কাণ্ড বেয়ে উপরে ছড়ায়।` }
+        ]
+      },
+      {
+        id: `insects_bacteria_fungi`,
+        pair: `পোকামাকড় বনাম ছত্রাক / ব্যাকটেরিয়া (Insects vs Pathogens)`,
+        risk: `বিভ্রান্তি সম্ভব`,
+        riskClass: `is-ochre`,
+        items: [
+          { sym: `উইল্ট`, diff: `কাণ্ড-বোরার ও মূল-খাদক পোকা ছত্রাক বা ব্যাকটেরিয়ার মতো উইল্ট ঘটায়। কাণ্ড লম্বালম্বি চিরে সুড়ঙ্গ, লার্ভা ও মল (frass) খুঁজুন।` },
+          { sym: `পাতা ও ফলের দাগ`, diff: `ক্যাপসিড/মিরিডের মতো বিষ-প্রবেশকারী পোকার দাগ সাধারণত সুরক্ষিত দিকে বা ফলের বোঁটার কাছে বেশি হয় এবং পাতা পোকার চারপাশে পেঁচিয়ে যেতে পারে।` },
+          { sym: `গ্যাল`, diff: `পোকার গ্যাল মসৃণ ও ভেতরে অপরিণত পোকা থাকে; ব্যাকটেরিয়াল ক্রাউন গল অমসৃণ, শক্ত ও গাছের গোড়ায় হয়।` }
+        ]
+      },
+      {
+        id: `herbicides_pathogens_virus`,
+        pair: `হার্বিসাইড ও ভৌতিক চাপ বনাম রোগজীবাণু (Physical/Herbicides vs Pathogens)`,
+        risk: `বিভ্রান্তি সম্ভব`,
+        riskClass: `is-ochre`,
+        items: [
+          { sym: `পাতার দাগ ও বিকৃতি`, diff: `Paraquat/diquat স্প্রে ড্রিফটে হঠাৎ ছোট বাদামি দাগ হয় এবং উৎস থেকে দূরে ঢালু মাত্রায় (তীব্র থেকে হালকা) কমে যায়। হালকা glyphosate ক্ষতি ভাইরাসের মতো সরু পাতা বা ফাইটোপ্লাজমার মতো ডাইনি-ঝাড়ু তৈরি করতে পারে।` },
+          { sym: `ক্যান্সার ও পচন`, diff: `খামারের যন্ত্রপাতি বা আগুনের ক্ষত শুকিয়ে ক্যান্সারের মতো দেখতে হতে পারে; আবার ক্যালসিয়াম ঘাটতির ফুলের প্রান্ত পচন ছত্রাক পচনের মতো দেখায়।` }
+        ]
+      }
+    ];
+
+    /* ============================================================
+       APPLICATION STATE
+       ============================================================ */
+    let appState = {
+      activeView: `all`,
+      searchQuery: ``,
+      selectedFieldStep: 0,
+      selectedSymptoms: [`wilt`],
+      contextMode: null, // 'biotic' | 'abiotic' | null
+      selectedCell: { symId: `wilt`, agentId: `fungi` },
+      pestViewMode: `cards`, // 'cards' | 'table'
+      selectedPestId: `aphid`,
+      selectedNutrientId: `N`,
+      selectedConfusionId: `fungi_watermould`,
+      savedCases: []
+    };
+
+
+    /* ============================================================
+       SVG LINE DRAWINGS (সারণি ২ — কীট ও মাইট রেখাচিত্র)
+       ============================================================ */
+    function getPestSvg(pestId) {
+      const wrapStart = `<svg viewBox="0 0 80 80" width="66" height="66" aria-hidden="true">`;
+      const wrapEnd = `</svg>`;
+      const drawings = {
+        aphid: `
+          <ellipse cx="40" cy="46" rx="14" ry="18" class="svg-fill-soft" stroke-width="2"/>
+          <circle cx="40" cy="24" r="6" class="svg-fill-soft" stroke-width="2"/>
+          <path d="M36 20 Q24 8 18 12 M44 20 Q56 8 62 12" class="svg-stroke-ink" stroke-width="1.8"/>
+          <path d="M32 58 L28 68 M48 58 L52 68" class="svg-stroke-ink" stroke-width="2.5"/>
+          <path d="M29 36 L14 30 M51 36 L66 30 M27 45 L12 48 M53 45 L68 48 M29 53 L18 62 M51 53 L62 62" class="svg-stroke-ink" stroke-width="1.8"/>
+        `,
+        mealybug: `
+          <ellipse cx="40" cy="40" rx="16" ry="22" class="svg-fill-accent" stroke-width="2" stroke-dasharray="3 2"/>
+          <path d="M24 28 L14 24 M56 28 L66 24 M23 38 L12 38 M57 38 L68 38 M24 48 L14 52 M56 48 L66 52 M34 61 L30 72 M46 61 L50 72" class="svg-stroke-ink" stroke-width="1.8"/>
+          <path d="M28 32 H52 M26 40 H54 M28 48 H52" class="svg-stroke-ink" stroke-width="1.3"/>
+        `,
+        scale: `
+          <ellipse cx="40" cy="40" rx="18" ry="22" class="svg-fill-soft" stroke-width="2.2"/>
+          <ellipse cx="40" cy="40" rx="10" ry="14" class="svg-stroke-ink" stroke-width="1.5"/>
+          <circle cx="40" cy="34" r="3" class="svg-fill-ink"/>
+        `,
+        psyllid: `
+          <ellipse cx="40" cy="44" rx="8" ry="15" class="svg-fill-soft" stroke-width="2"/>
+          <path d="M40 28 L24 62 Q40 54 40 28 Z M40 28 L56 62 Q40 54 40 28 Z" class="svg-fill-accent" stroke-width="1.6"/>
+          <circle cx="40" cy="24" r="5" class="svg-fill-soft" stroke-width="1.8"/>
+          <path d="M37 20 L26 10 M43 20 L54 10 M32 52 L18 64 M48 52 L62 64" class="svg-stroke-ink" stroke-width="1.8"/>
+        `,
+        thrips: `
+          <rect x="36" y="20" width="8" height="44" rx="4" class="svg-fill-soft" stroke-width="2"/>
+          <path d="M36 28 L22 56 M44 28 L58 56" class="svg-stroke-ink" stroke-width="2"/>
+          <path d="M28 42 L22 46 M26 48 L20 52 M52 42 L58 46 M54 48 L60 52" class="svg-stroke-ink" stroke-width="1.4"/>
+          <path d="M38 20 L32 10 M42 20 L48 10" class="svg-stroke-ink" stroke-width="1.6"/>
+        `,
+        plant_bug: `
+          <polygon points="40,18 58,34 52,62 28,62 22,34" class="svg-fill-soft" stroke-width="2"/>
+          <path d="M28 34 L40 46 L52 34" class="svg-stroke-ink" stroke-width="1.8"/>
+          <circle cx="40" cy="16" r="5" class="svg-fill-soft" stroke-width="1.8"/>
+          <path d="M36 12 L28 4 M44 12 L52 4 M24 34 L10 26 M56 34 L70 26 M24 46 L10 48 M56 46 L70 48 M28 58 L16 70 M52 58 L64 70" class="svg-stroke-ink" stroke-width="1.8"/>
+        `,
+        planthopper: `
+          <path d="M34 24 L46 24 L50 58 L40 66 L30 58 Z" class="svg-fill-soft" stroke-width="2"/>
+          <path d="M36 24 L36 62 M44 24 L44 62" class="svg-stroke-ink" stroke-width="1.4"/>
+          <path d="M32 34 L16 26 M48 34 L64 26 M30 48 L14 64 L22 70 M50 48 L66 64 L58 70" class="svg-stroke-ink" stroke-width="2"/>
+        `,
+        whitefly: `
+          <ellipse cx="40" cy="40" rx="5" ry="14" class="svg-fill-ink"/>
+          <path d="M38 30 C16 22, 14 58, 37 56 Z" class="svg-fill-accent" stroke-width="1.8"/>
+          <path d="M42 30 C64 22, 66 58, 43 56 Z" class="svg-fill-accent" stroke-width="1.8"/>
+          <path d="M38 24 L30 14 M42 24 L50 14" class="svg-stroke-ink" stroke-width="1.6"/>
+        `,
+        grasshopper: `
+          <rect x="20" y="34" width="42" height="12" rx="6" class="svg-fill-soft" stroke-width="2"/>
+          <path d="M34 36 L64 32 L68 42 L38 44" class="svg-fill-accent" stroke-width="1.6"/>
+          <path d="M36 42 L48 20 L62 56 L68 58" class="svg-stroke-ink" stroke-width="2.4"/>
+          <path d="M22 36 L10 24 M22 40 L10 38 M26 46 L20 58 M34 46 L30 58" class="svg-stroke-ink" stroke-width="1.8"/>
+        `,
+        wasp: `
+          <ellipse cx="40" cy="22" rx="6" ry="7" class="svg-fill-soft" stroke-width="1.8"/>
+          <ellipse cx="40" cy="50" rx="8" ry="15" class="svg-fill-soft" stroke-width="2"/>
+          <path d="M36 28 C12 16, 12 42, 36 34 M44 28 C68 16, 68 42, 44 34" class="svg-fill-accent" stroke-width="1.8"/>
+          <path d="M36 16 L28 8 M44 16 L52 8" class="svg-stroke-ink" stroke-width="1.6"/>
+        `,
+        moth: `
+          <path d="M16 46 C22 30, 58 30, 64 46 C58 54, 22 54, 16 46 Z" class="svg-fill-soft" stroke-width="2"/>
+          <circle cx="17" cy="45" r="5" class="svg-fill-ink"/>
+          <path d="M26 36 V51 M34 35 V51 M42 35 V51 M50 36 V50 M22 51 L20 58 M28 52 L27 58 M42 52 L42 58 M48 52 L49 58" class="svg-stroke-ink" stroke-width="1.8"/>
+        `,
+        beetle: `
+          <ellipse cx="40" cy="44" rx="15" ry="20" class="svg-fill-soft" stroke-width="2.2"/>
+          <path d="M40 28 V64 M26 32 Q40 28 54 32" class="svg-stroke-ink" stroke-width="2"/>
+          <circle cx="40" cy="20" r="6" class="svg-fill-soft" stroke-width="1.8"/>
+          <path d="M35 16 L24 10 M45 16 L56 10 M26 36 L12 28 M54 36 L68 28 M25 46 L10 48 M55 46 L70 48 M28 56 L16 68 M52 56 L64 68" class="svg-stroke-ink" stroke-width="1.8"/>
+        `,
+        fly: `
+          <path d="M22 48 C28 36, 52 34, 62 42 C56 54, 28 54, 22 48 Z" class="svg-fill-soft" stroke-width="2"/>
+          <path d="M32 39 V51 M40 38 V52 M48 39 V51" class="svg-stroke-ink" stroke-width="1.5"/>
+          <path d="M22 48 L14 46" class="svg-stroke-ink" stroke-width="2.4"/>
+        `,
+        mite: `
+          <ellipse cx="40" cy="42" rx="13" ry="15" class="svg-fill-accent" stroke-width="2"/>
+          <path d="M30 30 L14 18 M50 30 L66 18 M28 38 L10 34 M52 38 L70 34 M28 46 L12 52 M52 46 L68 52 M31 54 L18 68 M49 54 L62 68" class="svg-stroke-ink" stroke-width="1.8"/>
+        `
+      };
+      return wrapStart + (drawings[pestId] || drawings.aphid) + wrapEnd;
+    }
+
+    /* ============================================================
+       BOTANICAL LEAF PATTERN SVG (সারণি ৫ — চিত্র-সূচি তুলনা)
+       ============================================================ */
+    function buildNutrientVisualSvg(nutrient) {
+      const p = nutrient.patternType;
+      const upperClass = (p === `uniform_upper_yellow` || p === `iron_green_veins` || p === `interveinal_net_upper` || p === `copper_wilt_twist` || p === `tip_blossom_rot`)
+        ? (p === `iron_green_veins` ? `svg-leaf-white` : `svg-leaf-chlorosis`)
+        : (p === `zinc_bands` ? `svg-leaf-pale` : `svg-leaf-healthy`);
+      const lowerClass = (p === `uniform_lower_yellow` || p === `marginal_scorch` || p === `interveinal_lower` || p === `whiptail`)
+        ? `svg-leaf-chlorosis`
+        : (p === `purple_tint` ? `svg-leaf-purple` : `svg-leaf-healthy`);
+
+      let extraMarks = ``;
+      if (p === `marginal_scorch`) {
+        extraMarks = `
+          <path d="M132 140 C168 122, 200 132, 202 156 C192 172, 160 166, 132 140 Z" fill="none" stroke="var(--leaf-necrosis)" stroke-width="5"/>
+          <path d="M128 140 C92 122, 60 132, 58 156 C68 172, 100 166, 128 140 Z" fill="none" stroke="var(--leaf-necrosis)" stroke-width="5"/>
+        `;
+      } else if (p === `iron_green_veins` || p === `interveinal_net_upper`) {
+        extraMarks = `
+          <path d="M130 58 L175 44 M130 62 L182 62 M130 66 L172 78 M130 58 L85 44 M130 62 L78 62 M130 66 L88 78" class="svg-leaf-vein" stroke-width="2.8"/>
+        `;
+      } else if (p === `interveinal_lower`) {
+        extraMarks = `
+          <path d="M130 140 L185 136 M130 144 L182 154 M130 140 L75 136 M130 144 L78 154" class="svg-leaf-vein" stroke-width="3"/>
+          <circle cx="174" cy="146" r="4" class="svg-leaf-necrosis"/>
+          <circle cx="86" cy="146" r="4" class="svg-leaf-necrosis"/>
+        `;
+      } else if (p === `zinc_bands`) {
+        extraMarks = `
+          <ellipse cx="152" cy="60" rx="16" ry="6" class="svg-leaf-white"/>
+          <ellipse cx="108" cy="60" rx="16" ry="6" class="svg-leaf-white"/>
+        `;
+      } else if (p === `tip_dieback_hollow` || p === `tip_blossom_rot`) {
+        extraMarks = `
+          <circle cx="130" cy="28" r="9" class="svg-leaf-necrosis"/>
+          <path d="M122 22 L138 34 M138 22 L122 34" stroke="var(--on-primary)" stroke-width="2"/>
+        `;
+      } else if (p === `copper_wilt_twist`) {
+        extraMarks = `
+          <path d="M130 40 C150 25, 185 48, 175 74" class="svg-leaf-vein" stroke-width="3"/>
+          <circle cx="175" cy="74" r="5" class="svg-leaf-white"/>
+        `;
+      } else if (p === `whiptail`) {
+        extraMarks = `
+          <path d="M130 62 L195 54 M130 62 L65 54" class="svg-leaf-vein" stroke-width="3.5"/>
+        `;
+      }
+
+      return `
+        <svg viewBox="0 0 260 220" width="100%" height="210" role="img" aria-label="${nutrient.name} এর পাতার অবস্থান ও লক্ষণ চিত্র">
+          <!-- Soil base -->
+          <path d="M35 190 Q130 176 225 190 L225 206 L35 206 Z" class="svg-pot"/>
+          <!-- Main stem -->
+          <path d="M130 186 L130 34" class="svg-stem" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- Upper (young) leaves -->
+          <path d="M130 64 C155 34, 198 38, 200 60 C190 78, 155 78, 130 64 Z" class="${upperClass}" stroke="var(--on-surface)" stroke-width="1.5"/>
+          <path d="M130 64 C105 34, 62 38, 60 60 C70 78, 105 78, 130 64 Z" class="${upperClass}" stroke="var(--on-surface)" stroke-width="1.5"/>
+
+          <!-- Middle leaves -->
+          <path d="M130 102 C164 80, 202 88, 204 110 C192 126, 160 122, 130 102 Z" class="svg-leaf-healthy" stroke="var(--on-surface)" stroke-width="1.5"/>
+          <path d="M130 102 C96 80, 58 88, 56 110 C68 126, 100 122, 130 102 Z" class="svg-leaf-healthy" stroke="var(--on-surface)" stroke-width="1.5"/>
+
+          <!-- Lower (older) leaves -->
+          <path d="M130 140 C168 122, 200 132, 202 156 C192 172, 160 166, 130 140 Z" class="${lowerClass}" stroke="var(--on-surface)" stroke-width="1.5"/>
+          <path d="M130 140 C92 122, 60 132, 58 156 C68 172, 100 166, 130 140 Z" class="${lowerClass}" stroke="var(--on-surface)" stroke-width="1.5"/>
+
+          ${extraMarks}
+
+          <!-- Zone Labels -->
+          <text x="12" y="54" font-size="11" font-weight="700" fill="var(--on-surface-variant)">উপরের পাতা</text>
+          <text x="12" y="152" font-size="11" font-weight="700" fill="var(--on-surface-variant)">নিচের পাতা</text>
+          <text x="130" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="var(--tertiary)">ডগা</text>
+        </svg>
+      `;
+    }
+
+    /* ============================================================
+       STATE PERSISTENCE (notebookAppApi)
+       ============================================================ */
+    /* ============================================================
+       STATE PERSISTENCE — host notebookAppApi if present, else
+       localStorage (PWA offline fallback). Same state shape.
+       ============================================================ */
+    const DASH_STATE_KEY = `pwdfg.dash.state.v1`;
+
+    function dashStateSnapshot() {
+      return {
+        activeView: appState.activeView,
+        selectedFieldStep: appState.selectedFieldStep,
+        selectedSymptoms: appState.selectedSymptoms,
+        contextMode: appState.contextMode,
+        selectedPestId: appState.selectedPestId,
+        selectedNutrientId: appState.selectedNutrientId,
+        selectedConfusionId: appState.selectedConfusionId,
+        savedCases: appState.savedCases
+      };
+    }
+
+    function writeLocalState(snapshot) {
+      try { localStorage.setItem(DASH_STATE_KEY, JSON.stringify(snapshot)); } catch (e) { /* storage unavailable */ }
+    }
+
+    function readLocalState() {
+      try {
+        const raw = localStorage.getItem(DASH_STATE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return (parsed && typeof parsed === `object`) ? parsed : null;
+      } catch (e) { return null; }
+    }
+
+    async function persistState() {
+      const snapshot = dashStateSnapshot();
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+          await window.notebookAppApi.setAppState(snapshot);
+        }
+      } catch (e) { /* ignore in static preview */ }
+      writeLocalState(snapshot);
+    }
+
+    function applyLoadedState(saved) {
+      if (!saved || typeof saved !== `object`) return;
+      if (typeof saved.activeView === `string`) appState.activeView = saved.activeView;
+      if (typeof saved.selectedFieldStep === `number`) appState.selectedFieldStep = saved.selectedFieldStep;
+      if (Array.isArray(saved.selectedSymptoms)) appState.selectedSymptoms = saved.selectedSymptoms;
+      if (saved.contextMode === `biotic` || saved.contextMode === `abiotic` || saved.contextMode === null) appState.contextMode = saved.contextMode;
+      if (typeof saved.selectedPestId === `string`) appState.selectedPestId = saved.selectedPestId;
+      if (typeof saved.selectedNutrientId === `string`) appState.selectedNutrientId = saved.selectedNutrientId;
+      if (typeof saved.selectedConfusionId === `string`) appState.selectedConfusionId = saved.selectedConfusionId;
+      if (Array.isArray(saved.savedCases)) appState.savedCases = saved.savedCases;
+    }
+
+    async function loadInitialState() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+          applyLoadedState(await window.notebookAppApi.getAppState());
+          return;
+        }
+      } catch (e) { /* fall through to localStorage */ }
+      applyLoadedState(readLocalState());
+    }
+
+    /* ============================================================
+       UI HANDLERS (All hoisted function declarations)
+       ============================================================ */
+    function setActiveView(view) {
+      appState.activeView = view;
+      const tabs = document.querySelectorAll(`#view-tabs .view-tab`);
+      tabs.forEach(function(tab) {
+        tab.classList.toggle(`is-active`, tab.dataset.view === view);
+      });
+      const sections = document.querySelectorAll(`.dashboard-section`);
+      sections.forEach(function(sec) {
+        if (view === `all`) {
+          sec.classList.remove(`is-hidden`);
+        } else {
+          sec.classList.toggle(`is-hidden`, sec.dataset.panel !== view);
+        }
+      });
+      persistState();
+    }
+
+    function jumpToSection(sectionId) {
+      setActiveView(`all`);
+      const target = document.getElementById(sectionId);
+      if (target) target.scrollIntoView({ behavior: `smooth`, block: `start` });
+    }
+
+    function selectFieldStep(idx) {
+      appState.selectedFieldStep = idx;
+      const btns = document.querySelectorAll(`#field-step-buttons .season-step-btn`);
+      btns.forEach(function(btn, i) {
+        btn.classList.remove(`is-peak`, `is-prep`);
+        if (i === idx) btn.classList.add(`is-peak`);
+        else if (i < idx) btn.classList.add(`is-prep`);
+      });
+      const step = FIELD_STEPS[idx] || FIELD_STEPS[0];
+      const box = document.getElementById(`field-step-detail`);
+      if (box) {
+        box.innerHTML = `
+          <strong>${step.title}</strong>
+          <p class="muted">${step.summary}</p>
+          <ul class="step-detail-list">
+            ${step.bullets.map(function(b) { return `<li>${b}</li>`; }).join(``)}
+          </ul>
+        `;
+      }
+      persistState();
+    }
+
+    function handleGlobalSearch(val) {
+      appState.searchQuery = (val || ``).trim().toLowerCase();
+      renderAllDataViews();
+    }
+
+    function resetAllFilters() {
+      appState.searchQuery = ``;
+      appState.selectedSymptoms = [];
+      appState.contextMode = null;
+      const searchEl = document.getElementById(`global-search-input`);
+      if (searchEl) searchEl.value = ``;
+
+      const selectIds = [
+        `table3-level-filter`, `pest-size-filter`, `pest-wing-filter`,
+        `pest-stage-filter`, `pest-feed-filter`,
+        `nut-part-filter`, `nut-ph-filter`, `nut-prob-filter`
+      ];
+      selectIds.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.value = `all`;
+      });
+
+      setActiveView(`all`);
+      renderAllDataViews();
+      persistState();
+    }
+
+    /* --- Panel 1: Table 3 & Triage --- */
+    function toggleSymptomSelection(symId) {
+      const idx = appState.selectedSymptoms.indexOf(symId);
+      if (idx >= 0) {
+        appState.selectedSymptoms.splice(idx, 1);
+      } else {
+        appState.selectedSymptoms.push(symId);
+      }
+      renderTriage();
+      renderTable3();
+      persistState();
+    }
+
+    function toggleContextMode(mode) {
+      appState.contextMode = (appState.contextMode === mode) ? null : mode;
+      renderTriage();
+      persistState();
+    }
+
+    function selectTable3Cell(symId, agentId) {
+      appState.selectedCell = { symId: symId, agentId: agentId };
+      renderTable3();
+      renderTable3Inspector();
+    }
+
+    function renderTriage() {
+      const chipsWrap = document.getElementById(`triage-symptom-chips`);
+      if (chipsWrap) {
+        chipsWrap.innerHTML = SYMPTOMS_DATA.map(function(s) {
+          const isSel = appState.selectedSymptoms.indexOf(s.id) >= 0;
+          return `<button type="button" class="filter-chip ${isSel ? `is-selected` : ``}" onclick="toggleSymptomSelection('${s.id}')">${s.short}</button>`;
+        }).join(``);
+      }
+
+      const bioBtn = document.getElementById(`ctx-biotic`);
+      const abioBtn = document.getElementById(`ctx-abiotic`);
+      if (bioBtn) bioBtn.classList.toggle(`is-selected`, appState.contextMode === `biotic`);
+      if (abioBtn) abioBtn.classList.toggle(`is-selected`, appState.contextMode === `abiotic`);
+
+      // Score causal agents based on selected symptoms + biotic/abiotic context
+      const weights = { high: 3, med: 2, low: 1, ex: 0.4, no: 0 };
+      const ranked = CAUSAL_AGENTS.map(function(agent) {
+        let score = 0;
+        let matched = [];
+        appState.selectedSymptoms.forEach(function(symId) {
+          const sym = SYMPTOMS_DATA.find(function(x) { return x.id === symId; });
+          if (sym && sym.cells[agent.id]) {
+            const w = weights[sym.cells[agent.id].lvl] || 0;
+            score += w;
+            if (w >= 1) matched.push(`${sym.short} (${sym.cells[agent.id].label})`);
+          }
+        });
+        if (appState.contextMode === `biotic` && agent.id !== `nutrients` && agent.id !== `physical`) {
+          score += 1;
+        }
+        if (appState.contextMode === `abiotic` && (agent.id === `nutrients` || agent.id === `physical`)) {
+          score += 2;
+        }
+        return { agent: agent, score: score, matched: matched };
+      }).sort(function(a, b) { return b.score - a.score; });
+
+      const maxPossible = Math.max(1, appState.selectedSymptoms.length * 3 + (appState.contextMode ? 2 : 0));
+      const rankWrap = document.getElementById(`triage-cause-ranks`);
+      if (rankWrap) {
+        if (appState.selectedSymptoms.length === 0) {
+          rankWrap.innerHTML = `<p class="muted">উপসর্গ বাছাই করলে এখানে সম্ভাব্য কারণগোষ্ঠীর র‍্যাঙ্কিং দেখা যাবে।</p>`;
+        } else {
+          rankWrap.innerHTML = ranked.slice(0, 5).map(function(item) {
+            const pct = Math.min(100, Math.round((item.score / maxPossible) * 100));
+            return `
+              <div class="cause-rank-item">
+                <div class="cause-rank-head">
+                  <strong>${item.agent.name}</strong>
+                  <span class="badge-mono">${pct}% মিল</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill" style="width:${pct}%;"></div></div>
+                <span class="muted" style="font-size:0.8rem;">${item.matched.length ? item.matched.join(` · `) : `সাধারণত এই উপসর্গ তৈরি করে না`}</span>
+              </div>
+            `;
+          }).join(``);
+        }
+      }
+
+      // Update Single Pale-Leaf Spotlight Card
+      const spotTitle = document.getElementById(`spotlight-title`);
+      const spotBody = document.getElementById(`spotlight-body`);
+      const spotMeta = document.getElementById(`spotlight-meta`);
+      if (spotTitle && spotBody && spotMeta) {
+        if (appState.selectedSymptoms.length === 0) {
+          spotTitle.textContent = `উপসর্গ বাছাই করে বাদ দেওয়ার প্রক্রিয়া শুরু করুন`;
+          spotBody.textContent = `মাঠে বা ক্লিনিকে যে উপসর্গগুলো দেখছেন তা ট্যাপ করুন। সঠিক ও নির্ভুল রোগনির্ণয়ের মধ্যে ভারসাম্য রাখুন—নিশ্চিত না হলে প্রজাতি না বলে গোষ্ঠী-স্তরে নির্ণয় করুন।`;
+          spotMeta.innerHTML = `<span class="tag-pill is-ochre">টিপস: পাতার দাগ বনাম উইল্ট যাচাই করুন</span>`;
+        } else {
+          const top = ranked[0];
+          const second = ranked[1];
+          const firstSym = SYMPTOMS_DATA.find(function(x) { return x.id === appState.selectedSymptoms[0]; });
+          const firstDetail = firstSym ? firstSym.cells[top.agent.id].detail : ``;
+          spotTitle.textContent = `সবচেয়ে সম্ভাব্য গোষ্ঠী: ${top.agent.name}`;
+          spotBody.textContent = firstDetail || `নির্বাচিত উপসর্গগুলোর সাথে ${top.agent.name} সবচেয়ে বেশি সামঞ্জস্যপূর্ণ।`;
+          spotMeta.innerHTML = `
+            <span class="tag-pill is-green">প্রথম সম্ভাবনা: ${top.agent.name}</span>
+            <span class="tag-pill is-ochre">বিকল্প যাচাই: ${second.agent.name}</span>
+          `;
+        }
+      }
+    }
+
+    function renderTable3() {
+      const levelFilterEl = document.getElementById(`table3-level-filter`);
+      const levelFilter = levelFilterEl ? levelFilterEl.value : `all`;
+      const q = appState.searchQuery;
+
+      const headRow = document.getElementById(`table3-head-row`);
+      if (headRow) {
+        headRow.innerHTML = `<th class="row-sticky">উপসর্গ (সারণি ৩)</th>` +
+          CAUSAL_AGENTS.map(function(a) { return `<th>${a.name}</th>`; }).join(``);
+      }
+
+      const filteredSyms = SYMPTOMS_DATA.filter(function(s) {
+        if (!q) return true;
+        if (s.name.toLowerCase().includes(q) || s.overview.toLowerCase().includes(q)) return true;
+        return CAUSAL_AGENTS.some(function(a) {
+          const c = s.cells[a.id];
+          return a.name.toLowerCase().includes(q) || c.detail.toLowerCase().includes(q) || c.label.toLowerCase().includes(q);
+        });
+      });
+
+      const bodyEl = document.getElementById(`table3-body`);
+      if (!bodyEl) return;
+
+      if (filteredSyms.length === 0) {
+        bodyEl.innerHTML = `<tr><td colspan="12"><div class="empty-state"><p>অনুসন্ধানের সাথে মেলে এমন কোনো উপসর্গ পাওয়া যায়নি।</p><button type="button" class="btn btn-secondary btn-sm" onclick="resetAllFilters()">সব দেখান</button></div></td></tr>`;
+        return;
+      }
+
+      bodyEl.innerHTML = filteredSyms.map(function(s) {
+        const isRowHi = appState.selectedSymptoms.indexOf(s.id) >= 0;
+        const cellsHtml = CAUSAL_AGENTS.map(function(a) {
+          const cell = s.cells[a.id];
+          const isMatchLevel = levelFilter === `all` ||
+            (levelFilter === `likely` && (cell.lvl === `high` || cell.lvl === `med`)) ||
+            (levelFilter === `rare` && (cell.lvl === `low` || cell.lvl === `ex`));
+          const isSelectedCell = appState.selectedCell.symId === s.id && appState.selectedCell.agentId === a.id;
+          const opacityStyle = isMatchLevel ? `` : `opacity:0.22;`;
+          return `
+            <td>
+              <button
+                type="button"
+                class="status-cell-btn lvl-${cell.lvl} ${isSelectedCell ? `is-active-cell` : ``}"
+                style="${opacityStyle}"
+                onclick="selectTable3Cell('${s.id}', '${a.id}')"
+              >${cell.label}</button>
+            </td>
+          `;
+        }).join(``);
+
+        return `
+          <tr style="${isRowHi ? `background:var(--primary-container);` : ``}">
+            <th class="row-sticky">
+              <div style="display:grid; gap:var(--space-xs);">
+                <span>${s.name}</span>
+                <span class="muted" style="font-size:0.75rem; font-weight:400;">${isRowHi ? `ট্রিজে নির্বাচিত` : `বিস্তারিত দেখতে ঘরে চাপুন`}</span>
+              </div>
+            </th>
+            ${cellsHtml}
+          </tr>
+        `;
+      }).join(``);
+
+      renderTable3Inspector();
+    }
+
+    function renderTable3Inspector() {
+      const box = document.getElementById(`table3-inspector`);
+      if (!box) return;
+      const sym = SYMPTOMS_DATA.find(function(s) { return s.id === appState.selectedCell.symId; }) || SYMPTOMS_DATA[0];
+      const agent = CAUSAL_AGENTS.find(function(a) { return a.id === appState.selectedCell.agentId; }) || CAUSAL_AGENTS[0];
+      const cell = sym.cells[agent.id];
+
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-sm);">
+          <span class="kicker">সারণি ৩ · কোষ বিশ্লেষণ</span>
+          <span class="tag-pill ${cell.lvl === `high` || cell.lvl === `med` ? `is-green` : `is-ochre`}">${cell.label}</span>
+        </div>
+        <h3>${sym.name} → ${agent.name}</h3>
+        <p>${cell.detail}</p>
+        <p class="muted" style="font-size:0.85rem;"><strong>উপসর্গের সাধারণ ধারণা:</strong> ${sym.overview}</p>
+      `;
+    }
+
+    function renderSymptomOverlapChart() {
+      const box = document.getElementById(`symptom-overlap-chart`);
+      if (!box) return;
+
+      const labels = CAUSAL_AGENTS.map(function(a) { return a.name; });
+      const highCounts = CAUSAL_AGENTS.map(function(a) {
+        return SYMPTOMS_DATA.filter(function(s) { return s.cells[a.id].lvl === `high` || s.cells[a.id].lvl === `med`; }).length;
+      });
+      const rareCounts = CAUSAL_AGENTS.map(function(a) {
+        return SYMPTOMS_DATA.filter(function(s) { return s.cells[a.id].lvl === `low` || s.cells[a.id].lvl === `ex`; }).length;
+      });
+      const maxVal = Math.max(10, ...highCounts.map(function(c, i) { return c + rareCounts[i]; }));
+
+      let rows = ``;
+      CAUSAL_AGENTS.forEach(function(a, i) {
+        const hc = highCounts[i];
+        const rc = rareCounts[i];
+        const hp = Math.round((hc / maxVal) * 100);
+        const rp = Math.round((rc / maxVal) * 100);
+        rows += `
+          <div class="sym-row">
+            <span class="sym-label" title="${a.name}">${a.name}</span>
+            <span class="sym-track"><span class="sym-fill sym-common" style="width:${hp}%"></span><span class="sym-fill sym-rare" style="width:${rp}%"></span></span>
+            <span class="sym-val">${(hc + rc).toLocaleString(`bn-BD`)}</span>
+          </div>`;
+      });
+
+      box.innerHTML = `
+        <div class="sym-legend">
+          <span><span class="lg lg-common"></span>খুবই সাধারণ / সাধারণ</span>
+          <span><span class="lg lg-rare"></span>বিরল / ব্যতিক্রম</span>
+          <span class="sym-max">স্কেল: ${maxVal.toLocaleString(`bn-BD`)} উপসর্গ পর্যন্ত</span>
+        </div>
+        <div class="sym-bars">${rows}</div>`;
+    }
+
+    /* --- Panel 2: Pests (Table 1 & 2) --- */
+    function togglePestViewMode() {
+      appState.pestViewMode = (appState.pestViewMode === `cards`) ? `table` : `cards`;
+      const btn = document.getElementById(`pest-view-toggle-btn`);
+      const grid = document.getElementById(`pest-card-grid`);
+      const tbl = document.getElementById(`pest-table-wrap`);
+      if (appState.pestViewMode === `table`) {
+        if (grid) grid.classList.add(`is-hidden`);
+        if (tbl) tbl.classList.remove(`is-hidden`);
+        if (btn) btn.textContent = `কার্ড ও রেখাচিত্র দেখুন`;
+      } else {
+        if (grid) grid.classList.remove(`is-hidden`);
+        if (tbl) tbl.classList.add(`is-hidden`);
+        if (btn) btn.textContent = `সারণি আকারে দেখুন`;
+      }
+    }
+
+    function selectPest(pestId) {
+      appState.selectedPestId = pestId;
+      renderPests();
+      persistState();
+    }
+
+    function renderPests() {
+      const sizeF = (document.getElementById(`pest-size-filter`) || {}).value || `all`;
+      const wingF = (document.getElementById(`pest-wing-filter`) || {}).value || `all`;
+      const stageF = (document.getElementById(`pest-stage-filter`) || {}).value || `all`;
+      const feedF = (document.getElementById(`pest-feed-filter`) || {}).value || `all`;
+      const q = appState.searchQuery;
+
+      const filtered = PESTS_DATA.filter(function(p) {
+        if (sizeF !== `all` && p.sizeCat !== sizeF) return false;
+        if (wingF !== `all` && p.wingCat !== wingF) return false;
+        if (stageF !== `all` && p.stageCat !== stageF) return false;
+        if (feedF !== `all` && p.feedCat !== feedF) return false;
+        if (q) {
+          const hay = `${p.name} ${p.en} ${p.shape} ${p.fieldNote} ${p.size} ${p.stage}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      const gridEl = document.getElementById(`pest-card-grid`);
+      const bodyEl = document.getElementById(`pest-table-body`);
+
+      if (gridEl) {
+        if (filtered.length === 0) {
+          gridEl.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><p>নির্বাচিত ফিল্টারের সাথে কোনো কীট বা মাইট গোষ্ঠী মেলেনি।</p><button type="button" class="btn btn-secondary btn-sm" onclick="resetAllFilters()">ফিল্টার রিসেট</button></div>`;
+        } else {
+          gridEl.innerHTML = filtered.map(function(p) {
+            const isSel = appState.selectedPestId === p.id;
+            return `
+              <article class="pest-card ${isSel ? `is-selected-pest` : ``}" onclick="selectPest('${p.id}')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectPest('${p.id}');}">
+                <div class="pest-card-head">
+                  <div class="pest-svg-box">${getPestSvg(p.id)}</div>
+                  <div style="display:grid; gap:4px;">
+                    <h3 style="font-size:1.05rem;">${p.name}</h3>
+                    <div class="pest-meta-row">
+                      <span class="tag-pill is-ochre">${p.size}</span>
+                      <span class="tag-pill">${p.stageCat === `larva` ? `লার্ভা ক্ষতিকর` : `উভয় পর্যায়`}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="pest-specs">
+                  <div class="pest-spec-line"><span class="pest-spec-key">দেহের আকৃতি:</span><span class="pest-spec-val">${p.shape}</span></div>
+                  <div class="pest-spec-line"><span class="pest-spec-key">ডানা:</span><span class="pest-spec-val">${p.wings}</span></div>
+                  <div class="pest-spec-line"><span class="pest-spec-key">খাওয়ার স্থান:</span><span class="pest-spec-val">${p.feedsOutside}</span></div>
+                </div>
+              </article>
+            `;
+          }).join(``);
+        }
+      }
+
+      if (bodyEl) {
+        bodyEl.innerHTML = filtered.map(function(p) {
+          return `
+            <tr onclick="selectPest('${p.id}')" style="cursor:pointer;">
+              <th class="row-sticky">${p.name}</th>
+              <td class="badge-mono">${p.size}</td>
+              <td>${p.metamorphosis}</td>
+              <td>${p.wings}</td>
+              <td>${p.feedsOutside}</td>
+              <td>${p.stage}</td>
+              <td>${p.predatorOrParasite}</td>
+              <td>${p.legsVisible}</td>
+              <td>${p.shape}</td>
+            </tr>
+          `;
+        }).join(``);
+      }
+
+      const insp = document.getElementById(`pest-inspector`);
+      const selPest = PESTS_DATA.find(function(p) { return p.id === appState.selectedPestId; }) || filtered[0] || PESTS_DATA[0];
+      if (insp && selPest) {
+        const linkedNames = selPest.linkedSymptoms.map(function(sid) {
+          const sym = SYMPTOMS_DATA.find(function(x) { return x.id === sid; });
+          return sym ? `<span class="tag-pill is-green">${sym.short}</span>` : ``;
+        }).join(``);
+        insp.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-sm);">
+            <span class="kicker">সারণি ১ ও ২ · নির্বাচিত কীট বিবরণ</span>
+            <span class="tag-pill is-ochre">${selPest.hasPredators}</span>
+          </div>
+          <h3>${selPest.name} (${selPest.en}) — আকার: ${selPest.size}</h3>
+          <p>${selPest.fieldNote}</p>
+          <div class="pest-meta-row" style="align-items:center;">
+            <span class="muted" style="font-weight:700;">সংশ্লিষ্ট উপসর্গ (সারণি ৩):</span>
+            ${linkedNames}
+          </div>
+        `;
+      }
+    }
+
+    /* --- Panel 3 & 4: Nutrients (Table 4 & 5) --- */
+    function selectNutrient(nutId) {
+      appState.selectedNutrientId = nutId;
+      renderTable4();
+      renderTable5Atlas();
+      persistState();
+    }
+
+    function renderTable4() {
+      const partF = (document.getElementById(`nut-part-filter`) || {}).value || `all`;
+      const phF = (document.getElementById(`nut-ph-filter`) || {}).value || `all`;
+      const probF = (document.getElementById(`nut-prob-filter`) || {}).value || `all`;
+      const q = appState.searchQuery;
+
+      const chipWrap = document.getElementById(`nutrient-selector-chips`);
+      if (chipWrap) {
+        chipWrap.innerHTML = NUTRIENTS_DATA.map(function(n) {
+          const isSel = appState.selectedNutrientId === n.id;
+          return `<button type="button" class="filter-chip ${isSel ? `is-selected` : ``}" onclick="selectNutrient('${n.id}')">${n.name}</button>`;
+        }).join(``);
+      }
+
+      const filteredNuts = NUTRIENTS_DATA.filter(function(n) {
+        if (phF !== `all` && n.phCat !== phF) return false;
+        if (probF !== `all` && n.probCat !== probF) return false;
+        if (partF !== `all`) {
+          const val = (n[partF] || ``).toLowerCase();
+          if (val.includes(`কোনো প্রভাব নেই`) || val === `না` || val.includes(`অসম্ভব`) || val.includes(`অসম্ভাব্য`) || val.includes(`পার্থক্য নেই`)) {
+            return false;
+          }
+        }
+        if (q) {
+          const hay = `${n.name} ${n.lowerLeaves} ${n.upperLeaves} ${n.veins} ${n.interveinal} ${n.margins} ${n.fruit} ${n.commonCrops} ${n.confusion}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      const headRow = document.getElementById(`table4-head-row`);
+      if (headRow) {
+        headRow.innerHTML = `<th class="row-sticky">বৈশিষ্ট্য / উদ্ভিদ অংশ</th>` +
+          filteredNuts.map(function(n) {
+            const isSel = appState.selectedNutrientId === n.id;
+            return `<th style="${isSel ? `background:var(--primary); color:var(--on-primary);` : `cursor:pointer;`}" onclick="selectNutrient('${n.id}')">${n.name}</th>`;
+          }).join(``);
+      }
+
+      const rowsSpec = [
+        { key: `lowerLeaves`, label: `নিচের পাতা` },
+        { key: `upperLeaves`, label: `উপরের পাতা` },
+        { key: `tips`, label: `উদ্ভিদের ডগা` },
+        { key: `distortion`, label: `পাতার বিকৃতি` },
+        { key: `reddening`, label: `লাল হওয়া` },
+        { key: `veins`, label: `পাতার শিরা` },
+        { key: `interveinal`, label: `শিরার মধ্যবর্তী অঞ্চল` },
+        { key: `margins`, label: `পাতার প্রান্ত` },
+        { key: `size`, label: `উদ্ভিদের আকার` },
+        { key: `fruit`, label: `ফল ও বীজ` },
+        { key: `necrotic`, label: `নেক্রোটিক দাগ/প্যাচ` },
+        { key: `phEffect`, label: `pH প্রভাব (৬.০–৭.৫)` },
+        { key: `prob`, label: `সম্ভাবনা` },
+        { key: `confusion`, label: `যার সাথে বিভ্রান্তি হয়` },
+        { key: `commonCrops`, label: `সাধারণত দেখা যায়` }
+      ];
+
+      const visibleRows = rowsSpec.filter(function(r) {
+        return partF === `all` || r.key === partF || r.key === `phEffect` || r.key === `confusion` || r.key === `commonCrops`;
+      });
+
+      const bodyEl = document.getElementById(`table4-body`);
+      if (!bodyEl) return;
+
+      if (filteredNuts.length === 0) {
+        bodyEl.innerHTML = `<tr><td colspan="2"><div class="empty-state"><p>এই ফিল্টারে কোনো খনিজ উপাদান মেলেনি।</p><button type="button" class="btn btn-secondary btn-sm" onclick="resetAllFilters()">ফিল্টার রিসেট</button></div></td></tr>`;
+        return;
+      }
+
+      bodyEl.innerHTML = visibleRows.map(function(r) {
+        return `
+          <tr>
+            <th class="row-sticky">${r.label}</th>
+            ${filteredNuts.map(function(n) {
+              const isSel = appState.selectedNutrientId === n.id;
+              return `<td style="${isSel ? `background:var(--primary-container); color:var(--on-primary-container); font-weight:600;` : ``}">${n[r.key]}</td>`;
+            }).join(``)}
+          </tr>
+        `;
+      }).join(``);
+    }
+
+    function renderTable5Atlas() {
+      const nut = NUTRIENTS_DATA.find(function(n) { return n.id === appState.selectedNutrientId; }) || NUTRIENTS_DATA[0];
+      const kickerEl = document.getElementById(`atlas-nutrient-kicker`);
+      const titleEl = document.getElementById(`atlas-nutrient-title`);
+      const svgEl = document.getElementById(`atlas-svg-container`);
+      const sumEl = document.getElementById(`atlas-pattern-summary`);
+      const tagsEl = document.getElementById(`atlas-tags`);
+      const clueEl = document.getElementById(`atlas-field-clue`);
+      const confEl = document.getElementById(`atlas-confusion-pill`);
+      const phEl = document.getElementById(`atlas-ph-pill`);
+      const cropsEl = document.getElementById(`atlas-crop-cards`);
+
+      if (kickerEl) kickerEl.textContent = `খনিজ প্যাটার্ন · ${nut.symbol}`;
+      if (titleEl) titleEl.textContent = nut.name;
+      if (svgEl) svgEl.innerHTML = buildNutrientVisualSvg(nut);
+      if (sumEl) sumEl.textContent = `নিচের পাতা: ${nut.lowerLeaves} · উপরের পাতা: ${nut.upperLeaves}`;
+      if (tagsEl) {
+        tagsEl.innerHTML = `
+          <span class="tag-pill is-green">সম্ভাবনা: ${nut.prob}</span>
+          <span class="tag-pill is-ochre">${nut.commonCrops}</span>
+        `;
+      }
+      if (clueEl) clueEl.textContent = nut.table5Clue;
+      if (confEl) confEl.textContent = `বিভ্রান্তি: ${nut.confusion}`;
+      if (phEl) phEl.textContent = `pH প্রভাব: ${nut.phEffect}`;
+
+      if (cropsEl) {
+        const cropList = [
+          { name: `মক্কা / ভুট্টা (Maize)`, desc: nut.cropsTable5.maize, src: `Kumar & Sharma, CABI` },
+          { name: `চাল / ধান (Rice)`, desc: nut.cropsTable5.rice, src: `Kumar & Sharma / IRRI` },
+          { name: `আড়ধানা / অড়হর ডাল (Pigeon pea)`, desc: nut.cropsTable5.pigeonpea, src: `Kumar & Sharma, CABI` },
+          { name: `রিকিন / ক্যাস্টর (Castor)`, desc: nut.cropsTable5.castor, src: `Kumar & Sharma, CABI` }
+        ];
+        cropsEl.innerHTML = cropList.map(function(c) {
+          return `
+            <article class="crop-atlas-card">
+              <strong style="color:var(--primary);">${c.name}</strong>
+              <p style="font-size:0.86rem;">${c.desc}</p>
+              <span class="muted" style="font-size:0.75rem;">সূত্র: ${c.src}</span>
+            </article>
+          `;
+        }).join(``);
+      }
+    }
+
+    /* --- Panel 5: Field Tests, Confusion Table 6 & Case Log --- */
+    function renderFieldTestsAndConfusion() {
+      const ftGrid = document.getElementById(`field-tests-grid`);
+      if (ftGrid) {
+        ftGrid.innerHTML = FIELD_TESTS_DATA.map(function(t) {
+          return `
+            <article class="card">
+              <span class="tag-pill is-green" style="margin-bottom:var(--space-xs);">${t.badge}</span>
+              <h3 style="margin-bottom:var(--space-sm);">${t.title}</h3>
+              <ol style="margin:0; padding-left:var(--space-lg); display:grid; gap:var(--space-xs); font-size:0.88rem; color:var(--on-surface-variant);">
+                ${t.steps.map(function(st) { return `<li>${st}</li>`; }).join(``)}
+              </ol>
+            </article>
+          `;
+        }).join(``);
+      }
+
+      const confSelect = document.getElementById(`conf-pair-select`);
+      if (confSelect && confSelect.options.length === 0) {
+        confSelect.innerHTML = CONFUSION_PAIRS_DATA.map(function(c) {
+          return `<option value="${c.id}">${c.pair}</option>`;
+        }).join(``);
+        confSelect.value = appState.selectedConfusionId;
+      }
+      renderConfusionDetail();
+
+      const caseSymSel = document.getElementById(`case-symptom`);
+      if (caseSymSel && caseSymSel.options.length === 0) {
+        caseSymSel.innerHTML = SYMPTOMS_DATA.map(function(s) {
+          return `<option value="${s.name}">${s.name}</option>`;
+        }).join(``);
+      }
+
+      renderCaseLog();
+    }
+
+    function renderConfusionDetail() {
+      const sel = document.getElementById(`conf-pair-select`);
+      if (sel) appState.selectedConfusionId = sel.value;
+      const item = CONFUSION_PAIRS_DATA.find(function(c) { return c.id === appState.selectedConfusionId; }) || CONFUSION_PAIRS_DATA[0];
+      const box = document.getElementById(`conf-detail-box`);
+      if (!box || !item) return;
+
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-xs);">
+          <strong>${item.pair}</strong>
+          <span class="tag-pill ${item.riskClass}">${item.risk}</span>
+        </div>
+        <div style="display:grid; gap:var(--space-sm); margin-top:var(--space-xs);">
+          ${item.items.map(function(it) {
+            return `
+              <div style="border-top:var(--border-soft); padding-top:var(--space-xs);">
+                <strong style="color:var(--primary); font-size:0.9rem;">উপসর্গ: ${it.sym}</strong>
+                <p style="font-size:0.88rem; color:var(--on-surface-variant);">${it.diff}</p>
+              </div>
+            `;
+          }).join(``)}
+        </div>
+      `;
+      persistState();
+    }
+
+    function saveFieldCase(event) {
+      event.preventDefault();
+      const cropEl = document.getElementById(`case-crop`);
+      const symEl = document.getElementById(`case-symptom`);
+      const diagEl = document.getElementById(`case-diagnosis`);
+      const noteEl = document.getElementById(`case-note`);
+      const statusEl = document.getElementById(`case-form-status`);
+
+      if (!cropEl || !diagEl) return;
+      const crop = cropEl.value.trim();
+      const diag = diagEl.value.trim();
+      if (!crop || !diag) {
+        if (statusEl) statusEl.textContent = `অনুগ্রহ করে ফসলের নাম এবং রোগনির্ণয় লিখুন।`;
+        return;
+      }
+
+      const newEntry = {
+        id: Date.now().toString(36),
+        crop: crop,
+        symptom: symEl ? symEl.value : ``,
+        diagnosis: diag,
+        note: noteEl ? noteEl.value.trim() : ``,
+        date: new Date().toLocaleDateString(`bn-BD`)
+      };
+
+      appState.savedCases.unshift(newEntry);
+      cropEl.value = ``;
+      diagEl.value = ``;
+      if (noteEl) noteEl.value = ``;
+      if (statusEl) statusEl.textContent = `কেস নোটটি সংরক্ষিত হয়েছে।`;
+
+      renderCaseLog();
+      persistState();
+    }
+
+    function deleteFieldCase(caseId) {
+      appState.savedCases = appState.savedCases.filter(function(c) { return c.id !== caseId; });
+      renderCaseLog();
+      persistState();
+    }
+
+    function clearAllCases(btn) {
+      if (appState.savedCases.length === 0) return;
+      if (btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.textContent = `নিশ্চিত করতে আবার চাপুন`;
+        setTimeout(function() {
+          btn.dataset.armed = `false`;
+          btn.textContent = `সব মুছুন`;
+        }, 4000);
+        return;
+      }
+      btn.dataset.armed = `false`;
+      btn.textContent = `সব মুছুন`;
+      appState.savedCases = [];
+      renderCaseLog();
+      persistState();
+    }
+
+    function renderCaseLog() {
+      const kpiCases = document.getElementById(`kpi-cases`);
+      if (kpiCases) kpiCases.textContent = appState.savedCases.length.toLocaleString(`bn-BD`);
+
+      const container = document.getElementById(`case-list-container`);
+      if (!container) return;
+
+      if (appState.savedCases.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state" style="padding:var(--space-md);">
+            <p class="muted">এখনো কোনো মাঠপর্যায়ের কেস নোট সংরক্ষণ করা হয়নি। উপরের ফর্ম থেকে আপনার প্রথম রোগনির্ণয় নোট সংরক্ষণ করুন।</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = appState.savedCases.map(function(c) {
+        return `
+          <article class="case-item">
+            <div class="case-head">
+              <div>
+                <strong>${c.crop}</strong> · <span class="tag-pill is-green">${c.symptom}</span>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="deleteFieldCase('${c.id}')" aria-label="নোট মুছুন">মুছুন</button>
+            </div>
+            <div style="font-size:0.9rem;"><strong>রোগনির্ণয়:</strong> ${c.diagnosis}</div>
+            ${c.note ? `<p class="muted" style="font-size:0.86rem;">${c.note}</p>` : ``}
+            <span class="muted" style="font-size:0.75rem;">তারিখ: ${c.date}</span>
+          </article>
+        `;
+      }).join(``);
+    }
+
+    function exportCasesCSV() {
+      const statusEl = document.getElementById(`case-form-status`);
+      if (appState.savedCases.length === 0) {
+        if (statusEl) statusEl.textContent = `রপ্তানি করার মতো কোনো সংরক্ষিত কেস নোট নেই।`;
+        return;
+      }
+      const header = `"তারিখ","ফসল","উপসর্গ","রোগনির্ণয়","পর্যবেক্ষণ ও পরামর্শ"\n`;
+      const rows = appState.savedCases.map(function(c) {
+        const clean = function(s) { return `"` + String(s || ``).replace(/"/g, `""`) + `"`; };
+        return [clean(c.date), clean(c.crop), clean(c.symptom), clean(c.diagnosis), clean(c.note)].join(`,`);
+      }).join(`\n`);
+
+      const csvContent = `\uFEFF` + header + rows;
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
+        window.notebookAppApi.triggerFileDownload({
+          content: csvContent,
+          contentType: `text/csv`,
+          encoding: `UTF-8`,
+          filename: `plant_field_cases.csv`
+        });
+        if (statusEl) statusEl.textContent = `CSV ফাইল ডাউনলোড শুরু হয়েছে।`;
+      } else {
+        const blob = new Blob([csvContent], { type: `text/csv;charset=utf-8;` });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement(`a`);
+        a.href = url;
+        a.download = `plant_field_cases.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    function updateSearchStatusKpi() {
+      const statusEl = document.getElementById(`kpi-match-status`);
+      if (!statusEl) return;
+      if (!appState.searchQuery) {
+        statusEl.textContent = `সব তথ্য প্রদর্শিত হচ্ছে`;
+      } else {
+        statusEl.textContent = `অনুসন্ধান: "${appState.searchQuery}"`;
+      }
+    }
+
+    function renderAllDataViews() {
+      updateSearchStatusKpi();
+      renderTriage();
+      renderTable3();
+      renderPests();
+      renderTable4();
+      renderTable5Atlas();
+      renderFieldTestsAndConfusion();
+    }
+
+    /* ============================================================
+       INITIALIZATION
+       ============================================================ */
+    async function initApp() {
+      await loadInitialState();
+      const hashMatch = (location.hash || ``).match(/view=(all|table3|table12|table4|table5|field)/);
+      if (hashMatch) appState.activeView = hashMatch[1];
+      setActiveView(appState.activeView);
+      selectFieldStep(appState.selectedFieldStep);
+      renderAllDataViews();
+      renderSymptomOverlapChart();
+
+      if (window.lucide && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    window.addEventListener(`hashchange`, function() {
+      const hm = (location.hash || ``).match(/view=(all|table3|table12|table4|table5|field)/);
+      if (hm) setActiveView(hm[1]);
+    });
+
+    document.addEventListener(`DOMContentLoaded`, initApp);
+  </script>
+</body>
+</html>

@@ -20,6 +20,7 @@
     {"src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
   ],
   "shortcuts": [
-    {"name": "সূচিপত্র", "url": "./index.html#toc"}
+    {"name": "সূচিপত্র", "url": "./index.html#toc"},
+    {"name": "ফিল্ড ড্যাশবোর্ড", "url": "./dashboard.html"}
   ]
 }

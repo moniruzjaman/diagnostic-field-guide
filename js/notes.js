@@ -12,7 +12,7 @@
 
     const NOTES_KEY = 'pwdfg.notes.v1';
     const FEEDBACK_KEY = 'pwdfg.feedback.v1';
-    const APP_VERSION = 'v1.5.0';
+    const APP_VERSION = 'v1.7.0';
 
     const $ = (sel, root) => (root || document).querySelector(sel);
     const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));

@@ -2543,3 +2543,76 @@ body.audio-visible .offline-toast { bottom: calc(var(--audio-h) + 12px); }
     0% { background-color: rgba(242, 169, 0, 0.18); }
     100% { background-color: transparent; }
 }
+
+/* ── Field Dashboard launcher banner (hero card) ─────────────── */
+.dash-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 auto 28px;
+    max-width: 560px;
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(240, 194, 75, 0.55);
+    border-left: 5px solid #F0C24B;
+    border-radius: 14px;
+    color: #fff;
+    text-decoration: none;
+    text-align: left;
+    transition: transform 0.18s ease, background 0.18s ease;
+}
+.dash-banner:hover,
+.dash-banner:focus-visible { background: rgba(0, 0, 0, 0.34); transform: translateY(-2px); }
+.dash-banner-ico { font-size: 30px; flex: none; }
+.dash-banner-body { flex: 1 1 auto; min-width: 0; display: block; }
+.dash-banner-kicker {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: #F0C24B;
+    margin-bottom: 3px;
+}
+.dash-banner-title {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+.dash-banner-desc {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 12.5px;
+    color: #CFF3E4;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+.dash-banner-cta {
+    flex: none;
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 800;
+    color: #003D2C;
+    background: #F0C24B;
+    padding: 9px 16px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+@media (max-width: 520px) {
+    .dash-banner { flex-wrap: wrap; }
+    .dash-banner-cta { width: 100%; text-align: center; }
+}
+
+/* end-card dashboard CTA (anchor restyle to match buttons) */
+.btn-end-dash {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+/* search results: interactive dashboard tool hits */
+.search-item.is-tool .search-item-title { color: var(--c-primary); }
