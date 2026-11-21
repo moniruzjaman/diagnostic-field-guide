@@ -179,6 +179,15 @@
     </div>
     <p class="settings-hint">অধ্যায়ের শিরোনামে ট্যাপ করলে ভাঁজ বা খোলে · কীবোর্ড: C</p>
   </div>
+
+  <div class="settings-section">
+    <label class="settings-label">আমার নোট ও মতামত</label>
+    <div class="font-grid">
+      <button class="font-btn" id="btnExportNotes">ডাউনলোড (JSON)</button>
+    </div>
+    <p class="settings-hint" id="nfExportCounts">নোট ০টি · মতামত ০টি</p>
+    <p class="settings-hint">আপনার নোট ও মতামত শুধু এই ডিভাইসে থাকে — JSON নামিয়ে লেখককে পাঠাতে পারেন।</p>
+  </div>
 </aside>
 <div class="settings-overlay" id="settingsOverlay"></div>
 
@@ -436,6 +445,7 @@
 <script src="js/tts.js" defer></script>
 <script src="js/share.js" defer></script>
 <script src="js/reader.js" defer></script>
+<script src="js/notes.js" defer></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {

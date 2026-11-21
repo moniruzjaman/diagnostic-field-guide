@@ -2248,3 +2248,140 @@ body.audio-visible .offline-toast { bottom: calc(var(--audio-h) + 12px); }
 @media (min-width: 640px) {
     .footer-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── Chapter notes & feedback (offline, per-chapter) ─────── */
+.nf-block {
+    margin-top: 2.2rem;
+    border-top: 1px dashed var(--c-line);
+    padding-top: 1.4rem;
+    display: grid;
+    gap: 14px;
+}
+.nf-card {
+    background: var(--c-paper-alt);
+    border: 1px solid var(--c-line);
+    border-radius: 14px;
+    padding: 16px;
+}
+.nf-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.nf-title {
+    font-family: var(--font-head);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--c-primary);
+}
+.nf-status {
+    font-family: var(--font-head);
+    font-size: 11.5px;
+    color: var(--c-muted);
+}
+.nf-note-input,
+.nf-fb-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--c-paper);
+    border: 1px solid var(--c-line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--c-ink);
+    resize: vertical;
+    min-height: 44px;
+}
+.nf-note-input:focus,
+.nf-fb-input:focus {
+    outline: 2px solid var(--c-primary);
+    outline-offset: 1px;
+    border-color: var(--c-primary);
+}
+.nf-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+.nf-btn {
+    font-family: var(--font-head);
+    font-size: 13.5px;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 9px 16px;
+    cursor: pointer;
+    border: 1px solid var(--c-line);
+    background: var(--c-paper);
+    color: var(--c-ink-soft);
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.nf-btn:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.nf-btn-primary {
+    background: var(--c-primary);
+    border-color: var(--c-primary);
+    color: #fff;
+}
+.nf-btn-primary:hover { background: var(--c-primary-2); color: #fff; }
+.nf-hint {
+    font-family: var(--font-head);
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--c-muted);
+}
+.nf-stars {
+    display: flex;
+    gap: 4px;
+}
+.nf-star {
+    font-size: 26px;
+    line-height: 1;
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--c-line);
+    transition: color 0.12s ease, transform 0.12s ease;
+}
+.nf-star.active { color: var(--c-accent); }
+.nf-star:active { transform: scale(1.15); }
+.nf-rating-label {
+    font-family: var(--font-head);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--c-accent);
+    min-height: 18px;
+    margin-top: 6px;
+}
+.nf-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--c-ink);
+    color: #fff;
+    font-family: var(--font-head);
+    font-size: 13.5px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 70;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.nf-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+.nf-dot {
+    font-size: 11px;
+    margin-inline-start: 6px;
+}
