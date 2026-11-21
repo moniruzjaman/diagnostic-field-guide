@@ -10,7 +10,7 @@
    - navigation fallback: index.html (single-page app)
    ============================================================ */
 
-const VERSION = 'v1.5.0';
+const VERSION = 'v1.6.0';
 const SHELL_CACHE = `pwdfg-shell-${VERSION}`;
 const IMG_CACHE = `pwdfg-img-${VERSION}`;
 
@@ -24,6 +24,7 @@ const SHELL_ASSETS = [
     './js/share.js',
     './js/reader.js',
     './js/notes.js',
+    './js/search.js',
     './og-image.jpg',
     './icons/favicon-32.png',
     './icons/apple-touch-icon.png',

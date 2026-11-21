@@ -87,6 +87,9 @@
     <span class="topbar-title-sub" id="topbarChapter">বাংলা ই-বুক · Plantwise</span>
   </div>
   <div class="topbar-actions">
+    <button class="icon-btn" id="btnSearch" aria-label="খোঁজ" title="খোঁজ (কীবোর্ড: /)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
     <button class="icon-btn" id="btnAudio" aria-label="শুনুন" title="এই অধ্যায় শুনুন">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-7h3v5zM3 19a2 2 0 0 0 2 2h1v-7H3v5z"/></svg>
     </button>
@@ -114,6 +117,23 @@
   </div>
 </aside>
 <div class="toc-overlay" id="tocOverlay"></div>
+
+<aside class="search-panel" id="searchPanel" aria-label="বইয়ে খোঁজ">
+  <div class="search-header">
+    <div class="search-input-wrap">
+      <svg class="search-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" id="searchInput" class="search-input" placeholder="শব্দ, উপসর্গ বা ছবি খুঁজুন…" autocomplete="off">
+      <button class="icon-btn" id="btnSearchClose" aria-label="বন্ধ করুন">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="search-results" id="searchResults">
+    <div class="search-empty">🔍 লিখুন — যেমন: “পাতা কোঁকড়ানো”, “এফিড”, “সারণি ৩”</div>
+  </div>
+  <div class="search-foot">ফলাফলে ট্যাপ করলে সরাসরি সেকশন/ছবিতে চলে যাবেন · কীবোর্ড: /</div>
+</aside>
+<div class="search-overlay" id="searchOverlay"></div>
 
 <aside class="settings-panel" id="settingsPanel">
   <div class="settings-header">
@@ -446,6 +466,7 @@
 <script src="js/share.js" defer></script>
 <script src="js/reader.js" defer></script>
 <script src="js/notes.js" defer></script>
+<script src="js/search.js" defer></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
