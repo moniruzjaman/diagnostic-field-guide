@@ -11,7 +11,7 @@
   "theme_color": "#006A4E",
   "lang": "bn-BD",
   "dir": "ltr",
-  "categories": ["education", "books", "medical", "productivity"],
+  "categories": ["education", "books", "productivity"],
   "icons": [
     {"src": "icons/favicon-32.png", "sizes": "32x32", "type": "image/png"},
     {"src": "icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"},
@@ -21,6 +21,7 @@
   ],
   "shortcuts": [
     {"name": "সূচিপত্র", "url": "./index.html#toc"},
-    {"name": "ফিল্ড ড্যাশবোর্ড", "url": "./dashboard.html"}
+    {"name": "ফিল্ড ড্যাশবোর্ড", "url": "./dashboard.html"},
+    {"name": "মাঠ রোগনির্ণয়", "url": "./field-diagnosis.html"}
   ]
 }
