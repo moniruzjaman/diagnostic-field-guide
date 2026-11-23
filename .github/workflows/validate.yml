@@ -1,0 +1,35 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify Node.js
+        run: node --version
+
+      - name: Run tests
+        run: npm test
+
+      - name: Validate referenced images exist
+        run: |
+          # Extract image references from handbook.html and check they exist in img/
+          if [ -f handbook.html ]; then
+            grep -oE 'src="img/[^"]+"' handbook.html | sed 's/src="//;s/"//' | sort -u | while read -r img; do
+              if [ ! -f "$img" ]; then
+                echo "ERROR: Referenced image not found: $img"
+                exit 1
+              fi
+            done
+            echo "All referenced images exist."
+          else
+            echo "handbook.html not found, skipping image validation."
+          fi
