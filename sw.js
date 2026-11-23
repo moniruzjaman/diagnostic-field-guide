@@ -10,7 +10,7 @@
    - navigation fallback: index.html (single-page app)
    ============================================================ */
 
-const VERSION = 'v1.7.1';
+const VERSION = 'v1.7.2';
 const SHELL_CACHE = `pwdfg-shell-${VERSION}`;
 const IMG_CACHE = `pwdfg-img-${VERSION}`;
 
@@ -80,7 +80,9 @@ self.addEventListener('fetch', (event) => {
     if (req.method !== 'GET') return;
     const url = new URL(req.url);
 
-    // same-origin only (cross-origin share endpoints etc. bypass SW)
+    // same-origin only — cross-origin requests (share endpoints, GA4 gtag.js
+    // and google-analytics.com collection hits) bypass the SW completely,
+    // untouched by cache logic
     if (url.origin !== self.location.origin) return;
 
     // navigations → network first, fall back to cached index (offline)
