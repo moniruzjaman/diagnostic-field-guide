@@ -44,9 +44,21 @@ CABI **Plantwise Diagnostic Field Guide** (2015)-এর পূর্ণ বা�
 
 ## ব্যবহার
 
-প্রথমবার খুললে Service Worker সম্পূর্ণ গাইড (পাঠ্য, সারণি, ছবি) ডিভাইসে ক্যাশ করে;
-এরপর ইন্টারনেট ছাড়াই পুরো বই পড়া ও শোনা যায়। ব্রাউজারের "Add to Home Screen" দিয়ে
-অ্যাপ হিসেবে ইনস্টল করা যায়।
+প্রথমবার খুললে Service Worker অ্যাপ শেল ও বইয়ের পাঠ্য ক্যাশ করে। ছবি দেখা হলে ক্যাশ হয়;
+বিদ্যমান idle image preloader-ও ছবিগুলো ধাপে ধাপে ক্যাশ করতে পারে। সম্পূর্ণ অফলাইনে যাওয়ার আগে
+প্রথমবার অনলাইনে গাইড খুলে ছবি প্রিলোড সম্পন্ন হতে দিন। এরপর ক্যাশ হওয়া ছবি, পাঠ্য ও অধ্যায়
+অফলাইনে পড়া যায়। বাংলা TTS ভয়েস ডিভাইস/ব্রাউজারভেদে ভিন্ন হতে পারে। ব্রাউজারের
+"Add to Home Screen" দিয়ে অ্যাপ হিসেবে ইনস্টল করা যায়।
+
+## KrishiAI ecosystem integration
+
+- এই repo: অফলাইন বাংলা reference guide ও self-study resource।
+- [CABI Diagnosis](https://github.com/moniruzjaman/cabi-diagnosis): operational diagnosis ও field identification workspace।
+- [Diagnosis Assistant](https://github.com/moniruzjaman/diagnosis-assistant): guided visual training ও practice।
+
+এই reader-এ operational diagnosis বা pesticide engine নকল করে যোগ করা হবে না। CABI/Plantwise
+মূল বইয়ের অনুবাদ, ছবি ও ক্যাপশন অন্য অ্যাপে কপি করার আগে CC BY-NC শর্ত, attribution এবং
+প্রয়োজনীয় অনুমতি যাচাই করতে হবে।
 
 📊 **অ্যানালিটিক্স**: index.html ও dashboard.html-এ Google Analytics 4 (G-1508H8ETJ5,
 gtag.js) যুক্ত আছে — ব্যবহারের পরিসংখ্যান মাপতে। অফলাইনে এই স্ক্রিপ্ট লোড হয় না,
