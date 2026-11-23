@@ -102,6 +102,9 @@
     <button class="icon-btn" id="btnAudio" aria-label="শুনুন" title="এই অধ্যায় শুনুন">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-7h3v5zM3 19a2 2 0 0 0 2 2h1v-7H3v5z"/></svg>
     </button>
+    <button class="icon-btn" id="btnBookmarks" aria-label="বুকমার্ক" title="বুকমার্ক তালিকা">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
     <button class="icon-btn" id="btnShare" aria-label="শেয়ার করুন" title="শেয়ার করুন">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
     </button>
@@ -213,12 +216,25 @@
     <label class="settings-label">আমার নোট ও মতামত</label>
     <div class="font-grid">
       <button class="font-btn" id="btnExportNotes">ডাউনলোড (JSON)</button>
+      <button class="font-btn" id="btnEmailAuthor">📧 লেখকে ইমেল করুন</button>
     </div>
     <p class="settings-hint" id="nfExportCounts">নোট ০টি · মতামত ০টি</p>
-    <p class="settings-hint">আপনার নোট ও মতামত শুধু এই ডিভাইসে থাকে — JSON নামিয়ে লেখককে পাঠাতে পারেন।</p>
+    <p class="settings-hint">নোট ও মতামত শুধু এই ডিভাইসে থাকে — JSON নামিয়ে বা "লেখকে ইমেল করুন" টিপে mithun.hstu@gmail.com-এ পাঠাতে পারেন।</p>
   </div>
 </aside>
 <div class="settings-overlay" id="settingsOverlay"></div>
+
+<aside class="settings-panel" id="bookmarksPanel" aria-label="বুকমার্ক তালিকা">
+  <div class="settings-header">
+    <h2 class="settings-title">🔖 বুকমার্ক</h2>
+    <button class="icon-btn settings-close" id="btnCloseBookmarks" aria-label="বন্ধ করুন">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="bookmarks-list" id="bookmarksList"></div>
+  <p class="settings-hint" style="padding:0 18px 18px">অধ্যায়ের শুরুতে “☆ বুকমার্ক করুন” টিপে সংরক্ষণ করুন · বুকমার্ক শুধু এই ডিভাইসে থাকে</p>
+</aside>
+<div class="settings-overlay" id="bookmarksOverlay"></div>
 
 <div class="audio-bar" id="audioBar">
   <button class="audio-btn audio-play" id="audioPlay" aria-label="চালান / থামান">
@@ -437,7 +453,7 @@
       </span>
     </a>
   </div>
-  <p class="footer-note">উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড · বাংলা সংস্করণ v1.7 · মূল গ্রন্থ © CABI / Plantwise · CC BY-NC · অফলাইনে পড়া ও শোনা যায়</p>
+  <p class="footer-note">উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড · বাংলা সংস্করণ v1.8 · মূল গ্রন্থ © CABI / Plantwise · CC BY-NC · অফলাইনে পড়া ও শোনা যায় · মতামত: mithun.hstu@gmail.com</p>
 </footer>
 
 <button class="fab-share" id="fabShare" aria-label="শেয়ার করুন">
@@ -494,6 +510,7 @@
 <script src="js/share.js" defer></script>
 <script src="js/reader.js" defer></script>
 <script src="js/notes.js" defer></script>
+<script src="js/bookmarks.js" defer></script>
 <script src="js/search.js" defer></script>
 <script>
 if ('serviceWorker' in navigator) {

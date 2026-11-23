@@ -12,7 +12,8 @@
 
     const NOTES_KEY = 'pwdfg.notes.v1';
     const FEEDBACK_KEY = 'pwdfg.feedback.v1';
-    const APP_VERSION = 'v1.7.2';
+    const APP_VERSION = 'v1.8.0';
+    const AUTHOR_EMAIL = 'mithun.hstu@gmail.com';
 
     const $ = (sel, root) => (root || document).querySelector(sel);
     const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
@@ -91,7 +92,8 @@
       placeholder="মতামত লিখুন (ঐচ্ছিক)…">${fb && fb.comment ? escapeHtml(fb.comment) : ''}</textarea>
     <div class="nf-actions">
       <button type="button" class="nf-btn nf-btn-primary" data-action="fb-save">সংরক্ষণ করুন</button>
-      <span class="nf-hint">ডিভাইসে সংরক্ষিত · সেটিংস থেকে JSON ডাউনলোড করে লেখককে পাঠান</span>
+      <button type="button" class="nf-btn nf-btn-ghost" data-action="fb-email">📧 লেখককে পাঠান</button>
+      <span class="nf-hint">ডিভাইসে সংরক্ষিত · লেখক: mithun.hstu@gmail.com</span>
     </div>
   </div>
 </div>`;
@@ -137,6 +139,52 @@
         if (status) status.textContent = `সংরক্ষিত ✓ ${fmtTime(feedback[chId].updatedAt)}`;
         showToast('মতামত সংরক্ষিত হয়েছে ✅');
         updateExportCounts();
+    }
+
+    // ── E-mail delivery to the author (static hosting: mailto:) ──
+    function emailFeedback(block) {
+        const chId = block.dataset.ch;
+        const rating = parseInt(block.dataset.rating || '0', 10) || (feedback[chId] && feedback[chId].rating) || 0;
+        const comment = (($('[data-role="fb-input"]', block)?.value) || '').trim() || (feedback[chId] && feedback[chId].comment) || '';
+        if (!rating && !comment) {
+            showToast('আগে রেটিং দিন বা মতামত লিখুন');
+            return;
+        }
+        const ch = getChapters().find(c => c.id === chId);
+        const lines = [
+            'মতামত — উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড',
+            '────────────────────',
+            'অধ্যায়: ' + (ch ? ch.numLabel + ' — ' + ch.title : chId),
+            'রেটিং: ' + (rating ? bn(rating) + '/৫' + (RATING_LABELS[rating] ? ' (' + RATING_LABELS[rating] + ')' : '') : '—'),
+            'মন্তব্য: ' + (comment || '—'),
+            '',
+            'অ্যাপ সংস্করণ: ' + APP_VERSION,
+            'পাঠানোর সময়: ' + fmtTime(Date.now()),
+        ];
+        const url = 'mailto:' + AUTHOR_EMAIL +
+            '?subject=' + encodeURIComponent('[ফিল্ড গাইড মতামত] ' + (ch ? ch.title : chId)) +
+            '&body=' + encodeURIComponent(lines.join('\n'));
+        window.location.href = url;
+        showToast('ইমেল অ্যাপ খুলছে… 📧');
+    }
+
+    function emailToAuthor() {
+        const n = Object.keys(notes).length;
+        const f = Object.keys(feedback).length;
+        const lines = [
+            'প্রশ্ন / মতামত — উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড',
+            '────────────────────',
+            'সংরক্ষিত নোট: ' + bn(n) + 'টি · মতামত: ' + bn(f) + 'টি',
+            '',
+            '(এখানে আপনার প্রশ্ন বা মতামত লিখুন)',
+            '',
+            'অ্যাপ সংস্করণ: ' + APP_VERSION,
+        ];
+        const url = 'mailto:' + AUTHOR_EMAIL +
+            '?subject=' + encodeURIComponent('[ফিল্ড গাইড] প্রশ্ন / মতামত') +
+            '&body=' + encodeURIComponent(lines.join('\n'));
+        window.location.href = url;
+        showToast('ইমেল অ্যাপ খুলছে… 📧');
     }
 
     // ── Toast ────────────────────────────────────────────────
@@ -227,6 +275,8 @@
             if (!block) return;
             if (actionBtn.dataset.action === 'fb-save') {
                 saveFeedback(block);
+            } else if (actionBtn.dataset.action === 'fb-email') {
+                emailFeedback(block);
             } else if (actionBtn.dataset.action === 'note-clear') {
                 const input = block.querySelector('[data-role="note-input"]');
                 if (input) input.value = '';
@@ -248,6 +298,7 @@
         });
 
         $('#btnExportNotes')?.addEventListener('click', exportAll);
+        $('#btnEmailAuthor')?.addEventListener('click', emailToAuthor);
     }
 
     window.EBOOK_NOTES = { init: inject, exportAll, updateBadges };
