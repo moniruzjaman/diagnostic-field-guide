@@ -1,0 +1,25 @@
+name: Validate Field Guide v2
+on:
+  push:
+    branches: [main, "release/**"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check js/field-diagnosis.js
+      - run: node --test tests/field-diagnosis.test.cjs
+      - name: Verify offline assets are registered
+        run: |
+          test -f field-diagnosis.html
+          test -f css/field-diagnosis.css
+          grep -q "field-diagnosis.html" sw.js
+          grep -q "field-diagnosis.js" sw.js
