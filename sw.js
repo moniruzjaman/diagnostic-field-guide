@@ -10,7 +10,7 @@
    - navigation fallback: index.html (single-page app)
    ============================================================ */
 
-const VERSION = 'v2.0.1';
+const VERSION = 'v2.0.2';
 const SHELL_CACHE = `pwdfg-shell-${VERSION}`;
 const IMG_CACHE = `pwdfg-img-${VERSION}`;
 
@@ -30,6 +30,17 @@ const SHELL_ASSETS = [
     './js/notes.js',
     './js/bookmarks.js',
     './js/search.js',
+    // v2.0.2: Table-3 causal-agent category photos (precached for offline use)
+    './img/p100_193.jpg',
+    './img/p035_84.jpg',
+    './img/p114_269.jpg',
+    './img/p105_220.jpg',
+    './img/p061_156.jpg',
+    './img/p111_253.jpg',
+    './img/p110_249.jpg',
+    './img/p056_143.jpg',
+    './img/p094_163.jpg',
+    './img/p050_129.jpg',
     './og-image.jpg',
     './icons/favicon-32.png',
     './icons/apple-touch-icon.png',

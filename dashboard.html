@@ -45,7 +45,8 @@
     .sym-max{margin-left:auto;font-family:var(--font-mono);font-size:.72rem;}
     .sym-bars{display:flex;flex-direction:column;gap:10px;}
     .sym-row{display:grid;grid-template-columns:minmax(120px,190px) 1fr 36px;align-items:center;gap:10px;}
-    .sym-label{font-family:var(--font-label);font-size:.8rem;color:var(--on-surface);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .sym-label{font-family:var(--font-label);font-size:.8rem;color:var(--on-surface);display:flex;align-items:center;justify-content:flex-end;gap:6px;}
+    .sym-label-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
     .sym-track{display:flex;height:16px;border-radius:8px;background:var(--surface-container-high);overflow:hidden;}
     .sym-fill{height:100%;min-width:0;}
     .sym-common{background:var(--data-1);}
@@ -687,6 +688,21 @@
       display: grid;
       gap: var(--space-sm);
     }
+
+    /* ═══ v2.0.2: কারণগোষ্ঠীর ছবি — সারণি ৩ বিশ্লেষণ এলাকা ═══ */
+    .agent-head{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
+    .agent-thumb{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid var(--outline);background:var(--surface-container-high);display:inline-flex;align-items:center;justify-content:center;flex:none;font-size:.95rem;color:var(--on-surface-variant);}
+    .sym-thumb{width:18px;height:18px;border-width:1px;}
+    .inspector-layout{display:flex;gap:var(--space-md);align-items:flex-start;flex-wrap:wrap;}
+    .inspector-fig{margin:0;width:min(230px,100%);flex:none;}
+    .inspector-fig img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid var(--outline);display:block;}
+    .inspector-fig figcaption{font-size:.72rem;line-height:1.5;color:var(--on-surface-variant);margin-top:6px;}
+    .inspector-fig .attr{display:block;opacity:.85;margin-top:2px;}
+    .inspector-fig.fig-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;aspect-ratio:4/3;background:var(--surface-container-high);border:1px dashed var(--outline);border-radius:10px;text-align:center;font-size:.78rem;color:var(--on-surface-variant);padding:12px;box-sizing:border-box;}
+    .fig-fallback-ico{font-size:1.6rem;}
+    .inspector-text{flex:1 1 260px;min-width:0;}
+    .inspector-text h3{margin-top:0;}
+    @media (max-width:640px){ .inspector-fig{width:100%;} .agent-thumb{width:24px;height:24px;} .sym-thumb{width:15px;height:15px;} }
 
     /* Pest Cards Grid (Tables 1 & 2) */
     .pest-filters {
@@ -1434,6 +1450,26 @@
       { id: `nutrients`, name: `পুষ্টি ঘাটতি`, en: `Nutrient deficiency` },
       { id: `physical`, name: `ভৌতিক ও হার্বিসাইড`, en: `Physical & herbicides` }
     ];
+
+    // v2.0.2: প্রতিটি কারণগোষ্ঠীর প্রতিনিধি ছবি — বইয়ের ছবি-শব্দকোষ (Annex-5) থেকে;
+    // alt-ক্যাপশন যাচাই করে বাছাই করা। স্তন্যপায়ী ও পাখির ছবি বইয়ে নেই → fallback চিপ।
+    const AGENT_MEDIA = {
+      fungi:       { src: `img/p100_193.jpg`, cap: `শিমের রাস্ট — পাতার ত্বক ফেটে বের হওয়া উরেডিনিওস্পোর পাস্টুল (ছত্রাকজনিত)` },
+      water_mould: { src: `img/p035_84.jpg`,  cap: `টমেটোতে Phytophthora infestans — জল-ছত্রাকজনিত লেট ব্লাইটের দাগ` },
+      bacteria:    { src: `img/p114_269.jpg`, cap: `ফায়ার ব্লাইট — আগুনে পোড়ার মতো হঠাৎ শুকিয়ে যাওয়া ডাল (ব্যাকটেরিয়াজনিত)` },
+      virus:       { src: `img/p105_220.jpg`, cap: `কাসাভা মোজাইক ভাইরাস — হলুদ-সবুজ বুটিদার মোজাইক, পাতা বাঁকা (ভাইরাসজনিত)` },
+      phytoplasma: { src: `img/p061_156.jpg`, cap: `উইল্টের প্রধান ব্যতিক্রম — ফাইটোপ্লাজমাজনিত ক্ষেত্র` },
+      nematode:    { src: `img/p111_253.jpg`, cap: `নট নেমাটোড / ক্রাউন গল — শিকড়ে গোল, বিকৃত টিউমার` },
+      insects:     { src: `img/p110_249.jpg`, cap: `কলার বিটল পোকা — কাণ্ডে গোল ছিদ্র ও করাত-মল (ফ্রাস) নির্গমন` },
+      mites:       { src: `img/p056_143.jpg`, cap: `মাইটজনিত ক্ষতি — ছোট পাতা ও ডালপালার ঝোপ (ডাইনি-ঝাড়ু)` },
+      nutrients:   { src: `img/p094_163.jpg`, cap: `নাইট্রোজেন ঘাটতি — সম্পূর্ণ ক্লোরোসিসে পাতা ফ্যাকাশে হলুদ` },
+      physical:    { src: `img/p050_129.jpg`, cap: `হার্বিসাইডের ক্ষতি — পাতা সবুজ রঙ হারিয়ে দগ্ধ` }
+    };
+    function agentThumbHTML(a, cls) {
+      const m = AGENT_MEDIA[a.id];
+      if (m) return `<img class="agent-thumb ${cls || ``}" src="${m.src}" alt="${a.name} — নমুনা ছবি" loading="lazy" decoding="async" draggable="false">`;
+      return `<span class="agent-thumb thumb-fallback ${cls || ``}" title="বইয়ে এই কারণগোষ্ঠীর কোনো ছবি নেই" aria-label="বইয়ে এই কারণগোষ্ঠীর কোনো ছবি নেই">🐾</span>`;
+    }
 
     // Table 3 full dataset: 10 symptoms x 11 agents
     // lvl: 'high' (হ্যাঁ খুবই সাধারণ), 'med' (হ্যাঁ সাধারণ), 'low' (হ্যাঁ সাধারণ নয়), 'ex' ((না) ব্যতিক্রম), 'no' (না)
@@ -2712,7 +2748,9 @@
       const headRow = document.getElementById(`table3-head-row`);
       if (headRow) {
         headRow.innerHTML = `<th class="row-sticky">উপসর্গ (সারণি ৩)</th>` +
-          CAUSAL_AGENTS.map(function(a) { return `<th>${a.name}</th>`; }).join(``);
+          CAUSAL_AGENTS.map(function(a) {
+            return `<th><div class="agent-head">${agentThumbHTML(a)}<span>${a.name}</span></div></th>`;
+          }).join(``);
       }
 
       const filteredSyms = SYMPTOMS_DATA.filter(function(s) {
@@ -2776,14 +2814,29 @@
       const agent = CAUSAL_AGENTS.find(function(a) { return a.id === appState.selectedCell.agentId; }) || CAUSAL_AGENTS[0];
       const cell = sym.cells[agent.id];
 
+      const media = AGENT_MEDIA[agent.id] ? `
+        <figure class="inspector-fig">
+          <img src="${AGENT_MEDIA[agent.id].src}" alt="${agent.name}: ${AGENT_MEDIA[agent.id].cap}" loading="lazy" decoding="async" draggable="false">
+          <figcaption>${AGENT_MEDIA[agent.id].cap}<span class="attr">ছবি: মূল বইয়ের ছবি-শব্দকোষ (CABI / Plantwise)</span></figcaption>
+        </figure>` : `
+        <div class="inspector-fig fig-fallback" role="img" aria-label="বইয়ে এই কারণগোষ্ঠীর কোনো ছবি নেই">
+          <span class="fig-fallback-ico">🐾</span>
+          <span>বইয়ে স্তন্যপায়ী ও পাখির ক্ষতির নমুনা ছবি নেই — মাঠে ক্ষতস্থান (বাকল/মূল/ফল) সরাসরি পরীক্ষা করুন</span>
+        </div>`;
+
       box.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-sm);">
           <span class="kicker">সারণি ৩ · কোষ বিশ্লেষণ</span>
           <span class="tag-pill ${cell.lvl === `high` || cell.lvl === `med` ? `is-green` : `is-ochre`}">${cell.label}</span>
         </div>
-        <h3>${sym.name} → ${agent.name}</h3>
-        <p>${cell.detail}</p>
-        <p class="muted" style="font-size:0.85rem;"><strong>উপসর্গের সাধারণ ধারণা:</strong> ${sym.overview}</p>
+        <div class="inspector-layout">
+          ${media}
+          <div class="inspector-text">
+            <h3>${sym.name} → ${agent.name}</h3>
+            <p>${cell.detail}</p>
+            <p class="muted" style="font-size:0.85rem;"><strong>উপসর্গের সাধারণ ধারণা:</strong> ${sym.overview}</p>
+          </div>
+        </div>
       `;
     }
 
@@ -2808,7 +2861,7 @@
         const rp = Math.round((rc / maxVal) * 100);
         rows += `
           <div class="sym-row">
-            <span class="sym-label" title="${a.name}">${a.name}</span>
+            <span class="sym-label" title="${a.name}">${agentThumbHTML(a, `sym-thumb`)}<span class="sym-label-txt">${a.name}</span></span>
             <span class="sym-track"><span class="sym-fill sym-common" style="width:${hp}%"></span><span class="sym-fill sym-rare" style="width:${rp}%"></span></span>
             <span class="sym-val">${(hc + rc).toLocaleString(`bn-BD`)}</span>
           </div>`;
