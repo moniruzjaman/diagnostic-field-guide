@@ -10,7 +10,7 @@
    - navigation fallback: index.html (single-page app)
    ============================================================ */
 
-const VERSION = 'v2.0.3';
+const VERSION = 'v2.1.0';
 const SHELL_CACHE = `pwdfg-shell-${VERSION}`;
 const IMG_CACHE = `pwdfg-img-${VERSION}`;
 
@@ -18,6 +18,7 @@ const SHELL_ASSETS = [
     './',
     './index.html',
     './dashboard.html',
+    './handbook.html',
     './field-diagnosis.html',
     './css/field-diagnosis.css',
     './js/field-diagnosis.js',
