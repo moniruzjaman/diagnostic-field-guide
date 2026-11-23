@@ -2621,3 +2621,20 @@ body.audio-visible .offline-toast { bottom: calc(var(--audio-h) + 12px); }
 .back-cover-fig { margin: 22px auto 0; max-width: 260px; text-align: center; }
 .back-cover-fig img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--c-line); }
 .back-cover-fig figcaption { font-size: 0.78rem; color: var(--c-ink-soft, inherit); margin-top: 8px; line-height: 1.55; }
+
+/* ═══ v1.9.1: install tip (iOS add-to-home-screen guide) ═══ */
+.install-tip {
+  margin-top: 12px; width: fit-content; max-width: 100%;
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(143, 227, 196, 0.4);
+  border-left: 4px solid #F0C24B;
+  border-radius: 12px; padding: 10px 14px;
+  font-size: 0.82rem; line-height: 1.55; color: #EAFBF3;
+  text-align: left;
+}
+.install-tip b { color: #F0C24B; }
+.install-tip-x {
+  background: none; border: 0; color: #8FE3C4;
+  font-size: 1rem; cursor: pointer; padding: 2px 4px; flex: none;
+}

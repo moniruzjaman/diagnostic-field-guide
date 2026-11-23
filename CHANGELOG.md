@@ -3,6 +3,14 @@
 Dates below are the Bangla edition release dates. The original book
 (*Plantwise Diagnostic Field Guide*, CABI 2015, CC BY-NC) is unchanged.
 
+## v2.0.1 — 2026-11-23
+
+- 📲 **Direct-install button (offline)** — hero button ("অ্যাপ ইনস্টল করুন") and a new
+  topbar download icon trigger the native install prompt (`beforeinstallprompt` →
+  `prompt()`); success toast "✓ অ্যাপ ইনস্টল হয়েছে — এখন ইন্টারনেট ছাড়াই পুরো বই চলবে";
+  buttons auto-hide in installed/standalone mode (`appinstalled` handled too).
+- 🍎 **iOS fallback** — on iPhone/iPad (no install-prompt event) the button opens a
+  Bangla Add-to-Home-Screen guide (Share ⬆️ → "Add to Home Screen"), dismissable.
 ## v2.0.0 — 2026-11-23
 
 - 🧪 **Field Diagnostic Workbench** — a new Bangla-first, offline-capable guided case workflow linked from the ebook home and footer.

@@ -13,7 +13,7 @@
     'use strict';
 
     const KEY = 'pwdfg.bookmarks.v1';
-    const APP_VERSION = 'v2.0.0';
+    const APP_VERSION = 'v2.0.1';
 
     const $ = (sel, root) => (root || document).querySelector(sel);
     const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));

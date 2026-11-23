@@ -539,22 +539,85 @@
     }
 
     let deferredPrompt = null;
+    let installBusy = false;
+    let installToastTimer = null;
+    function setInstallVisible(v) {
+        ['#btnInstall', '#btnInstallTop'].forEach((sel) => {
+            const b = $(sel);
+            if (b) b.style.display = v ? '' : 'none';
+        });
+    }
+    function installToast(msg, ms) {
+        const t = $('#offlineToast');
+        if (!t) return;
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(installToastTimer);
+        installToastTimer = setTimeout(() => t.classList.remove('show'), ms || 4000);
+    }
+    function isStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches
+            || window.navigator.standalone === true;
+    }
+    function showInstallTip() {
+        // iOS Safari never fires beforeinstallprompt — guide to Add to Home Screen
+        let tip = $('#installTip');
+        if (tip) { tip.style.display = ''; return; }
+        tip = document.createElement('div');
+        tip.id = 'installTip';
+        tip.className = 'install-tip';
+        tip.innerHTML = '<span><b>iPhone/iPad:</b> Safari-র নিচে <b>Share (⬆️)</b> বোতামে ট্যাপ করে '
+            + '\\"Add to Home Screen\\" নির্বাচন করুন — তারপর ইন্টারনেট ছাড়াই পুরো বই চলবে।</span>';
+        const x = document.createElement('button');
+        x.className = 'install-tip-x';
+        x.setAttribute('aria-label', 'বন্ধ করুন');
+        x.textContent = '✕';
+        tip.appendChild(x);
+        ($('#btnInstall')?.parentElement || document.body).appendChild(tip);
+        x.addEventListener('click', () => { tip.style.display = 'none'; });
+    }
+    async function startInstall() {
+        if (installBusy) return;
+        installBusy = true;
+        try {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                if (outcome === 'accepted') {
+                    localStorage.setItem('pwdfg.installed.v1', '1');
+                    setInstallVisible(false);
+                    installToast('✓ অ্যাপ ইনস্টল হয়েছে — এখন ইন্টারনেট ছাড়াই পুরো বই চলবে');
+                }
+            } else if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+                showInstallTip();
+            }
+        } finally { installBusy = false; }
+    }
     function wireInstall() {
+        if (isStandalone()) return; // already running as the installed app
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            const btn = $('#btnInstall');
-            if (btn) btn.style.display = '';
+            setInstallVisible(true);
         });
-        $('#btnInstall')?.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                $('#btnInstall').style.display = 'none';
-            }
-            deferredPrompt = null;
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem('pwdfg.installed.v1', '1');
+            setInstallVisible(false);
+            installToast('✓ অ্যাপ ইনস্টল হয়েছে — এখন ইন্টারনেট ছাড়াই পুরো বই চলবে');
         });
+        $('#btnInstall')?.addEventListener('click', () => startInstall());
+        $('#btnInstallTop')?.addEventListener('click', () => startInstall());
+        // iOS Safari: no prompt event — surface the button that opens the A2HS guide
+        if (!deferredPrompt && /iphone|ipad|ipod/i.test(navigator.userAgent)
+            && localStorage.getItem('pwdfg.installed.v1') !== '1') {
+            setTimeout(() => setInstallVisible(true), 1200);
+        }
+        // synthetic-prompt hook (tests; also handy for debugging)
+        window.__pfgInstall = {
+            show(ev) { deferredPrompt = ev || deferredPrompt; setInstallVisible(true); },
+            state: () => ({ available: !!deferredPrompt, standalone: isStandalone() })
+        };
     }
 
     function precacheImages() {
