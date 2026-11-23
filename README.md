@@ -91,7 +91,7 @@ manifest.webmanifest  PWA ম্যানিফেস্ট
 fonts/                Noto Sans/Serif Bengali (woff2, লোকালি বান্ডেল)
 img/                  মূল বইয়ের ২৬৫টি ছবি
 icons/                PWA আইকন
-og-image.jpg          সোশ্যাল শেয়ার প্রিভিউ (1200×630)
+og-image.py           1200×630 সোশ্যাল প্রিভিউ জেনারেটর (Pillow + Noto Sans Bengali TTF)\nog-image.jpg          জেনারেটেড সোশ্যাল শেয়ার প্রিভিউ (1200×630)
 ```
 
 ---
