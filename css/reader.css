@@ -2616,3 +2616,8 @@ body.audio-visible .offline-toast { bottom: calc(var(--audio-h) + 12px); }
 
 /* search results: interactive dashboard tool hits */
 .search-item.is-tool .search-item-title { color: var(--c-primary); }
+
+/* ═══ v1.9: back-cover figure (book-end) ═══ */
+.back-cover-fig { margin: 22px auto 0; max-width: 260px; text-align: center; }
+.back-cover-fig img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--c-line); }
+.back-cover-fig figcaption { font-size: 0.78rem; color: var(--c-ink-soft, inherit); margin-top: 8px; line-height: 1.55; }

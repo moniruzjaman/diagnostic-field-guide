@@ -3,6 +3,32 @@
 Dates below are the Bangla edition release dates. The original book
 (*Plantwise Diagnostic Field Guide*, CABI 2015, CC BY-NC) is unchanged.
 
+## v1.9.0 — 2026-11-23
+
+- 🖼 **Annex-5 photo dictionary completed** — all 108 placeholder captions
+  ("পৃষ্ঠা ৯৩"…) replaced with real Bangla descriptions (pathogen/cause · crop ·
+  diagnostic clue) sourced from the companion repo `diagnosis-assistant`
+  (`PAGE_PATHOGEN_CATALOG`); `alt` texts upgraded too; the "binding not built
+  yet" disclaimer removed.
+- 🔎 **Companion branding in footer** — new card for **উদ্ভিদ গোয়েন্দা (Plant
+  Detective)** → `https://cabi.krishiai.live` (exact live-site branding);
+  joins the ড্যাশবোর্ড, CABI ফসল রোগ নিরূপক ও সহকারী and portfolio cards.
+- 🧪 **Exam-prep completion** — new "রোগ ত্রিভুজ ও পরিবেশ বিশ্লেষণ" section in
+  chapter 8 (disease triangle from the `cabi-diagnosis` training slides:
+  পোষক × রোগজীবাণু × পরিবেশ, with a drill table); with ch8's existing 13
+  sections and ch9's 7-day plan, the CABI Academy CPD material is now fully
+  covered.
+- 🏷 **Front/back matter completed** — Plantwise donor logos (Irish Aid,
+  European Union) added to chapter 1's স্বীকৃতি; original back-cover photo added
+  to the book-end. (Page-4 CC-BY-NC badge already existed; page-2 citrus image
+  is decorative and skipped.)
+- 🧹 28 duplicated "CABILine drawings…" credit tails removed from captions.
+- 🖼 OG card refreshed for social previews (`?v=3`): bookmarks/feedback/caption
+  hooks replace the stale ones; repo description + homepage + topics synced
+  with `cabi-diagnosis`'s tags.
+- Images verified against both companion repos: the 248 "missing" images are
+  rotation/extraction duplicates — the guide's photo library is complete.
+
 ## v1.8.0 — 2026-11-23
 
 - 🔖 **Chapter bookmarks** — star any chapter from the pill at its top; revisit

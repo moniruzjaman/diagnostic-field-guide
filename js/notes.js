@@ -12,7 +12,7 @@
 
     const NOTES_KEY = 'pwdfg.notes.v1';
     const FEEDBACK_KEY = 'pwdfg.feedback.v1';
-    const APP_VERSION = 'v1.8.0';
+    const APP_VERSION = 'v1.9.0';
     const AUTHOR_EMAIL = 'mithun.hstu@gmail.com';
 
     const $ = (sel, root) => (root || document).querySelector(sel);
