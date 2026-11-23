@@ -23,3 +23,11 @@ jobs:
           test -f css/field-diagnosis.css
           grep -q "field-diagnosis.html" sw.js
           grep -q "field-diagnosis.js" sw.js
+      - name: Validate social preview generator
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-core
+          python -m pip install Pillow
+          python -m py_compile og-image.py
+          python og-image.py --output /tmp/og-image.jpg
+          python og-image.py --output /tmp/og-image.jpg --check
