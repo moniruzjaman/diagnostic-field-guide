@@ -10,7 +10,7 @@
    - navigation fallback: index.html (single-page app)
    ============================================================ */
 
-const VERSION = 'v1.9.0';
+const VERSION = 'v2.0.0';
 const SHELL_CACHE = `pwdfg-shell-${VERSION}`;
 const IMG_CACHE = `pwdfg-img-${VERSION}`;
 
@@ -18,6 +18,9 @@ const SHELL_ASSETS = [
     './',
     './index.html',
     './dashboard.html',
+    './field-diagnosis.html',
+    './css/field-diagnosis.css',
+    './js/field-diagnosis.js',
     './manifest.webmanifest',
     './css/reader.css',
     './js/content.js',
@@ -91,12 +94,15 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             fetch(req)
                 .then((res) => {
-                    const copy = res.clone();
-                    caches.open(SHELL_CACHE).then((c) => c.put('./index.html', copy));
+                    if (res.ok) {
+                        const copy = res.clone();
+                        caches.open(SHELL_CACHE).then((c) => c.put(req, copy));
+                    }
                     return res;
                 })
                 .catch(() =>
-                    caches.match('./index.html', { ignoreSearch: true })
+                    caches.match(req, { ignoreSearch: true })
+                        .then((page) => page || caches.match('./index.html', { ignoreSearch: true }))
                         .then((r) => r || caches.match('./'))
                 )
         );

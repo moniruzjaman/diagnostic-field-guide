@@ -3,6 +3,16 @@
 Dates below are the Bangla edition release dates. The original book
 (*Plantwise Diagnostic Field Guide*, CABI 2015, CC BY-NC) is unchanged.
 
+## v2.0.0 — 2026-11-23
+
+- 🧪 **Field Diagnostic Workbench** — a new Bangla-first, offline-capable guided case workflow linked from the ebook home and footer.
+- 🧭 Structured crop/field profile, multi-select symptom and plant-part observations, field distribution, onset and environment.
+- 🔎 Transparent matching across seven broad cause groups (pest/mite, fungal, bacterial, virus/phytoplasma-like symptoms, nutrition/soil chemistry, water/root, weather/abiotic). Each result shows selected evidence and a field verification prompt; scores are match counts, not probabilities or diagnoses.
+- ✅ Field verification checklist, management notes, follow-up date, on-device case storage, JSON export and print/PDF.
+- 📴 Service worker now precaches the workbench and assets; navigation fallback first checks the requested cached page so the workbench remains reachable offline after its first successful load.
+- 🧪 Added Node reasoning tests and a GitHub Actions validation workflow.
+- ⚖️ Explicit safety boundary: no definitive disease naming or pesticide prescription; verify in the field and follow current Bangladesh label/registration guidance.
+
 ## v1.9.0 — 2026-11-23
 
 - 🖼 **Annex-5 photo dictionary completed** — all 108 placeholder captions

@@ -1,0 +1,7 @@
+const test=require('node:test');const assert=require('node:assert/strict');const engine=require('../js/field-diagnosis.js');
+test('seven broad cause groups are available',()=>{assert.equal(engine.groups.length,7);});
+test('chewing and webbing signs rank pest group first',()=>{const r=engine.scoreCase({symptoms:['holes','webbing'],parts:[]});assert.equal(r[0].id,'pest');});
+test('mosaic and stunting rank virus-like symptom group first',()=>{const r=engine.scoreCase({symptoms:['mosaic','stunting'],parts:['young']});assert.equal(r[0].id,'viral');assert.match(r[0].name,/লক্ষণগোষ্ঠী/);});
+test('yellowing in older leaves with uniform distribution ranks nutrition first',()=>{const r=engine.scoreCase({symptoms:['yellow'],parts:['old'],distribution:'uniform'});assert.equal(r[0].id,'nutrition');});
+test('wet lowland root rot and wilting rank water/root group first',()=>{const r=engine.scoreCase({symptoms:['wilting','rot'],parts:['root'],environment:'wet',distribution:'low'});assert.equal(r[0].id,'water');});
+test('scores are evidence counts, not probabilities',()=>{const r=engine.scoreCase({symptoms:['spots'],environment:'wet',distribution:'patch'});assert.ok(r[0].score>0);assert.ok(Array.isArray(r[0].reasons));assert.equal('probability' in r[0],false);});
