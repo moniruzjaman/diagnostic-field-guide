@@ -878,9 +878,15 @@
 
         const hash = window.location.hash.slice(1);
         if (hash && document.getElementById(hash)) {
-            setTimeout(() => {
-                document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
-            }, 400);
+            // v2.0.3: deep link into a figure inside a collapsed chapter → expand first,
+            // then scroll twice (instant, centered) so late lazy-image layout can't win
+            const target = document.getElementById(hash);
+            const hostCh = target?.closest?.('section.chapter');
+            if (hostCh?.id) expandChapter(hostCh.id, false);
+            const goToHash = () => document.getElementById(hash)
+                ?.scrollIntoView({ behavior: 'instant', block: 'center' });
+            setTimeout(goToHash, 400);
+            setTimeout(goToHash, 1200);
         }
 
         if (window.EBOOK_TTS) EBOOK_TTS.init();
