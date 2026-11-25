@@ -197,6 +197,15 @@ html, body {
   touch-action: none;
 }
 
+.symptom-card {
+  background: var(--matcher-surface);
+  border-radius: var(--matcher-radius);
+  padding: var(--matcher-space);
+  box-shadow: var(--matcher-shadow);
+  border: 1px solid var(--matcher-border);
+  margin-bottom: var(--matcher-space);
+}
+
 .symptom-card h2 {
   font-family: 'Noto Serif Bengali', 'Noto Serif', serif;
   font-size: 1.3rem;
