@@ -306,7 +306,7 @@
     state.matchConfirmed = val === null ? 'unsure' : val;
     $('#matchConfirm').classList.add('is-visible');
 
-    const btns = $('.btn-match');
+    const btns = $$('.btn-match');
     btns.forEach((b) => {
       const selected = (val === null && b.id === 'btnMatchSkip') ||
         (val === true && b.id === 'btnMatchYes') ||
