@@ -299,7 +299,7 @@
   }
 
   function setMatch(val) {
-    state.matchConfirmed = val;
+    state.matchConfirmed = val === null ? 'unsure' : val;
     $('#matchConfirm').classList.add('is-visible');
 
     const btns = $('.btn-match');
