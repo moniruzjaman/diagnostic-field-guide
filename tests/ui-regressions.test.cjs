@@ -35,15 +35,18 @@ test('every symptom in the local cause database has a real reference image', () 
 test('comparison slider uses pointer events and updates a full-width overlay', () => {
   assert.match(matcher, /divider\.addEventListener\('pointerdown'/);
   assert.match(matcher, /function updateDivider\(clientX\)/);
+  assert.match(matcher, /updateDivider\(e\.clientX\);/);
   assert.match(matcher, /const divider = \$\('#divider'\);[\s\S]*?userImage\.style\.clipPath/);
   assert.match(matcherCss, /\.compare-image\.user\s*\{[^}]*width:\s*100%/s);
   assert.match(matcherCss, /\.compare-image\.reference\s*\{[^}]*width:\s*100%/s);
   assert.match(matcherCss, /touch-action:\s*none/);
+  assert.match(matcherCss, /\.symptom-card\s*\{[^}]*background:/s);
 });
 
 test('manual unsure choice is a valid path to results, without claiming AI diagnosis', () => {
   assert.match(matcher, /state\.matchConfirmed = val === null \? 'unsure' : val/);
   assert.match(matcher, /case 3: enabled = state\.matchConfirmed !== null/);
+  assert.match(matcher, /if \(n === 3\) \$\('#matchConfirm'\)\.classList\.add\('is-visible'\)/);
   assert.match(matcher, /স্বয়ংক্রিয় AI শনাক্তকরণ বা নিশ্চিত রোগনির্ণয় নয়/);
 });
 
