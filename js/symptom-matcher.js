@@ -73,6 +73,8 @@
     // Choose a symptom before comparing its matching reference image.
     const panels = [null, $('#step-upload'), $('#step-symptoms'), $('#step-compare'), $('#step-result')];
     if (panels[n]) panels[n].classList.remove('hidden');
+    // Show the match decision controls as soon as the comparison screen opens.
+    if (n === 3) $('#matchConfirm').classList.add('is-visible');
     $('#btnBack').style.display = n > 1 ? '' : 'none';
     state.step = n;
     updateNextButton();
