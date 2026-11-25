@@ -16,7 +16,9 @@ jobs:
         with:
           node-version: 22
       - run: node --check js/field-diagnosis.js
-      - run: node --test tests/field-diagnosis.test.cjs
+      - run: node --check js/symptom-matcher.js
+      - run: node --check js/diagnosis-wizard.js
+      - run: node --test tests/*.cjs
       - name: Verify offline assets are registered
         run: |
           test -f field-diagnosis.html
