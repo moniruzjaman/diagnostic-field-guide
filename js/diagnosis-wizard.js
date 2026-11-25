@@ -47,6 +47,7 @@
     });
     state.step = n;
     updateProgress();
+    panel?.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
   function renderCropGrid() {
