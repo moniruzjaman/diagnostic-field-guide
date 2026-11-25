@@ -18,7 +18,7 @@
     <header class="matcher-header">
       <span class="kicker">দৃশ্যমান রোগনির্ণয়</span>
       <h1>ফসলের ছবি তুলুন ও মিলুন</h1>
-      <p>আপনার ক্ষেতের ছবি তুলুন এবং রেফারেন্স ছবির সঙ্গে পাশাপাশি তুলনা করুন।</p>
+      <p>আপনার ক্ষেতের ছবি তুলুন, লক্ষণ নির্বাচন করুন এবং প্রাসঙ্গিক রেফারেন্স ছবির সঙ্গে হাতে তুলনা করুন।</p>
     </header>
 
     <!-- Step 1: Photo Upload -->
@@ -43,7 +43,7 @@
     <!-- Step 2: Side-by-side comparison -->
     <section class="compare-card hidden" id="step-compare">
       <div class="compare-header">
-        <h3>২. রেফারেন্স ছবির সঙ্গে তুলনা করুন</h3>
+        <h3>৩. রেফারেন্স ছবির সঙ্গে তুলনা করুন</h3>
         <span class="compare-slider-label">কাঁটা টেনে মিল দেখুন</span>
       </div>
       <div class="compare-container">
@@ -51,10 +51,10 @@
         <img class="compare-image reference" id="imgReference" alt="রেফারেন্স ছবি">
         <div class="compare-divider" id="divider"></div>
       </div>
-      <p class="compare-hint">ডানে-বাঁয়ে টান করে দুটি ছবি পাশাপাশি দেখুন। রঙ, দাগ ও আকৃতি লক্ষ্য করুন।</p>
+      <p class="compare-hint">সাদা রেখাটি ডানে-বাঁয়ে টানুন। দুই ছবির দাগ, রঙ, আকৃতি ও আক্রান্ত অংশ তুলনা করুন। এটি স্বয়ংক্রিয় AI similarity score নয়।</p>
 
       <div class="match-confirm" id="matchConfirm">
-        <h3>কী এই ছবিটি আপনার ফসলের Somerset মিলে?</h3>
+        <h3>আপনার ছবির সঙ্গে নির্বাচিত রেফারেন্সের দৃশ্যগত মিল আছে কি?</h3>
         <div class="match-options">
           <button class="btn-match btn-yes" id="btnMatchYes">হ্যাঁ, মিলেছে</button>
           <button class="btn-match btn-no" id="btnMatchNo">না, আলাদা</button>
@@ -65,7 +65,7 @@
 
     <!-- Step 3: Symptom selection -->
     <section class="symptom-card hidden" id="step-symptoms">
-      <h2>৩. লক্ষণ নিশ্চিত করুন</h2>
+      <h2>২. প্রাসঙ্গিক লক্ষণ নির্বাচন করুন</h2>
       <p>আপনার ফসলে যে লক্ষণগুলো আছে সেগুলি নির্বাচন করুন।</p>
       <div class="symptom-grid" id="symptomGrid"></div>
     </section>
