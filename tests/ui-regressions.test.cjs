@@ -45,6 +45,7 @@ test('comparison slider uses pointer events and updates a full-width overlay', (
 
 test('manual unsure choice is a valid path to results, without claiming AI diagnosis', () => {
   assert.match(matcher, /state\.matchConfirmed = val === null \? 'unsure' : val/);
+  assert.match(matcher, /const btns = \$\$\('\.btn-match'\)/);
   assert.match(matcher, /case 3: enabled = state\.matchConfirmed !== null/);
   assert.match(matcher, /if \(n === 3\) \$\('#matchConfirm'\)\.classList\.add\('is-visible'\)/);
   assert.match(matcher, /স্বয়ংক্রিয় AI শনাক্তকরণ বা নিশ্চিত রোগনির্ণয় নয়/);
