@@ -1,0 +1,22 @@
+{
+  "alignment_issues": [
+    {
+      "issue": "Photo library categorization - 124 orphaned images need section badges assigned",
+      "priority": "high",
+      "action": "Assign each of the 124 orphaned images to one of the 7 cause groups (fungi, bacteria, virus, phytoptera, insects, nutrients, physical) based on their Bangla captions and alt text",
+      "related_files": ["handbook.html", "dashboard.html", "js/content.js"]
+    },
+    {
+      "issue": "Table 3 symptom→cause mapping needs to reflect chapter 4's 10 symptom groups",
+      "priority": "medium",
+      "action": "Update dashboard.html table 3 to explicitly show the 10 symptom groups from content.js chapter 4 with their associated cause groups",
+      "related_files": ["dashboard.html", "js/content.js"]
+    },
+    {
+      "issue": "Annex-5 photo dictionary (108 images) needs verification in app",
+      "priority": "medium",
+      "action": "Verify that all 108 annex-5 images from diagnosis-assistant repo are referenced in img/ folder and accessible via the app's table 5 atlas",
+      "related_files": ["dashboard.html", "js/content.js", "CHANGELOG.md"]
+    }
+  ]
+}

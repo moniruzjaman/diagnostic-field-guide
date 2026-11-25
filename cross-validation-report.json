@@ -1,0 +1,23 @@
+{
+  "cross_validation": "source_vs_app_data",
+  "timestamp": "2026-11-25",
+  "overview": "Cross-validation of source chapter content (js/content.js), app data (dashboard.html tables, field-diagnosis.js engine), and handbook.html structure",
+  
+  "source_data": {
+    "chapters": 9,
+    "chapter_ids": ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9"],
+    "content_source": "js/content.js - EBOOK_CONTENT.chapters"
+  },
+  
+  "app_data": {
+    "dashboard_tables": {
+      "table12": "Insect & Mite Pest Quick Index (Tables 1 & 2)",
+      "table3": "Symptom-based Pathogen & Environment Explorer",
+      "table4": "Mineral Nutrient Deficiency Index - 12 nutrients",
+      "table5": "Visual Atlas & Crop Reference"
+    },
+    "nutrients_count": 12,
+    "cause_groups_in_engine": 7,
+    "field_tests_count": 1
+  }
+}

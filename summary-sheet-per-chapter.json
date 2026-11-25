@@ -1,0 +1,61 @@
+{
+  "summary_sheet": "per_chapter_summary_9_chapters",
+  "total_chapters": 9,
+  "generated": "2026-11-25",
+  "chapters": [
+    {
+      "id": "ch1",
+      "title": "ভূমিকা ও স্বীকৃতি",
+      "topic": "Program context and structure",
+      "key_content_overview": "Plantwise program overview, CABI-led global initiative, national plant clinic network, role of plant doctors"
+    },
+    {
+      "id": "ch2",
+      "title": "ক্ষেত্র রোগনির্ণয়",
+      "topic": "Core diagnosis workflow",
+      "key_content_observation": "Visit procedure: observation → symptom recording → cause identification → prescription. Any crop, any problem."
+    },
+    {
+      "id": "ch3",
+      "title": "কীট শনাক্তকরণের তাৎক্ষণিক সূচি",
+      "topic": "Rapid identification guides",
+      "key_content_overview": "Ready reckoners for pest/mite types (sheets 1-2), pathogen symptom groups (sheets 3-5), quick reference for field officers"
+    },
+    {
+      "id": "ch4",
+      "title": "প্রধান উপসর্গ ও ihrer-cause",
+      "topic": "Detailed symptom-to-cause mapping",
+      "key_content_overview": "10 major symptom groups with descriptions, causal organisms, and photos. Definitive symptom→cause table."
+    },
+    {
+      "id": "ch5",
+      "title": "বিভ্রান্তির সম্ভাব্য উৎস",
+      "topic": "Differential diagnosis guide",
+      "key_content_overview": "Table 6: color-coded confusion sources (red=possible, blue=impossible). Number references to explanation locations."
+    },
+    {
+      "id": "ch6",
+      "title": "সুপারিশ প্রণয়ন",
+      "topic": "Recommendation framework",
+      "key_content_overview": "BIG 5 criteria: Economic, Effective, Safe, Usable, Locally available. IPM principles. Sometimes 'do nothing' is best."
+    },
+    {
+      "id": "ch7",
+      "title": "পরিশিষ্ট",
+      "topic": "Reference appendices",
+      "key_content_overview": "Appendix 1: Scientific names of 120+ crops. Appendix 2: Plantwise pesticide policy. Glossary. Image dictionary with 108 real Bangla descriptions."
+    },
+    {
+      "id": "ch8",
+      "title": "পরীক্ষা প্রস্তুতি — মূল-cause শনাক্তকরণ",
+      "topic": "Certification exam preparation",
+      "key_content_overview": "CABI Academy course preparation. Key rules: say specific cause not just section. First eliminate, then confirm. Preparation aid not reference book."
+    },
+    {
+      "id": "ch9",
+      "title": "বইটি আয়ত্তে আনুন",
+      "topic": "Mastery plan and learning routine",
+      "key_content_overview": "3-phase mastery plan (quick scan, deep reading, field application). 7-day study plan. Spaced repetition (1/3/7 days). Expert's 5 habits for clinical reasoning."
+    }
+  ]
+}

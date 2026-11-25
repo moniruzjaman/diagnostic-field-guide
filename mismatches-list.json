@@ -1,0 +1,40 @@
+{
+  "mismatches": [
+    {
+      "id": "mismatch_1",
+      "type": "photo_library_orphaned",
+      "description": "124 of 278 handbook photos have no section badge (orphaned images in 'পাতা পোড়া' section). These are not properly categorized in the app's photo library.",
+      "source": "handbook.html - 278 ph-cards with badges",
+      "app": "dashboard.html - img/ folder references, 344 image URLs, but categorization differs",
+      "impact": "Users cannot filter these 124 images by cause group in the app",
+      "recommendation": "Add these 124 images to the app's categorization system or mark them as ungrouped"
+    },
+    {
+      "id": "mismatch_2",
+      "type": "chapter_content_detail",
+      "description": "Chapter 4 in content.js covers '10 symptom groups' but the ready reckoners in chapters 1-3 cover pest/mite groups and fungal groups. The detailed 10-group breakdown is in chapter 4 only.",
+      "source": "content.js chapter 4 - 10 symptom groups",
+      "app": "dashboard.html tables 3-5 - symptom→cause mapping exists but organized differently",
+      "impact": "App's table 3 symptom matrix may not present the same 10-group structure directly",
+      "recommendation": "Ensure table 3 in dashboard presents the 10 symptom groups from chapter 4 consistently"
+    },
+    {
+      "id": "mismatch_3",
+      "type": "unmapped_images",
+      "description": "124 images are 'section-less' in handbook but the app dashboard expects categorized images for table filtering.",
+      "source": "handbook.html ph-cards without section badges",
+      "app": "dashboard view tabs (table3, table4, table5) - requires category filtering",
+      "impact": "Filtering by cause group in app will not show these 124 images; they appear in 'all' view only",
+      "recommendation": "Either categorize these 124 images into the 7 cause groups or update app filtering to handle unmapped images"
+    },
+    {
+      "id": "mismatch_4",
+      "type": "gallery_vs_app",
+      "description": "Handbook annex-5 has 108 photo dictionary images that were 'not shown in app before' but are now included per CHANGELOG. However, the app's table5 atlas shows crop reference images rather than the full photo dictionary.",
+      "source": "CHANGELOG.md - annex-5 completed with 108 real Bangla descriptions",
+      "app": "dashboard.html table5 - atlas grid with crop cards",
+      "impact": "Some expected photo dictionary content may not appear in app's table 5 atlas",
+      "recommendation": "Verify 108 annex-5 images are included in app's image references and properly mapped"
+    }
+  ]
+}

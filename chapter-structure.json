@@ -1,0 +1,70 @@
+{
+  "source": "js/content.js - EBOOK_CONTENT.chapters",
+  "format": "structured_chapters",
+  "total_chapters": 9,
+  "chapters": [
+    {
+      "id": "ch1",
+      "numLabel": "অধ্যায় ১",
+      "title": "ভূমিকা ও স্বীকৃতি",
+      "subtitle": "মুখপত্র, মুখবন্ধ ও কৃতজ্ঞতা স্বীকার",
+      "topic": "Introduction and acknowledgement"
+    },
+    {
+      "id": "ch2",
+      "numLabel": "অধ্যায় ২",
+      "title": "ক্ষেত্র রোগনির্ণয়",
+      "subtitle": "বাদ দিয়ে যাওয়ার প্রক্রিয়া — উপসর্গ থেকে কারণ নির্ণয়",
+      "topic": "Field diagnosis"
+    },
+    {
+      "id": "ch3",
+      "numLabel": "অধ্যায় ৩",
+      "title": "কীট শনাক্তকরণের তাৎক্ষণিক সূচি",
+      "subtitle": "উপসর্গ ও লক্ষণ মিলিয়ে দ্রুত সম্ভাব্য原因 খুঁজুন",
+      "topic": "Immediate pest identification key"
+    },
+    {
+      "id": "ch4",
+      "numLabel": "অধ্যায় ৪",
+      "title": "প্রধান উপসর্গ ও তাদের-cause",
+      "subtitle": "১০টি উপসর্গ গোষ্ঠী — причиγγROUP অনুযায়ী বিস্তারিত ও ছবিসহ",
+      "topic": "Major symptoms and their causes"
+    },
+    {
+      "id": "ch5",
+      "numLabel": "অধ্যায় ৫",
+      "title": "বিভ্রান্তির সম্ভাব্য উৎস",
+      "subtitle": "কোন কারণে-সহ-সহগুলো ফেলে দিতে হবে এবং কীভাবে আলাদা করবেন",
+      "topic": "Potential sources of confusion"
+    },
+    {
+      "id": "ch6",
+      "numLabel": "অধ্যায় ৬",
+      "title": "সুপারিশ প্রণয়ন",
+      "subtitle": "BIG 5 মানদণ্ড, কীটের জীববিদ্যা ও সমন্বিত কীট ব্যবস্থাপনা",
+      "topic": "Recommendation"
+    },
+    {
+      "id": "ch7",
+      "numLabel": "অধ্যায় ৭",
+      "title": "পরিশিষ্ট",
+      "subtitle": "ফসলের বৈজ্ঞানিক নাম, নীতি-মালা, লাল তালিকা, শব্দকোষ ও চিত্র-শব্দকোষ",
+      "topic": "Appendix"
+    },
+    {
+      "id": "ch8",
+      "numLabel": "অধ্যায় ৮",
+      "title": "পরীক্ষা প্রস্তুতি — মূল-cause শনাক্তকরণ",
+      "subtitle": "CABI Academy CPD সার্টিফিকেশন · ম্যাপহেন্ট ছবি · ড্রিল · স্ব-পরীক্ষা",
+      "topic": "Exam preparation - main cause identification"
+    },
+    {
+      "id": "ch9",
+      "numLabel": "অধ্যায় ৯",
+      "title": "বইটি আয়ত্তে আনুন",
+      "subtitle": "মাস্টারি প্ল্যান · স্মৃতি-রুটিন · বিশেষজ্ঞ হওয়ার 5 অভ্যাস",
+      "topic": "Master the book"
+    }
+  ]
+}
