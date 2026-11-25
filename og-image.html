@@ -2,6 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <style>
 @font-face {
   font-family: 'NSB';
@@ -19,7 +20,7 @@ body { width: 1200px; height: 630px; overflow: hidden; }
   width: 1200px; height: 630px;
   background: linear-gradient(150deg, #003D2C 0%, #006A4E 58%, #01765A 100%);
   color: #fff; position: relative;
-  display: flex; align-items: center; padding: 0 80px;
+  display: flex; align-items: center; padding: 0 56px 0 60px;
   font-family: 'NSB', sans-serif;
 }
 /* BD flag ribbon across the very top */
@@ -32,76 +33,242 @@ body { width: 1200px; height: 630px; overflow: hidden; }
 .hero::before {
   content: ""; position: absolute; top: -160px; right: 260px;
   width: 480px; height: 480px; border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(69,214,164,.22), transparent 65%);
+  background: radial-gradient(circle at 30% 30%, rgba(69,214,164,.20), transparent 65%);
 }
 .hero::after {
   content: ""; position: absolute; bottom: -200px; left: -140px;
   width: 520px; height: 520px; border-radius: 50%;
-  background: radial-gradient(circle at 70% 70%, rgba(240,194,75,.14), transparent 65%);
+  background: radial-gradient(circle at 70% 70%, rgba(240,194,75,.13), transparent 65%);
 }
 .left { flex: 1 1 auto; min-width: 0; position: relative; z-index: 2; }
 .tag {
   display: inline-block; width: fit-content;
-  font-size: 21px; letter-spacing: 2px; color: #8FE3C4;
+  font-size: 18px; letter-spacing: 1.5px; color: #8FE3C4;
   border: 1.5px solid rgba(143,227,196,.55);
-  padding: 8px 24px; border-radius: 999px; margin-bottom: 28px;
+  padding: 6px 18px; border-radius: 999px; margin-bottom: 16px;
 }
-h1 { font-size: 70px; font-weight: 700; line-height: 1.16; margin-bottom: 16px; text-shadow: 0 3px 16px rgba(0,0,0,.35); }
+h1 { font-size: 54px; font-weight: 700; line-height: 1.14; margin-bottom: 10px; text-shadow: 0 3px 16px rgba(0,0,0,.35); }
 .rule {
-  width: 150px; height: 6px; border-radius: 3px; margin-bottom: 20px;
+  width: 130px; height: 5px; border-radius: 3px; margin-bottom: 14px;
   background: linear-gradient(90deg, #F42A41 0 26%, #F0C24B 26% 42%, #8FE3C4 42% 100%);
 }
-.sub { font-size: 28px; color: #CFF3E4; margin-bottom: 30px; font-weight: 400; }
+.sub { font-size: 21.5px; color: #CFF3E4; margin-bottom: 18px; font-weight: 400; }
+/* the two update hooks — concrete, curiosity-driven */
+.hooks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; width: fit-content; }
+.hook {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(0,0,0,.22);
+  border: 1px solid rgba(143,227,196,.35);
+  border-left: 4px solid #F0C24B;
+  border-radius: 12px; padding: 10px 16px 10px 12px;
+}
+.hook .ico {
+  flex: none; width: 38px; height: 38px; border-radius: 10px;
+  background: #F0C24B; color: #003D2C;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 700;
+}
+.hook .txt { font-size: 19px; line-height: 1.42; color: #EAFBF3; }
+.hook .txt b { color: #F0C24B; }
 .meta {
-  display: flex; gap: 30px; font-size: 20px; color: #8FE3C4;
-  border-top: 1px solid rgba(143,227,196,.35); padding-top: 22px; width: fit-content;
+  display: flex; gap: 22px; font-size: 17px; color: #8FE3C4;
+  border-top: 1px solid rgba(143,227,196,.35); padding-top: 14px; width: fit-content;
+  margin-bottom: 16px;
 }
 .meta b { color: #F0C24B; }
-/* right column: authentic source cover + plantwise logo */
+.cta-row { display: flex; align-items: center; gap: 16px; width: fit-content; }
+.cta {
+  font-size: 21px; font-weight: 700; color: #003D2C;
+  background: linear-gradient(180deg, #FFD666, #F0C24B);
+  padding: 11px 26px; border-radius: 999px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.url { font-size: 16px; color: #B9E8D4; letter-spacing: .3px; }
+.author-line {
+  margin-top: 12px;
+  font-size: 15px;
+  color: #B9E8D4;
+  width: fit-content;
+  border-left: 3px solid #F0C24B;
+  padding-left: 10px;
+}
+.author-line b { color: #FFFFFF; font-weight: 700; }
+/* ── right column: phone mock of the search UI + source cover behind ── */
 .right {
-  flex: 0 0 auto; margin-left: 56px; position: relative; z-index: 2;
-  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  flex: 0 0 auto; position: relative; z-index: 2;
+  width: 430px; height: 560px; margin-left: 34px;
+}
+.badge2 {
+  position: absolute; top: 26px; right: 46px;
+  font-size: 17px; color: #003D2C; background: #F0C24B;
+  padding: 8px 18px; border-radius: 10px; font-weight: 700; z-index: 5;
+  box-shadow: 0 8px 20px rgba(0,0,0,.35);
 }
 .cover {
-  width: 218px; height: auto; border-radius: 10px;
-  box-shadow: 0 18px 44px rgba(0,0,0,.5), 0 0 0 1.5px rgba(240,194,75,.6);
-  display: block;
+  position: absolute; left: 0; bottom: 40px; width: 168px; height: auto;
+  border-radius: 10px; transform: rotate(-5deg);
+  box-shadow: 0 16px 40px rgba(0,0,0,.5), 0 0 0 1.5px rgba(240,194,75,.6);
+  z-index: 1;
 }
-.cover-cap { font-size: 13px; color: #B9E8D4; letter-spacing: .5px; margin-top: -6px; }
 .pw-pill {
-  background: #fff; border-radius: 10px; padding: 10px 16px;
-  box-shadow: 0 8px 22px rgba(0,0,0,.35);
+  position: absolute; left: 24px; bottom: 6px;
+  background: #fff; border-radius: 9px; padding: 8px 13px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.35); z-index: 3;
 }
-.pw-pill img { height: 30px; width: auto; display: block; }
-.pw-tag { font-size: 17px; font-weight: 700; color: #FF8B98; letter-spacing: 2px; }
-.badge2 {
-  position: absolute; top: 40px; right: 80px;
-  font-size: 19px; color: #003D2C; background: #F0C24B;
-  padding: 9px 20px; border-radius: 10px; font-weight: 700; z-index: 3;
+.pw-pill img { height: 24px; width: auto; display: block; }
+.pw-tag { position: absolute; left: 18px; bottom: -18px; font-size: 14px; font-weight: 700; color: #FF8B98; letter-spacing: 1.5px; }
+/* the phone */
+.phone {
+  position: absolute; right: 8px; top: 18px;
+  width: 252px; height: 520px;
+  background: #0B2B20; border-radius: 30px;
+  padding: 10px;
+  box-shadow: 0 26px 60px rgba(0,0,0,.55), 0 0 0 2px rgba(240,194,75,.45);
+  transform: rotate(2.2deg);
+  z-index: 2;
+}
+.screen {
+  width: 100%; height: 100%;
+  background: #F7F5EE; border-radius: 22px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  color: #1F2A24;
+}
+.s-top {
+  background: #006A4E; color: #fff;
+  padding: 9px 12px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; font-weight: 700;
+  flex: none;
+}
+.s-top .dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #F42A41; flex: none;
+}
+.s-search {
+  margin: 10px 12px 0;
+  background: #fff; border: 1.5px solid #006A4E;
+  border-radius: 12px; padding: 8px 12px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 15px; font-weight: 700; color: #006A4E;
+  flex: none;
+}
+.s-count {
+  margin: 10px 14px 2px;
+  font-size: 11.5px; font-weight: 700; color: #B7791F;
+  flex: none;
+}
+.s-group {
+  margin: 6px 14px 4px;
+  font-size: 10.5px; font-weight: 700; color: #6B7A72;
+  letter-spacing: .5px;
+  border-bottom: 1px dashed #D8D4C4; padding-bottom: 3px;
+  flex: none;
+}
+.s-item {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 12px 7px;
+  background: #fff; border: 1px solid #E2DFD2;
+  border-radius: 10px; padding: 7px 9px;
+  flex: none;
+}
+.s-item img {
+  width: 40px; height: 40px; object-fit: cover;
+  border-radius: 7px; border: 1px solid #E2DFD2; flex: none;
+}
+.s-item .lines { min-width: 0; }
+.s-item .l1 { font-size: 11px; line-height: 1.45; color: #2A362F; }
+.s-item mark { background: #F0C24B; color: #163A2C; border-radius: 3px; padding: 0 3px; }
+.s-item .l2 { font-size: 9.5px; color: #8A948D; margin-top: 2px; }
+.s-item.text .lines { display: flex; flex-direction: column; }
+/* tap hint */
+.tap {
+  position: absolute; right: 212px; top: 176px; z-index: 4;
+  display: flex; align-items: center; gap: 8px;
+  background: #F42A41; color: #fff;
+  font-size: 14.5px; font-weight: 700;
+  padding: 8px 14px; border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.45);
+  transform: rotate(-2deg);
+}
+.tap .ring {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 3px solid #fff; flex: none;
 }
 </style>
 </head>
 <body>
 <div class="hero">
   <div class="ribbon"></div>
-  <div class="badge2">বিনামূল্যে · শিক্ষামূলক · CC BY-NC</div>
   <div class="left">
     <div class="tag">ই-বুক · বাংলা · অফলাইন PWA</div>
     <h1>উদ্ভিদ রোগনির্ণয়<br>ফিল্ড গাইড</h1>
     <div class="rule"></div>
-    <div class="sub">ফসলের সমস্যা নির্ণয় ও ব্যবস্থাপনার সুপারিশের হাতে-কলমে নির্দেশিকা</div>
+    <div class="sub">৯ অধ্যায়ে ফসলের যেকোনো সমস্যা শনাক্ত ও ব্যবস্থাপনার নির্দেশিকা</div>
+    <div class="hooks">
+      <div class="hook">
+        <div class="ico">🔍</div>
+        <div class="txt">লিখুন <b>“কাজু”</b>, <b>“এফিড”</b> — ট্যাপেই <b>সঠিক ছবি বা সেকশনে</b> লাফিয়ে যান</div>
+      </div>
+      <div class="hook">
+        <div class="ico">🔖</div>
+        <div class="txt"><b>নতুন:</b> বুকমার্ক · মতামত ইমেল · অ্যানেক্স-৫-এর <b>১০৮ ছবিতে বাংলা পরিচিতি</b></div>
+      </div>
+    </div>
     <div class="meta">
-      <span>৭ <b>অধ্যায়</b></span>
-      <span>২৬৫ <b>রোগনির্ণয়ের ছবি</b></span>
-      <span>১১ <b>তথ্য-সারণি</b></span>
+      <span><b>৯</b> অধ্যায়</span>
+      <span><b>২৬৫</b> ছবি</span>
+      <span>নোট + <b>৫-স্টার</b> রেটিং</span>
       <span>অফলাইনে <b>পড়ুন ও শুনুন</b></span>
     </div>
+    <div class="cta-row">
+      <div class="cta">▶ এখনই ফ্রি পড়ুন</div>
+      <div class="url">moniruzjaman.github.io/diagnostic-field-guide</div>
+    </div>
+    <div class="author-line">বাংলা সংস্করণ প্রস্তুতি · <b>Abu Md. Moniruzjaman</b> · কৃষি সম্প্রসারণ অধিদপ্তর</div>
   </div>
   <div class="right">
+    <div class="badge2">নতুন: বুকমার্ক 🔖 + মতামত 📧</div>
     <img class="cover" src="img/source-cover.jpg" alt="মূল বইয়ের প্রচ্ছদ">
-    <div class="cover-cap">মূল প্রকাশনা © CABI / Plantwise (2015)</div>
     <div class="pw-pill"><img src="img/plantwise-logo.png" alt="Plantwise"></div>
     <div class="pw-tag">LOSE LESS. FEED MORE.</div>
+    <div class="tap"><span class="ring"></span>ট্যাপ → সেকেন্ডেই সঠিক জায়গায়</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="s-top"><span class="dot"></span>উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড</div>
+        <div class="s-search">🔍 কাজু</div>
+        <div class="s-count">৩টি ফলাফল</div>
+        <div class="s-group">ছবি</div>
+        <div class="s-item">
+          <img src="img/p015_00.jpg" alt="">
+          <div class="lines">
+            <div class="l1">এই <mark>কাজু</mark> পাতায় পাতার দাগ দেখা যাচ্ছে, যা সুস্পষ্টভাবে…</div>
+            <div class="l2">অধ্যায় ২ · ক্ষেত্র রোগনির্ণয়</div>
+          </div>
+        </div>
+        <div class="s-item">
+          <img src="img/p015_01.jpg" alt="">
+          <div class="lines">
+            <div class="l1">এই <mark>কাজু</mark> পাতায় পাতার দাগ — জৈবিক কারণ রয়েছে।</div>
+            <div class="l2">অধ্যায় ২ · ক্ষেত্র রোগনির্ণয়</div>
+          </div>
+        </div>
+        <div class="s-group">লেখায় মেলা</div>
+        <div class="s-item text">
+          <div class="lines">
+            <div class="l1">…যেখানে রোগটি পাতার বড় এলাকা জুড়ে একটি সুষম <mark>কাজু</mark> বৃক্ষে থাকে। সম্পূর্ণ…</div>
+            <div class="l2">অধ্যায় ৭ · পরিশিষ্ট</div>
+          </div>
+        </div>
+        <div class="s-group">অধ্যায় ও সেকশন</div>
+        <div class="s-item text">
+          <div class="lines">
+            <div class="l1">📄 <mark>কাজু</mark> — পাতার দাগের ক্ষেত্র রোগনির্ণয়</div>
+            <div class="l2">সেকশনে সরাসরি যান</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 </body>

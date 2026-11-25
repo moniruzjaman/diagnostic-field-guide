@@ -1,0 +1,10 @@
+{
+  "name": "pwdfg-bangla-ebook",
+  "version": "2.1.0",
+  "description": "Bangla translation of CABI Plantwise Diagnostic Field Guide PWA ebook",
+  "scripts": {
+    "test": "node --test tests/*.cjs",
+    "validate:handbook": "node scripts/validate-handbook.js"
+  },
+  "license": "CC BY-NC 4.0"
+}

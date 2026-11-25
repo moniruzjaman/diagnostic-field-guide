@@ -539,22 +539,85 @@
     }
 
     let deferredPrompt = null;
+    let installBusy = false;
+    let installToastTimer = null;
+    function setInstallVisible(v) {
+        ['#btnInstall', '#btnInstallTop'].forEach((sel) => {
+            const b = $(sel);
+            if (b) b.style.display = v ? '' : 'none';
+        });
+    }
+    function installToast(msg, ms) {
+        const t = $('#offlineToast');
+        if (!t) return;
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(installToastTimer);
+        installToastTimer = setTimeout(() => t.classList.remove('show'), ms || 4000);
+    }
+    function isStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches
+            || window.navigator.standalone === true;
+    }
+    function showInstallTip() {
+        // iOS Safari never fires beforeinstallprompt — guide to Add to Home Screen
+        let tip = $('#installTip');
+        if (tip) { tip.style.display = ''; return; }
+        tip = document.createElement('div');
+        tip.id = 'installTip';
+        tip.className = 'install-tip';
+        tip.innerHTML = '<span><b>iPhone/iPad:</b> Safari-র নিচে <b>Share (⬆️)</b> বোতামে ট্যাপ করে '
+            + '\\"Add to Home Screen\\" নির্বাচন করুন — তারপর ইন্টারনেট ছাড়াই পুরো বই চলবে।</span>';
+        const x = document.createElement('button');
+        x.className = 'install-tip-x';
+        x.setAttribute('aria-label', 'বন্ধ করুন');
+        x.textContent = '✕';
+        tip.appendChild(x);
+        ($('#btnInstall')?.parentElement || document.body).appendChild(tip);
+        x.addEventListener('click', () => { tip.style.display = 'none'; });
+    }
+    async function startInstall() {
+        if (installBusy) return;
+        installBusy = true;
+        try {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                if (outcome === 'accepted') {
+                    localStorage.setItem('pwdfg.installed.v1', '1');
+                    setInstallVisible(false);
+                    installToast('✓ অ্যাপ ইনস্টল হয়েছে — এখন ইন্টারনেট ছাড়াই পুরো বই চলবে');
+                }
+            } else if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+                showInstallTip();
+            }
+        } finally { installBusy = false; }
+    }
     function wireInstall() {
+        if (isStandalone()) return; // already running as the installed app
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            const btn = $('#btnInstall');
-            if (btn) btn.style.display = '';
+            setInstallVisible(true);
         });
-        $('#btnInstall')?.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                $('#btnInstall').style.display = 'none';
-            }
-            deferredPrompt = null;
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem('pwdfg.installed.v1', '1');
+            setInstallVisible(false);
+            installToast('✓ অ্যাপ ইনস্টল হয়েছে — এখন ইন্টারনেট ছাড়াই পুরো বই চলবে');
         });
+        $('#btnInstall')?.addEventListener('click', () => startInstall());
+        $('#btnInstallTop')?.addEventListener('click', () => startInstall());
+        // iOS Safari: no prompt event — surface the button that opens the A2HS guide
+        if (!deferredPrompt && /iphone|ipad|ipod/i.test(navigator.userAgent)
+            && localStorage.getItem('pwdfg.installed.v1') !== '1') {
+            setTimeout(() => setInstallVisible(true), 1200);
+        }
+        // synthetic-prompt hook (tests; also handy for debugging)
+        window.__pfgInstall = {
+            show(ev) { deferredPrompt = ev || deferredPrompt; setInstallVisible(true); },
+            state: () => ({ available: !!deferredPrompt, standalone: isStandalone() })
+        };
     }
 
     function precacheImages() {
@@ -729,18 +792,34 @@
             if (tocItem) {
                 e.preventDefault();
                 const target = tocItem.dataset.target;
-                expandChapter(target);           // TOC always opens the chapter it points to
+                // Anchors (s-*, etc.) live inside a chapter: expand that chapter, not the anchor id
+                let owner = target;
+                const secEl = document.getElementById(target);
+                if (secEl && !secEl.classList.contains('chapter')) {
+                    const host = secEl.closest('.chapter');
+                    if (host) owner = host.id;
+                }
+                expandChapter(owner);            // TOC always opens the chapter it points to
                 closeToc();
+                const wasOwner = state.reading.chapter === owner;
                 setTimeout(() => {
                     const sec = document.getElementById(target);
                     if (sec) {
-                        sec.scrollIntoView({ behavior: 'smooth' });
-                        // Auto-resume: restore last scroll position in this chapter
-                        const saved = state.reading.scrollTop;
-                        if (saved > 0) {
-                            window.scrollTo({ top: saved, behavior: 'smooth' });
-                        } else {
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        // Instant jump + settle corrections: the chapter expansion and
+                        // image decoding keep shifting layout, so re-anchor until stable
+                        const reanchor = setInterval(() => {
+                            const r = sec.getBoundingClientRect();
+                            if (++reanchorTries >= 16 || (r.top > -80 && r.top < window.innerHeight * 0.45)) {
+                                clearInterval(reanchor); return;
+                            }
+                            sec.scrollIntoView({ behavior: 'instant', block: 'start' });
+                        }, 350);
+                        let reanchorTries = 0;
+                        sec.scrollIntoView({ behavior: 'instant', block: 'start' });
+                        // Auto-resume only when returning to the chapter already being read
+                        if (wasOwner) {
+                            const saved = state.reading.scrollTop;
+                            if (saved > 0) window.scrollTo({ top: saved, behavior: 'smooth' });
                         }
                     }
                     history.replaceState(null, '', '#' + target);
@@ -799,9 +878,15 @@
 
         const hash = window.location.hash.slice(1);
         if (hash && document.getElementById(hash)) {
-            setTimeout(() => {
-                document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
-            }, 400);
+            // v2.0.3: deep link into a figure inside a collapsed chapter → expand first,
+            // then scroll twice (instant, centered) so late lazy-image layout can't win
+            const target = document.getElementById(hash);
+            const hostCh = target?.closest?.('section.chapter');
+            if (hostCh?.id) expandChapter(hostCh.id, false);
+            const goToHash = () => document.getElementById(hash)
+                ?.scrollIntoView({ behavior: 'instant', block: 'center' });
+            setTimeout(goToHash, 400);
+            setTimeout(goToHash, 1200);
         }
 
         if (window.EBOOK_TTS) EBOOK_TTS.init();

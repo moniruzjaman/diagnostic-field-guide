@@ -1,0 +1,26 @@
+/* ============================================================
+   Shared design tokens — used by reader.css and handbook.html
+   Bangladesh official palette: bottle green #006A4E, flag red #F42A41
+   ============================================================ */
+:root{
+  --c-paper:#FFFFFF;
+  --c-paper-alt:#F3F7F4;
+  --c-ink:#1C2B24;
+  --c-ink-soft:#44574D;
+  --c-muted:#6C8076;
+  --c-line:#DFE8E2;
+  --c-primary:#006A4E;
+  --c-primary-2:#038B66;
+  --c-primary-50:#E8F5F0;
+  --c-primary-100:#CFEAE0;
+  --c-accent:#B8912A;
+  --c-accent-soft:#FBF3DA;
+  --c-info:#1F6FA8;
+  --c-info-soft:#E9F3FA;
+  --c-danger:#F42A41;
+  --c-danger-soft:#FDEAEC;
+  --c-success:#038B66;
+  --c-success-soft:#E8F5F0;
+  --c-warning:#D4A017;
+  --c-warning-soft:#FBF3DA;
+}
