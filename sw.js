@@ -10,7 +10,7 @@
    - navigation fallback: index.html (single-page app)
    ============================================================ */
 
-const VERSION = 'v2.1.0';
+const VERSION = 'v2.1.4';
 const SHELL_CACHE = `pwdfg-shell-${VERSION}`;
 const IMG_CACHE = `pwdfg-img-${VERSION}`;
 
@@ -31,6 +31,20 @@ const SHELL_ASSETS = [
     './js/notes.js',
     './js/bookmarks.js',
     './js/search.js',
+    './diagnosis-wizard.html',
+    './css/diagnosis-wizard.css',
+    './js/cause-database.js',
+    './js/diagnosis-wizard.js',
+    './js/cause-database.json',
+    // Phase 2: Symptom Matcher assets
+    './symptom-matcher.html',
+    './css/symptom-matcher.css',
+    './js/symptom-matcher.js',
+    // Phase 3: Voice input & glossary assets
+    './js/voice-input.js',
+    './js/voice-glossary.js',
+    // Phase 4: Expert escalation agent directory
+    './js/extension-directory.json',
     // v2.0.3: Table-3 causal-agent gallery photos (precached for offline use)
     './img/p025_49.jpg',
     './img/p034_81.jpg',

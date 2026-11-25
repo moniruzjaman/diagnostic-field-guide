@@ -22,6 +22,8 @@
   "shortcuts": [
     {"name": "সূচিপত্র", "url": "./index.html#toc"},
     {"name": "ফিল্ড ড্যাশবোর্ড", "url": "./dashboard.html"},
-    {"name": "মাঠ রোগনির্ণয়", "url": "./field-diagnosis.html"}
+    {"name": "মাঠ রোগনির্ণয়", "url": "./field-diagnosis.html"},
+    {"name": "নিজের ফসল পরীক্ষা করুন", "url": "./diagnosis-wizard.html"},
+    {"name": "ছবি মিলুন (দৃশ্যমান)", "url": "./symptom-matcher.html"}
   ]
 }

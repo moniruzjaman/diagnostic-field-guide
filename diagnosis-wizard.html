@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="bn-BD">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#006A4E">
+  <meta name="description" content="নিজের ফসলের রোগনির্ণয় — গাইডেড ওয়ার্কফ্লো। লক্ষণ বেছে নিন, কারণ শনাক্ত করুন, মাঠে যাচাই করুন। অফলাইন PWA।">
+  <title>নিজের ফসল পরীক্ষা করুন — রোগনির্ণয় ওয়ার্কবেঞ্চ</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon-32.png">
+  <link rel="stylesheet" href="css/diagnosis-wizard.css">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+</head>
+<body>
+
+  <div class="wizard-page">
+    <header class="wizard-header">
+      <span class="kicker">নিজের ফসল পরীক্ষা করুন</span>
+      <h1>ফসল রোগনির্ণয় ওয়ার্কবেঞ্চ</h1>
+      <p>লক্ষণ দেখুন, কারণ শনাক্ত করুন, মাঠে যাচাই করুন। সবকিছু অফলাইনে চলে।</p>
+    </header>
+
+    <div class="wizard-progress" id="wizardProgress">
+      <div class="wizard-step is-active"><div class="fill"></div></div>
+      <div class="wizard-step"><div class="fill"></div></div>
+      <div class="wizard-step"><div class="fill"></div></div>
+      <div class="wizard-step"><div class="fill"></div></div>
+      <div class="wizard-step"><div class="fill"></div></div>
+    </div>
+
+    <main class="wizard-steps" id="wizardSteps">
+
+      <!-- Step 1: Welcome -->
+      <section class="wizard-step-panel is-active" id="step-welcome">
+        <div class="wizard-card">
+          <span class="welcome-icon">🌿</span>
+          <h2>আপনার ফসলের সমস্যা বুঝতে চান?</h2>
+          <p>এই টুলটি আপনাকে ধাপে ধাপে লক্ষণ দেখিয়ে সম্ভাব্য কারণ শনাক্ত করতে সাহায্য করবে। এটি কোনো রোগের নাম দেবে না এবং কীটনাশক প্রেসক্রাইব করবে না।</p>
+          <div class="wizard-disclaimer">
+            <strong>গুরুত্বপূর্ণ:</strong>これは শুধুমাত্র শিক্ষামূলক সিদ্ধান্ত-সহায়ক। সুপারিশ বা কীটনাশক ব্যবহারের আগে সর্বদা স্থানীয় কৃষি সম্প্রসারণ কর্মী বা প্লান্ট ডাক্তারের পরামর্শ নিন।
+          </div>
+        </div>
+        <div class="wizard-actions">
+          <button class="btn btn-primary" id="btnStartWizard">শুরু করুন →</button>
+        </div>
+      </section>
+
+      <!-- Step 2: Crop selection -->
+      <section class="wizard-step-panel" id="step-crop">
+        <div class="wizard-card">
+          <h2>১. আপনার ফসল কোনটি?</h2>
+          <p>সঠিক ফসল বেছে নিলে রোগনির্ণয় lebih সঠিক হয়।</p>
+          <div class="crop-grid" id="cropGrid"></div>
+        </div>
+        <div class="wizard-actions">
+          <button class="btn btn-secondary" id="btnCropBack">[← পেছনে]</button>
+          <button class="btn btn-primary" id="btnCropNext" disabled>পরবর্তী →</button>
+        </div>
+      </section>
+
+      <!-- Step 3: Symptom selection -->
+      <section class="wizard-step-panel" id="step-symptoms">
+        <div class="wizard-card">
+          <h2>২. পাতায় কী দেখছেন?</h2>
+          <p>আপনি যে লক্ষণ দেখছেন সেগুলি elect করুন (একাধিক বেছে নেওয়া যাবে)।</p>
+          <div class="symptom-grid" id="symptomGrid"></div>
+        </div>
+        <div class="wizard-actions">
+          <button class="btn btn-secondary" id="btnSymptomBack">[← পেছনে]</button>
+          <button class="btn btn-primary" id="btnSymptomNext" disabled>বিশ্লেষণ করুন →</button>
+        </div>
+      </section>
+
+      <!-- Step 4: Affected part & pattern -->
+      <section class="wizard-step-panel" id="step-pattern">
+        <div class="wizard-card">
+          <h2>৩. গাছের কোন অংশ আক্রান্ত?</h2>
+          <p>সমস্যা কোথায় বেশি দেখা যাচ্ছে?</p>
+          <div class="symptom-grid" id="partGrid"></div>
+        </div>
+        <div class="wizard-card">
+          <h2>জমির বিস্তার কেমন?</h2>
+          <div class="symptom-grid" id="distributionGrid"></div>
+        </div>
+        <div class="wizard-actions">
+          <button class="btn btn-secondary" id="btnPatternBack">[← পেছনে]</button>
+          <button class="btn btn-primary" id="btnPatternNext">ফলাফল দেখুন →</button>
+        </div>
+      </section>
+
+      <!-- Step 5: Results -->
+      <section class="wizard-step-panel" id="step-results">
+        <div class="wizard-card">
+          <h2>৪. সম্ভাব্য কারণগোষ্ঠী</h2>
+          <p>আপনার নির্বাচিত লক্ষণের ভিত্তিতে সবচেয়ে সম্ভাব্য কারণগুলো নিচে দেওয়া হলো:</p>
+          <div id="causeResults"></div>
+        </div>
+        <div class="wizard-disclaimer">
+          <strong>যাচাই করা জরুরি:</strong> নিচের যাচাই তালিকায় নেওয়া পদক্ষেপগুলো করুন তারপর সিদ্ধান্ত নিন। নিশ্চিত না হলে বিশেষজ্ঞের সাহায্য নিন।
+        </div>
+        <div class="wizard-actions">
+          <button class="btn btn-secondary" id="btnResultBack">[← পেছনে]</button>
+          <a class="btn btn-primary" href="symptom-matcher.html" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">ছবি মিলুন →</a>
+        </div>
+      </section>
+
+      <!-- Step 6: Next steps / share -->
+      <section class="wizard-step-panel" id="step-next">
+        <div class="wizard-card">
+          <h2>৫. এখন কী করবেন?</h2>
+          <p id="nextStepsText"></p>
+          <div id="nextStepsList"></div>
+        </div>
+        <div class="wizard-actions">
+          <button class="btn btn-outline" id="btnNextNewCase">নতুন কেস শুরু করুন</button>
+          <button class="btn btn-primary" id="btnNextShare">শেয়ার করুন →</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="wizard-toast" id="wizardToast"></div>
+
+  <script src="js/cause-database.js"></script>
+  <script src="js/voice-input.js"></script>
+  <script src="js/voice-glossary.js"></script>
+  <script src="js/diagnosis-wizard.js"></script>
+</body>
+</html>

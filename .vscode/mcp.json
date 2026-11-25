@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "cabi-diagnosis Docs": {
+      "type": "sse",
+      "url": "https://gitmcp.io/moniruzjaman/cabi-diagnosis/runs/138849855791"
+    }
+  }
+}

@@ -64,7 +64,7 @@ for idx in orphaned_indices:
         if term in combined:
             # Insert badge-agent span before the page badge in ph-meta
             # Pattern: <div class="ph-meta">...<span class="badge">পৃষ্ঠা
-            insert_pattern = r'(<div class="ph-meta">[\s\S]*?<span class="badge">প)',
+            insert_pattern = r'(<div class="ph-meta">[\s\S]*?<span class="badge">প)'
             new_badge = f'<span class="badge badge-agent">{badge_bn}</span>'
             replacement = f'{new_badge}'
             
@@ -78,7 +78,7 @@ for idx in orphaned_indices:
         # Default to fungi
         card = re.sub(
             r'(<div class="ph-meta">[\s\S]*?<span class="badge">প)',
-            '<span class="badge badge-agent">🍄 ছত্রāk</span>',
+            '<span class="badge badge-agent">🍄 ছত্রাক</span>',
             card, count=1
         )
     
