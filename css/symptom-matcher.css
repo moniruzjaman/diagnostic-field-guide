@@ -467,3 +467,30 @@ html, body {
   font-size: 0.95rem;
   margin: 0;
 }
+/* Responsive comparison controls and comfortable mobile touch targets */
+.compare-header { flex-wrap: wrap; gap: 6px 12px; }
+.compare-header h3 { min-width: 0; }
+.compare-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--matcher-primary);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.compare-divider::before { z-index: 1; }
+.match-options { flex-wrap: wrap; }
+.btn-match { min-height: 48px; min-width: 0; }
+.btn-match.is-selected { outline: 3px solid rgba(0,106,78,.25); outline-offset: 2px; opacity: 1; }
+.matcher-actions { flex-wrap: wrap; }
+.matcher-actions .btn { min-width: 0; }
+@media (max-width: 380px) {
+  .matcher-page { padding-left: 12px; padding-right: 12px; }
+  .matcher-actions { gap: 8px; }
+  .matcher-actions .btn { flex: 1 1 42%; }
+  .match-options .btn-match { flex: 1 1 100%; }
+  .compare-container { height: 240px; }
+}
