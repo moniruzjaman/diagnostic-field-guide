@@ -70,11 +70,15 @@
     $$('.upload-card, .compare-card, .symptom-card, .result-card').forEach((el) => {
       el.classList.add('hidden');
     });
-    const panels = [null, $('#step-upload'), $('#step-compare'), $('#step-symptoms'), $('#step-result')];
+    // Choose a symptom before comparing its matching reference image.
+    const panels = [null, $('#step-upload'), $('#step-symptoms'), $('#step-compare'), $('#step-result')];
     if (panels[n]) panels[n].classList.remove('hidden');
+    // Show the match decision controls as soon as the comparison screen opens.
+    if (n === 3) $('#matchConfirm').classList.add('is-visible');
     $('#btnBack').style.display = n > 1 ? '' : 'none';
     state.step = n;
     updateNextButton();
+    panels[n]?.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
   function nextStep() { if (state.step < 4) showStep(state.step + 1); }
@@ -85,8 +89,8 @@
     let enabled = false;
     switch (state.step) {
       case 1: enabled = !!state.userImageUrl; break;
-      case 2: enabled = state.matchConfirmed !== null; break;
-      case 3: enabled = !!state.selectedSymptom; break;
+      case 2: enabled = !!state.selectedSymptom; break;
+      case 3: enabled = state.matchConfirmed !== null; break;
       case 4: enabled = true; break;
     }
     btn.disabled = !enabled;
@@ -229,64 +233,69 @@
       return;
     }
 
+    if (state.userImageUrl && state.userImageUrl.startsWith('blob:')) URL.revokeObjectURL(state.userImageUrl);
     const url = URL.createObjectURL(file);
     state.userImageUrl = url;
     $('#imgUser').src = url;
     $('#dropZoneText').textContent = file.name;
     $('#dropZone').classList.add('has-file');
 
-    state.referenceImageUrl = SYMPTOM_IMAGES.spots;
-    $('#imgReference').src = state.referenceImageUrl;
-
-    showToast('ছবি লোড হয়েছে — রেফারেন্স ছবির সঙ্গে তুলনা করুন');
+    // Avoid comparing every upload against an unrelated default reference.
+    state.selectedSymptom = null;
+    state.referenceImageUrl = null;
+    state.matchConfirmed = null;
+    $('.symptom-chip').forEach((c) => c.classList.remove('is-selected'));
+    $('#imgReference').removeAttribute('src');
+    $('#matchConfirm').classList.remove('is-visible');
+    $('.btn-match').forEach((b) => {
+      b.classList.remove('is-selected');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    showToast('ছবি লোড হয়েছে — এবার লক্ষণ নির্বাচন করুন');
     updateNextButton();
   }
   function wireSlider() {
     const container = $('.compare-container');
     const divider = $('#divider');
+    if (!container || !divider) return;
 
-    const startDrag = (clientX) => {
+    // Pointer Events cover touch, mouse and stylus without duplicate handlers.
+    divider.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
       state.isDragging = true;
-      updateDivider(clientX);
-    };
-    const moveDrag = (clientX) => {
-      if (!state.isDragging) return;
-      updateDivider(clientX);
-    };
+      divider.setPointerCapture?.(e.pointerId);
+      updateDivider(e.clientX);
+    });
+    divider.addEventListener('pointermove', (e) => {
+      if (state.isDragging) updateDivider(e.clientX);
+    });
     const endDrag = () => { state.isDragging = false; };
-
-    divider.addEventListener('mousedown', (e) => startDrag(e.clientX));
-    window.addEventListener('mousemove', (e) => moveDrag(e.clientX));
-    window.addEventListener('mouseup', endDrag);
-
-    divider.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      startDrag(e.touches[0].clientX);
-    }, { passive: false });
-    window.addEventListener('touchmove', (e) => {
-      if (!state.isDragging) return;
-      e.preventDefault();
-      moveDrag(e.touches[0].clientX);
-    }, { passive: false });
-    window.addEventListener('touchend', endDrag);
+    divider.addEventListener('pointerup', endDrag);
+    divider.addEventListener('pointercancel', endDrag);
+    divider.addEventListener('lostpointercapture', endDrag);
 
     container.addEventListener('click', (e) => {
       if (e.target === divider) return;
       const rect = container.getBoundingClientRect();
-      updateDivider(e.clientX - rect.left);
+      updateDivider(e.clientX);
     });
   }
 
   function updateDivider(clientX) {
     const container = $('.compare-container');
+    const divider = $('#divider');
+    const userImage = $('#imgUser');
+    if (!container || !divider || !userImage) return;
     const rect = container.getBoundingClientRect();
-    let x = clientX - rect.left;
-    x = Math.max(0, Math.min(rect.width, x));
+    if (!rect.width) return;
+    const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
     const pct = Math.round((x / rect.width) * 100);
     state.dividerX = pct;
     divider.style.left = pct + '%';
-    $('#imgUser').style.clipPath = `polygon(0 0, ${pct}% 0, ${pct}% 100%, 0 100%)`;
+    userImage.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    userImage.style.webkitClipPath = `inset(0 ${100 - pct}% 0 0)`;
   }
+
   function wireMatchButtons() {
     $('#btnMatchYes')?.addEventListener('click', () => setMatch(true));
     $('#btnMatchNo')?.addEventListener('click', () => setMatch(false));
@@ -294,20 +303,23 @@
   }
 
   function setMatch(val) {
-    state.matchConfirmed = val;
+    state.matchConfirmed = val === null ? 'unsure' : val;
     $('#matchConfirm').classList.add('is-visible');
 
     const btns = $$('.btn-match');
     btns.forEach((b) => {
-      b.style.opacity = '0.5';
-      b.style.pointerEvents = 'none';
+      const selected = (val === null && b.id === 'btnMatchSkip') ||
+        (val === true && b.id === 'btnMatchYes') ||
+        (val === false && b.id === 'btnMatchNo');
+      b.classList.toggle('is-selected', selected);
+      b.setAttribute('aria-pressed', String(selected));
     });
 
     const msg = val === true
-      ? 'মিল নিশ্চিত — লক্ষণ বেছে নিন'
+      ? 'দৃশ্যগত মিল আছে — এটি নিশ্চিত রোগনির্ণয় নয়'
       : val === false
-        ? 'আলাদা — অন্য রেফারেন্স চেষ্টা করুন'
-        : 'নিশ্চিত নই — লক্ষণ দিয়ে আগে যাচাই করুন';
+        ? 'মিল পাওয়া যায়নি — অন্য লক্ষণ/রেফারেন্স চেষ্টা করুন'
+        : 'নিশ্চিত নন — ফলাফলে অনিশ্চয়তা দেখানো হবে';
     showToast(msg);
     updateNextButton();
   }
@@ -340,8 +352,14 @@
       if (refImg) {
         state.referenceImageUrl = refImg;
         $('#imgReference').src = refImg;
+        $('#imgReference').alt = 'নির্বাচিত লক্ষণের রেফারেন্স ছবি';
       }
-
+      state.matchConfirmed = null;
+      $('#matchConfirm').classList.remove('is-visible');
+      $('.btn-match').forEach((b) => {
+        b.classList.remove('is-selected');
+        b.setAttribute('aria-pressed', 'false');
+      });
       updateNextButton();
     });
   }
@@ -351,11 +369,11 @@
     let msg = '';
     if (state.matchConfirmed === true && state.selectedSymptom) {
       const info = SYMPTOM_LABELS[state.selectedSymptom];
-      msg = `আপনার ছবি রেফারেন্স ছবির সঙ্গে মিলেছে। লক্ষণ: ${info.label}। এখন অধ্যায় ৪-এ এই লক্ষণ সম্পর্কে আরও পড়ুন।`;
+      msg = `আপনি নির্বাচিত রেফারেন্সের সঙ্গে দৃশ্যগত মিল নিশ্চিত করেছেন। নির্বাচিত লক্ষণ: ${info.label}। এটি স্বয়ংক্রিয় AI শনাক্তকরণ বা নিশ্চিত রোগনির্ণয় নয়। মাঠে লক্ষণ যাচাই করুন।`;
     } else if (state.matchConfirmed === false) {
-      msg = 'ছবিটি রেফারেন্সের সঙ্গে মেলেনি। অন্য ছবি তুলে আবার চেষ্টা করুন অথবা ওয়ার্কবেঞ্চে যান।';
+      msg = 'আপনার ছবির সঙ্গে নির্বাচিত রেফারেন্সের দৃশ্যগত মিল পাওয়া যায়নি। অন্য লক্ষণ/রেফারেন্স বেছে আবার তুলনা করুন অথবা মাঠ-রোগনির্ণয় ওয়ার্কবেঞ্চ ব্যবহার করুন।';
     } else {
-      msg = 'মিল নিশ্চিত হয়নি। লক্ষণ বেছে নিয়ে পরের ধাপে যান।';
+      msg = 'আপনি মিল নিশ্চিত করেননি। নির্বাচিত লক্ষণটি মাঠে যাচাই করুন; এই তুলনা থেকে রোগের নাম বা নিশ্চিত সিদ্ধান্ত দেওয়া যায় না।';
     }
     body.textContent = msg;
   }
@@ -363,20 +381,33 @@
   function wireNavigation() {
     $('#btnBack')?.addEventListener('click', () => prevStep());
     $('#btnNext')?.addEventListener('click', () => {
-      if (state.step === 3) {
-        renderResult();
+      if (state.step === 2) {
+        const refImg = SYMPTOM_IMAGES[state.selectedSymptom];
+        if (!refImg) {
+          showToast('এই লক্ষণের জন্য রেফারেন্স ছবি পাওয়া যায়নি। অন্য লক্ষণ বেছে নিন।');
+          return;
+        }
+        state.referenceImageUrl = refImg;
+        $('#imgReference').src = refImg;
+        $('#imgReference').alt = 'নির্বাচিত লক্ষণের রেফারেন্স ছবি';
+        state.matchConfirmed = null;
       }
+      if (state.step === 3) renderResult();
       nextStep();
     });
     $('#btnNewMatch')?.addEventListener('click', () => {
+      if (state.userImageUrl && state.userImageUrl.startsWith('blob:')) URL.revokeObjectURL(state.userImageUrl);
       state.userImageUrl = null;
       state.referenceImageUrl = null;
       state.selectedSymptom = null;
       state.matchConfirmed = null;
       state.dividerX = 50;
+      $('#divider').style.left = '50%';
+      $('#imgUser').style.clipPath = 'inset(0 50% 0 0)';
+      $('#imgUser').style.webkitClipPath = 'inset(0 50% 0 0)';
       $('#fileInput').value = '';
       $('#imgUser').src = '';
-      $('#imgReference').src = '';
+      $('#imgReference').removeAttribute('src');
       $('#dropZone').classList.remove('has-file');
       $('#dropZoneText').textContent = 'গ্যালারি থেকে বেছে নিন অথবা ক্যামেরা ব্যবহার করুন';
       $$('.symptom-chip').forEach((c) => c.classList.remove('is-selected'));
