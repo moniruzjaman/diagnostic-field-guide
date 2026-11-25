@@ -78,6 +78,7 @@
     $('#btnBack').style.display = n > 1 ? '' : 'none';
     state.step = n;
     updateNextButton();
+    panels[n]?.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
   function nextStep() { if (state.step < 4) showStep(state.step + 1); }
