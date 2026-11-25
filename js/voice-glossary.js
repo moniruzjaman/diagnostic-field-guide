@@ -1,44 +1,47 @@
 /* ============================================================
    Voice Glossary — Bengali audio explanations of technical terms
    Taps any symptom/technical word to hear its definition.
-   Uses Web Speech Synthesis (same API as existing TTS) but plays
-   a single word/phrase instead of full chapter audio.
+   Uses Web Speech Synthesis (same API as the reader's TTS).
+   v2.1.4 fix: cleaned corrupted Bengali strings (mixed-script
+   mojibake + unescaped quote broke the whole file), defined the
+   $/$$ helpers locally, removed the stray full-sentence speak call.
    ============================================================ */
 
 (function () {
   'use strict';
 
+  const $$ = (sel, ctx = document) => Array.from((ctx || document).querySelectorAll(sel));
+
   // Map symptom ids + technical terms to their Bengali explanations
   const GLOSSARY = {
-    spots:    'পাতার উপর তারতম্য বা গোল দাগ। প্রায়ই প্যাথোজেন বা পোকার অভুল।',
-    yellow:   'পাতা অকালে হলুদ হচ্ছে, তুষারিত রঙ।',
-    wilting:  'গাছ বা পাতা ঝুঁকে পড়ছে, সোজা থাকছে না।',
-    rot:      'পাতা, কাণ্ড বা ফল নরম হয়ে পচছে।',
-    mosaic:   'পাতায় হলুদ-সবুজ মিশ্র প্যাটার্ন বা কুঁকড়ানো।',
-    holes:    'পাতায় ছিদ্র বা পোকা খাওয়ার চিহ্ন।',
-    webbing:  'পাতায় মাকড়সার-যে গের জাল বা জীবন্ত পোকা।',
-    stunting: 'গাছের বৃদ্ধি ধীর বা অসম্ভব ছোট।',
-    dieback:  'শাখা-ডগার প্রান্ত শুকিয়ে যাচ্ছে।',
-    ooze:     'ক্ষত থেকে আঠালো তরল নির্গমন।',
-    powder:   'পাতার উপর সাদা গুঁড়ার মতো আস্তরণ আছে।',
-    margin:   'পাতার কিনারা ধূস্ব বা কালো হয়ে পুড়ে যাচ্ছে।',
-    curling:  'পাতা বাঁকা বা কুঁকড়ে মোড়ানো হচ্ছে।',
+    spots:    'পাতায় গোল বা অনিয়মিত দাগ। ছত্রাক বা ব্যাকটেরিয়াজনিত রোগের সাধারণ লক্ষণ।',
+    yellow:   'পাতা সময়ের আগে হলুদ হয়ে যাওয়া। পুষ্টির অভাব বা রোগের লক্ষণ হতে পারে।',
+    wilting:  'গাছ বা পাতা ঝুলে ঢলে পড়া। শিকড় বা পানির সমস্যায় এমন হয়।',
+    rot:      'পাতা, কাণ্ড বা ফল নরম হয়ে পচে যাওয়া।',
+    mosaic:   'পাতায় হলুদ-সবুজ মিশ্র প্যাটার্ন। সাধারণত ভাইরাসজনিত লক্ষণ।',
+    holes:    'পাতায় ছিদ্র — পোকা খেয়ে ফেলার চিহ্ন।',
+    webbing:  'পাতায় মাকড়সার মতো সূক্ষ্ম জাল — মাইট বা ছোট পোকার চিহ্ন।',
+    stunting: 'গাছের বৃদ্ধি বন্ধ বা স্বাভাবিকের চেয়ে ছোট হয়ে থাকা।',
+    dieback:  'ডগা বা শাখার প্রান্ত থেকে শুকিয়ে যাওয়া।',
+    ooze:     'ক্ষতস্থান থেকে আঠালো তরল বের হওয়া — ব্যাকটেরিয়াজনিত রোগের চিহ্ন।',
+    powder:   'পাতার উপর সাদা গুঁড়ার মতো আস্তরণ — পাউডারি মিলডিউর লক্ষণ।',
+    margin:   'পাতার কিনারা বাদামি বা কালো হয়ে পুড়ে যাওয়া।',
+    curling:  'পাতা বেঁকে বা কুঁকড়ে যাওয়া। ভাইরাস বা পোকার আক্রমণে এমন হয়।',
     // Additional technical terms
-    fusarium: 'ফসারিৠrium প্যাথোজেন। কাণ্ডের ভিতরে গোলাপি বর্ণ তৈরি করে।',
-    verticillium: 'ভার্টিসিলিয়াম প্যাথোজেন। কালো দাগ তৈরি করে কাণ্ডের মূল্যে।',
-    late_blight: 'লেট ব্লাইট (লেট সাইল্ড)। আলুটিতে তীব্র छत्रাকজনিত রোগ।',
-    early_blight: 'ইarly সাইল্ড। ছittle ছত্রাক রোগ।',
-    powdery_mildew: 'পা'য়ারি মাল্ডই (সাদা গুঁড়ার छত্রák) — সাদা গুঁড়ার মতো আস্তরণ।',
-    downy_mildew: 'দাউনি মাল্ডই (হেরে আসা মাল্ডই) — পাতায় হলুদ পেছনে-white layer।',
-    phytophthora: 'ফাইটোফথোরা — পানি-ওashed ক্ষতিকারক প্যাথোজেন।',
-    aflatoxin: 'অফ্লাটক্সিন — মোলানের জন্য ক্ষতিকারক টোক্সিন।',
-    n: null
+    fusarium: 'ফিউজেরিয়াম — মাটির ছত্রাক; কাণ্ড চিরলে ভেতরে বাদামি বা গোলাপি দাগ দেখা যায়।',
+    verticillium: 'ভার্টিসিলিয়াম — মাটির ছত্রাক; পরিবহন নালীতে কালচে দাগ তৈরি করে।',
+    late_blight: 'লেট ব্লাইট — আলু ও টমেটোর মারাত্মক ছত্রাকজনিত রোগ; পাতায় জল-ভেজা দাগ ও সাদা আস্তরণ।',
+    early_blight: 'আর্লি ব্লাইট — পাতায় কেন্দ্রে গুটি থাকা গোল বাদামি দাগ (টার্গেট স্পট)।',
+    powdery_mildew: 'পাউডারি মিলডিউ — পাতার উপর সাদা গুঁড়ার মতো ছত্রাকের আস্তরণ।',
+    downy_mildew: 'ডাউনি মিলডিউ — পাতার উপর হলুদ দাগ, পাতার নিচে সাদা-ধূসর ছত্রাকের স্তর।',
+    phytophthora: 'ফাইটোফথোরা — পানি-প্রিয় ছত্রাকজনিত রোগকারক; শিকড় ও ফল পচায়।',
+    aflatoxin: 'অ্যাফ্লাটক্সিন — দানা বা শিকড়ে ছত্রাকের বৃদ্ধি থেকে তৈরি বিষাক্ত পদার্থ।'
   };
 
   // Render a glossary button inside a given element
   function renderGlossaryButton(el, term) {
     const info = GLOSSARY[term] || '';
-    if (!info) return;
+    if (!info || !el) return;
 
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -50,12 +53,10 @@
 
     btn.addEventListener('click', () => {
       const msg = GLOSSARY[term] || '';
-      if (msg) {
-        window.EBOOK_TTS.speakSentence(0); // reuse existing TTS, speak first chunk
-        // We'll create a simple utterance instead
+      if (msg && window.speechSynthesis) {
         const u = new SpeechSynthesisUtterance(msg);
         u.lang = 'bn-BD';
-        if (window.EBOOK_TTS.bnVoice) u.voice = window.EBOOK_TTS.bnVoice;
+        if (window.EBOOK_TTS && window.EBOOK_TTS.bnVoice) u.voice = window.EBOOK_TTS.bnVoice;
         u.rate = 0.9;
         u.pitch = 1.0;
         u.volume = 1.0;
@@ -68,27 +69,20 @@
 
   // Add glossary buttons to all symptom chips and result cards
   function init() {
-    // Add to symptom chips in symptom-matcher
-    $$('.symptom-chip').forEach((chip) => {
-      const term = chip.dataset.symptom;
-      if (GLOSSARY[term]) {
-        renderGlossaryButton(chip, term);
-      }
-    });
-
-    // Add to result cards (wizard step 5)
-    $$('.cause-result').forEach((card) => {
-      const term = card.dataset.cause;
-      if (GLOSSARY[term]) {
-        renderGlossaryButton(card.querySelector('.cause-name'), term);
-      }
-    });
-
-    // Add to wizard symptom selection
+    // symptom chips (matcher + wizard both use .symptom-chip[data-symptom])
     $$('.symptom-chip[data-symptom]').forEach((chip) => {
       const term = chip.dataset.symptom;
-      if (GLOSSARY[term]) {
+      if (GLOSSARY[term] && !chip.querySelector('.voice-glossary-btn')) {
         renderGlossaryButton(chip, term);
+      }
+    });
+
+    // result cards (wizard step 5)
+    $$('.cause-result').forEach((card) => {
+      const term = card.dataset.cause;
+      const holder = card.querySelector('.cause-name');
+      if (GLOSSARY[term] && holder && !holder.querySelector('.voice-glossary-btn')) {
+        renderGlossaryButton(holder, term);
       }
     });
   }

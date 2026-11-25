@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "lang": "bn-BD",
-  "disclaimer_bn": "এই টুলটি শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে। এটি রোগের নাম বা কীটনাশক প্রেসক্রাইব করে না। সুপারিশের আগে স্থানীয় কৃষি সম্প্রসারন কর্মী বা প্লান্ট ডাক্তারের পরামর্শ নিন। দক্ষতাবান কৃষি-officerদের যোগাযôngের জন্য 'officer Directory' ফিচার ব্যবহার করুন।",
+  "disclaimer_bn": "এই টুলটি শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে। এটি রোগের নাম দেয় না বা কীটনাশক সুপারিশ করে না। সুপারিশের আগে স্থানীয় কৃষি সম্প্রসারণ কর্মী বা প্লান্ট ডাক্তারের পরামর্শ নিন। দক্ষ কৃষি সম্প্রসারণ কর্মীর যোগাযোগের জন্য \"বিশেষজ্ঞ ডিরেক্টরি\" ফিচার ব্যবহার করুন।",
   "causeGroups": [
     {
       "id": "pest",
@@ -9,7 +9,7 @@
       "name_short_bn": "পোকা-বালাই",
       "icon": "🐛",
       "color": "#8f5822",
-      "about_bn": "পাতা খাওয়া, ছিদ্র, জাল, দৃশ্যমান পোকা বা মল থাকলে এই গোষ্ঠীকে সন্দেহ করুন। পাতার নিচে ডিম, লার্ভা বা বালুজ জী খুঁজুন।",
+      "about_bn": "পাতা খাওয়া, ছিদ্র, জাল, দৃশ্যমান পোকা বা মল থাকলে এই গোষ্ঠীকে সন্দেহ করুন। পাতার নিচে ডিম, লার্ভা বা জীবন্ত পোকা খুঁজুন।",
       "verify_bn": "পাতার নিচে, কাণ্ড ও শিকড় পরীক্ষা করুন। জীবন্ত পোকা, ডিম বা মল পেলে পোকাবালাই-সংক্রান্ত রোগের সম্ভাবনা বেশি।",
       "common_crops_bn": "প্রায় সব ফসল (ধান, আলু, বেগুন, টমেটো, মরিচ)"
     },
@@ -20,7 +20,7 @@
       "icon": "🍄",
       "color": "#4b6b78",
       "about_bn": "পাতায় দাগ, পচন, গুঁড়া বা ছত্রাকের বৃদ্ধি এবং আর্দ্রতার মিল থাকলে ছত্রাকজনিত রোগের সম্ভাবনা বাড়ে। দাগের কিনারা ও মাইসেলিয়াম পরীক্ষা করুন।",
-      "verify_bn": "দাগের রং, কিনারার ধরণ (গোলকাক্তি, অনির্দিষ্ট) ও আর্দ্রতার সম্পর্ক দেখুন। কাণ্ড কেটে ভেতরে বর্ণপরিবর্তন আছে কিনা যাচাই করুন।",
+      "verify_bn": "দাগের রং, কিনারার ধরণ (গোলাকার, অনিয়মিত) ও আর্দ্রতার সম্পর্ক দেখুন। কাণ্ড কেটে ভেতরে বর্ণপরিবর্তন আছে কিনা যাচাই করুন।",
       "common_crops_bn": "আলু, টমেটো, ধান, বেগুন, মরিচ, পাট"
     },
     {
@@ -41,7 +41,7 @@
       "color": "#7d476c",
       "about_bn": "মোজাইক, পাতা কুঁকড়ানো, খর্বাকৃতি বা বিকৃত নতুন বৃদ্ধি থাকলে ভাইরাসের সম্ভাবনা বিবেচনা করুন। লক্ষণ একা নিশ্চিত নয়—বাহক পোকা ও আক্রান্ত গাছের বিন্যাস দেখুন।",
       "verify_bn": "নতুন বৃদ্ধি (কচি পাতা) লক্ষণ আছে কিনা, বাহক পোকা (এফিড, হপার) আছে কিনা, এবং আক্রান্ত গাছের বিন্যাস দেখুন। নির্ভরযোগ্য পরীক্ষা ছাড়া নিশ্চিত হবেন না।",
-      "common_crops_bn": "আলু, টমেটো, মরিচ, ধান, বেঁগুন, কুসুম (cucurbits)"
+      "common_crops_bn": "আলু, টমেটো, মরিচ, ধান, বেগুন, লাউ-কুমড়ো জাতীয় (cucurbits)"
     },
     {
       "id": "nutrition",
@@ -49,7 +49,7 @@
       "name_short_bn": "পুষ্টির অভাব",
       "icon": "🌱",
       "color": "#8f5822",
-      "about_bn": "পাতার বয়সভেদে হলদে হওয়া, কিনারা পোড়া বা নির্দিষ্ট নকশার লক্ষণ থাকলে পুষ্টির অভাব বা মাটির রাসায়নিক সমস্যার সম্ভাবনা ভাবতে হবে।",
+      "about_bn": "পাতার বয়সভেদে হলুদ হওয়া, কিনারা পোড়া বা নির্দিষ্ট নকশার লক্ষণ থাকলে পুষ্টির অভাব বা মাটির রাসায়নিক সমস্যার সম্ভাবনা ভাবতে হবে।",
       "verify_bn": "পুরোনো বনাম কচি পাতায় লক্ষণের শুরু দেখুন। মাটির pH/EC, সার প্রয়োগ ও মাটি/পাতা পরীক্ষার ফলাফল মিলিয়ে দেখুন।",
       "common_crops_bn": "সব ফসল (বিশেষ করে ধান, গম, আলু, টমেটো)"
     },
@@ -61,7 +61,7 @@
       "color": "#4b6b78",
       "about_bn": "ঢলে পড়া, পচন, নিচু স্থানে সমস্যা বা অতিরিক্ত শুষ্কতার সঙ্গে মিল থাকতে পারে। শিকড় বা কাণ্ডের ভিত্তি সংক্রমিত হতে পারে।",
       "verify_bn": "মাটির আর্দ্রতা, পানি জমা, নিষ্কাশন ব্যবস্থা, শিকড়ের রং/গন্ধ ও সেচের পদ্ধতি পরীক্ষা করুন। নিচু জায়গায় সমস্যা বেশি হলে জলনিষ্কাশনের সমস্যা।",
-      "common_crops_bn": "धान, আলু, শাকসবজি, পাট"
+      "common_crops_bn": "ধান, আলু, শাকসবজি, পাট"
     },
     {
       "id": "weather",
@@ -69,7 +69,7 @@
       "name_short_bn": "আবহাওয়াজনিত",
       "icon": "☀️",
       "color": "#5c635c",
-      "about_bn": "হঠাৎ বা জমির নির্দিষ্ট অংশে একযোগে ক্ষতি, আবহাওয়া বা ইনপুটের পর লক্ষণ দেখা দিলে অজৈব চাপের সম্ভাবনা ভাবতে হবে। জমির 높은/নিচু অংশ, বাতাসের দিক দেখা দরকার।",
+      "about_bn": "হঠাৎ বা জমির নির্দিষ্ট অংশে একযোগে ক্ষতি, আবহাওয়া বা ইনপুটের পর লক্ষণ দেখা দিলে অজৈব চাপের সম্ভাবনা ভাবতে হবে। জমির উঁচু/নিচু অংশ, বাতাসের দিক দেখা দরকার।",
       "verify_bn": "বাতাসের দিক, জমির উচ্চতা, স্প্রে/সার/সেচের সময়, তাপ ও লবণাক্ততার চিহ্ন মিলিয়ে দেখুন। সমমিত বা বড় এলাকায় একযোগে ক্ষতি হলে অজৈব কারণের সম্ভাবনা বেশি।",
       "common_crops_bn": "সব ফসল (একসাথে এক জোনে)"
     }
@@ -77,11 +77,24 @@
   "crops": [
     {
       "id": "rice",
-      "name_bn": "धान",
+      "name_bn": "ধান",
       "icon": "🌾",
-      "description_bn": "বাংলাদেশের প্রধান ফসল। ধানের নির্দিষ্ট রোগ ও পোকা সম্পর্কে কিছু যুক্তিসঙ্গত পূর্বধারণা।",
-      "common_symptoms": ["wilting", "spots", "yellow", "stunting", "dieback", "powder"],
-      "likely_causes": ["fungal", "bacterial", "pest", "nutrition", "water"],
+      "description_bn": "বাংলাদেশের প্রধান ফসল। ধানের প্রধান রোগ ও পোকা সম্পর্কে ধারণা রাখা ভালো।",
+      "common_symptoms": [
+        "wilting",
+        "spots",
+        "yellow",
+        "stunting",
+        "dieback",
+        "powder"
+      ],
+      "likely_causes": [
+        "fungal",
+        "bacterial",
+        "pest",
+        "nutrition",
+        "water"
+      ],
       "season_bn": "আমন / বোরো মৌসুম"
     },
     {
@@ -89,8 +102,20 @@
       "name_bn": "আলু",
       "icon": "🥔",
       "description_bn": "শীতকালীন ফসল। আলুতে ছত্রাকজনিত রোগ ও পোকা প্রবণ।",
-      "common_symptoms": ["spots", "rot", "powder", "dieback", "yellow", "wilting"],
-      "likely_causes": ["fungal", "bacterial", "pest", "weather"],
+      "common_symptoms": [
+        "spots",
+        "rot",
+        "powder",
+        "dieback",
+        "yellow",
+        "wilting"
+      ],
+      "likely_causes": [
+        "fungal",
+        "bacterial",
+        "pest",
+        "weather"
+      ],
       "season_bn": "শীতকাল (নভেম্বর–মার্চ)"
     },
     {
@@ -98,17 +123,42 @@
       "name_bn": "বেগুন",
       "icon": "🍆",
       "description_bn": "বেগুনের পোকা (ফল ও ডগা ভেদা পোকা) এবং ছত্রাক রোগ সাধারণ।",
-      "common_symptoms": ["holes", "spots", "wilting", "dieback", "mosaic", "stunting"],
-      "likely_causes": ["pest", "fungal", "viral", "bacterial"],
+      "common_symptoms": [
+        "holes",
+        "spots",
+        "wilting",
+        "dieback",
+        "mosaic",
+        "stunting"
+      ],
+      "likely_causes": [
+        "pest",
+        "fungal",
+        "viral",
+        "bacterial"
+      ],
       "season_bn": "বর্ষা ও শীতকাল"
     },
     {
       "id": "tomato",
       "name_bn": "টমেটো",
       "icon": "🍅",
-      "description_bn": "টমেটোয় ছত্রাক, ব্যাকটেরিয়া ও ভাইরাস রোগ-দেশব্যাপী। পাতা কুঁকড়ানো ও দাগ মূল লক্ষণ।",
-      "common_symptoms": ["spots", "yellow", "wilting", "mosaic", "dieback", "powder"],
-      "likely_causes": ["fungal", "bacterial", "viral", "pest", "nutrition"],
+      "description_bn": "টমেটোয় ছত্রাক, ব্যাকটেরিয়া ও ভাইরাস রোগ সাধারণ। পাতা কুঁকড়ানো ও দাগ মূল লক্ষণ।",
+      "common_symptoms": [
+        "spots",
+        "yellow",
+        "wilting",
+        "mosaic",
+        "dieback",
+        "powder"
+      ],
+      "likely_causes": [
+        "fungal",
+        "bacterial",
+        "viral",
+        "pest",
+        "nutrition"
+      ],
       "season_bn": "শীতকাল (নভেম্বর–ফেব্রুয়ারি)"
     },
     {
@@ -116,8 +166,20 @@
       "name_bn": "মরিচ",
       "icon": "🌶️",
       "description_bn": "মরিচে পোকা (মাইট, এফিড) ও ভাইরাস রোগ (মোজাইক) সাধারণ।",
-      "common_symptoms": ["mosaic", "stunting", "yellow", "spots", "holes", "curling"],
-      "likely_causes": ["viral", "pest", "fungal", "nutrition"],
+      "common_symptoms": [
+        "mosaic",
+        "stunting",
+        "yellow",
+        "spots",
+        "holes",
+        "curling"
+      ],
+      "likely_causes": [
+        "viral",
+        "pest",
+        "fungal",
+        "nutrition"
+      ],
       "season_bn": "বর্ষা ও শীতকাল"
     },
     {
@@ -125,26 +187,66 @@
       "name_bn": "পাট",
       "icon": "🌿",
       "description_bn": "বাংলাদেশের গুরুত্বপূর্ণ নগদ ফসল। পাটে ছত্রাক রোগ ও শিকড়ের সমস্যা দেখা যায়।",
-      "common_symptoms": ["wilting", "rot", "yellow", "dieback", "spots"],
-      "likely_causes": ["fungal", "water", "bacterial", "nutrition"],
+      "common_symptoms": [
+        "wilting",
+        "rot",
+        "yellow",
+        "dieback",
+        "spots"
+      ],
+      "likely_causes": [
+        "fungal",
+        "water",
+        "bacterial",
+        "nutrition"
+      ],
       "season_bn": "বর্ষাকাল (মার্চ–জুন)"
     },
     {
       "id": "wheat",
       "name_bn": "গম",
       "icon": "🌾",
-      "description_bn": "শীতকালীন রবি ফসল। গমে ছত্রাক রোগ (ব্লাইট, রাস্ট) ও পুষ্টির অভাব debió।",
-      "common_symptoms": ["spots", "yellow", "powder", "dieback", "stunting"],
-      "likely_causes": ["fungal", "nutrition", "weather", "pest"],
+      "description_bn": "শীতকালীন রবি ফসল। গমে ছত্রাক রোগ (ব্লাইট, রাস্ট) ও পুষ্টির অভাব দেখা দিতে পারে।",
+      "common_symptoms": [
+        "spots",
+        "yellow",
+        "powder",
+        "dieback",
+        "stunting"
+      ],
+      "likely_causes": [
+        "fungal",
+        "nutrition",
+        "weather",
+        "pest"
+      ],
       "season_bn": "শীতকাল (নভেম্বর–মার্চ)"
     },
     {
       "id": "other",
       "name_bn": "অন্যান্য ফসল",
       "icon": "🌱",
-      "description_bn": "তালিকাভুক্ত নেই ফসলের জন্য সাধারণ রোগনির্ণয় পথ।",
-      "common_symptoms": ["wilting", "spots", "yellow", "stunting", "dieback", "mosaic", "rot", "powder", "holes"],
-      "likely_causes": ["pest", "fungal", "bacterial", "viral", "nutrition", "water", "weather"],
+      "description_bn": "তালিকায় না থাকা ফসলের জন্য সাধারণ রোগনির্ণয় পথ।",
+      "common_symptoms": [
+        "wilting",
+        "spots",
+        "yellow",
+        "stunting",
+        "dieback",
+        "mosaic",
+        "rot",
+        "powder",
+        "holes"
+      ],
+      "likely_causes": [
+        "pest",
+        "fungal",
+        "bacterial",
+        "viral",
+        "nutrition",
+        "water",
+        "weather"
+      ],
       "season_bn": "সব মৌসুম"
     }
   ],
@@ -157,7 +259,7 @@
     },
     {
       "id": "yellow",
-      "label_bn": "হলদে হওয়া",
+      "label_bn": "হলুদ হওয়া",
       "icon": "🟡",
       "description_bn": "পাতা অকালে হলুদ হচ্ছে।"
     },
@@ -165,7 +267,7 @@
       "id": "wilting",
       "label_bn": "ঢলে পড়া (উইল্ট)",
       "icon": "🥀",
-      "description_bn": "গাছ বা পাতা ঝুঁকে পড়ছে, সোজা থাকছে না।"
+      "description_bn": "গাছ বা পাতা ঝুঁকে পড়ছে, সোজা দাঁড়িয়ে থাকছে না।"
     },
     {
       "id": "rot",
@@ -177,7 +279,7 @@
       "id": "mosaic",
       "label_bn": "মোজাইক / পাতা কুঁকড়ানো",
       "icon": "🟢",
-      "description_bn": "পাতায় হলুদ-সবুজ মিশ্র প্যাটার্ন বা কুঁকড়ানো seen হচ্ছে।"
+      "description_bn": "পাতায় হলুদ-সবুজ মিশ্র প্যাটার্ন বা কুঁকড়ে যাওয়া দেখা যাচ্ছে।"
     },
     {
       "id": "holes",
@@ -189,7 +291,7 @@
       "id": "webbing",
       "label_bn": "জাল / দৃশ্যমান পোকা",
       "icon": "🕸️",
-      "description_bn": "পাতায় মাকড়সার-जैसे জাল বা জীবন্ত পোকা見られ।"
+      "description_bn": "পাতায় মাকড়সার মতো জাল বা জীবন্ত পোকা দেখা যাচ্ছে।"
     },
     {
       "id": "stunting",
@@ -231,49 +333,69 @@
   "scoringRules": [
     {
       "id": "wilting+young+wet",
-      "symptoms": ["wilting"],
-      "parts": ["young"],
+      "symptoms": [
+        "wilting"
+      ],
+      "parts": [
+        "young"
+      ],
       "environment": "wet",
       "cause": "water",
       "confidence": "high",
-      "reason_bn": "কচি পাতা ও গন্ধি মাটিতে ঢলে পড়া—পানি/শিকড়ের সমস্যার সম্ভাবনা বেশি।"
+      "reason_bn": "কচি চারা ভেজা মাটিতে ঢলে পড়া—পানি/শিকড়ের সমস্যার সম্ভাবনা বেশি।"
     },
     {
       "id": "spots+whole+after_rain",
-      "symptoms": ["spots"],
+      "symptoms": [
+        "spots"
+      ],
       "distribution": "uniform",
       "onset": "after-weather",
       "cause": "fungal",
       "confidence": "high",
-      "reason_bn": "সব জলে নিখেই দাগ ও বৃষ্টির পর—ছত্রাকজনিত রোগের পুরনো চিহ্ন।"
+      "reason_bn": "পাতায় জল-ভেজা দাগ ও বৃষ্টির পর বিস্তার—ছত্রাকজনিত রোগের চিহ্ন।"
     },
     {
       "id": "mosaic+young",
-      "symptoms": ["mosaic"],
-      "parts": ["young"],
+      "symptoms": [
+        "mosaic"
+      ],
+      "parts": [
+        "young"
+      ],
       "cause": "viral",
       "confidence": "medium",
-      "reason_bn": "কচি পাতায় মোজাইক—ভাইরাসের সম্ভাবনা, বাহক পো ধ unterschied তে যাচাই প্রasthan।"
+      "reason_bn": "কচি পাতায় মোজাইক—ভাইরাসের সম্ভাবনা; বাহক পোকা আছে কিনা যাচাই করুন।"
     },
     {
       "id": "yellow+old+uniform",
-      "symptoms": ["yellow"],
-      "parts": ["old"],
+      "symptoms": [
+        "yellow"
+      ],
+      "parts": [
+        "old"
+      ],
       "distribution": "uniform",
       "cause": "nutrition",
       "confidence": "medium",
-      "reason_bn": "পুরোনো পাতা হলে হলুদ ও সব জমিতে সমান—পুষ্টির অভাবের可能性।"
+      "reason_bn": "পুরোনো পাতা হলে হলুদ ও সব জমিতে সমান—পুষ্টির অভাবের সম্ভাবনা।"
     },
     {
       "id": "holes+visible+pest",
-      "symptoms": ["holes", "webbing"],
+      "symptoms": [
+        "holes",
+        "webbing"
+      ],
       "cause": "pest",
       "confidence": "high",
       "reason_bn": "ছিদ্র ও জাল—জীবন্ত পোকা-বালাই-সংক্রান্ত লক্ষণ।"
     },
     {
       "id": "rot+ooze+wet",
-      "symptoms": ["rot", "ooze"],
+      "symptoms": [
+        "rot",
+        "ooze"
+      ],
       "environment": "wet",
       "cause": "bacterial",
       "confidence": "high",
@@ -281,16 +403,20 @@
     },
     {
       "id": "dieback+hot+dry",
-      "symptoms": ["dieback"],
+      "symptoms": [
+        "dieback"
+      ],
       "environment": "hot",
       "onset": "after-weather",
       "cause": "weather",
       "confidence": "medium",
-      "reason_bn": "ডগার প্রান্ত শুকanao ও দ spagnolo বা শুষ্ক আবহাওয়া—অজৈব চাপের সম্ভাবনা।"
+      "reason_bn": "ডগার প্রান্ত শুকিয়ে যাওয়া ও শুষ্ক-গরম আবহাওয়া—অজৈব চাপের সম্ভাবনা।"
     },
     {
       "id": "powder+wet+fungal",
-      "symptoms": ["powder"],
+      "symptoms": [
+        "powder"
+      ],
       "environment": "wet",
       "cause": "fungal",
       "confidence": "medium",

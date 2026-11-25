@@ -29,8 +29,9 @@
     renderPartGrid();
     renderDistributionGrid();
     wireEvents();
-    wireWizardVoiceInput();
-    wireWizardGlossary();
+    // voice/glossary helpers must never break the wizard core
+    try { wireWizardVoiceInput(); } catch (e) { console.warn('voice input unavailable:', e); }
+    try { wireWizardGlossary(); } catch (e) { console.warn('glossary unavailable:', e); }
     updateProgress();
     showStep(1);
   }
@@ -43,6 +44,11 @@
       s.classList.remove('is-active', 'is-done');
       if (i < n - 1) s.classList.add('is-done');
       else if (i === n - 1) s.classList.add('is-active');
+    });
+    state.step = n;
+    updateProgress();
+  }
+
   function renderCropGrid() {
     const grid = $('#cropGrid');
     if (!grid || !state.db) return;
@@ -86,6 +92,19 @@
       $('#btnSymptomNext').disabled = state.selectedSymptoms.size === 0;
     });
   }
+
+  const PART_LABELS = {
+    young: 'কচি পাতা / ডগা', old: 'পুরোনো পাতা', root: 'শিকড় / গোড়া',
+    stem: 'কাণ্ড / শাখা', flowerfruit: 'ফুল / ফল / দানা', whole: 'পুরো গাছ'
+  };
+  const DIST_LABELS = {
+    patch: 'বিক্ষিপ্ত গাছ / ছোট দাগে', edge: 'জমির কিনারায় / এক পাশ থেকে',
+    uniform: 'প্রায় সব জমিতে সমান', rows: 'সারি / সেচ লাইনের বরাবর'
+  };
+  const symLabel = (id) => {
+    const s = (state.db && state.db.symptoms || []).find((x) => x.id === id);
+    return s ? s.label_bn : id;
+  };
 
   function renderPartGrid() {
     const grid = $('#partGrid');
@@ -145,10 +164,6 @@
       state.selectedDistribution = chip.dataset.dist;
     });
   }
-    });
-    state.step = n;
-    updateProgress();
-  }
 
   function nextStep() { if (state.step < TOTAL_STEPS) showStep(state.step + 1); }
   function prevStep() { if (state.step > 1) showStep(state.step - 1); }
@@ -172,15 +187,15 @@
       let reasons = [];
       if (rule.symptoms && rule.symptoms.some((s) => symptoms.includes(s))) {
         match = true;
-        reasons.push('লক্ষণ: ' + rule.symptoms.filter((s) => symptoms.includes(s)).join(', '));
+        reasons.push('লক্ষণ: ' + rule.symptoms.filter((x) => symptoms.includes(x)).map(symLabel).join(', '));
       }
       if (rule.parts && rule.parts.some((p) => parts.includes(p))) {
         match = true;
-        reasons.push('আক্রান্ত অংশ: ' + rule.parts.filter((p) => parts.includes(p)).join(', '));
+        reasons.push('আক্রান্ত অংশ: ' + rule.parts.filter((x) => parts.includes(x)).map((x) => PART_LABELS[x] || x).join(', '));
       }
       if (rule.distribution && rule.distribution === dist) {
         match = true;
-        reasons.push('জমির বিস্তার: ' + dist);
+        reasons.push('জমির বিস্তার: ' + (DIST_LABELS[dist] || dist));
       }
       if (match) {
         if (!causeScores[rule.cause]) {
@@ -248,7 +263,7 @@
     $('#nextStepsText').textContent =
       `সবচেয়ে সম্ভাব্য কারণ: ${top.name} (${top.confidence === 'high' ? 'উচ্চ' : top.confidence === 'medium' ? 'মাঝারি' : 'কম'} ভরসা)।`;
     const steps = [
-      'গাছের পাতার নিচে, কাণ্ড ও শিকড় গুছি করে দেখুন।',
+      'গাছের পাতার নিচে, কাণ্ড ও শিকড় ভালো করে দেখুন।',
       'পাতার নিচে ডিম, মল বা ছত্রাকের গুঁড়া আছে কিনা যাচাই করুন।',
       'নিশ্চিত না হলে ফোটো তুলে স্থানীয় প্লান্ট ডাক্তার বা কৃষি সম্প্রসারণ কর্মীর সঙ্গে শেয়ার করুন।',
       'কীটনাশক স্প্রে করার আগে বিশেষজ্ঞের পরামর্শ নিন।'
@@ -283,7 +298,7 @@
 
   function wireWizardVoiceInput() {
     const micBtn = $('#wizardVoiceMicBtn');
-    if (!micBtn || !VOICE_INPUT.init()) {
+    if (!micBtn || !window.VOICE_INPUT || !VOICE_INPUT.init()) {
       micBtn && (micBtn.disabled = true);
       return;
     }
@@ -326,17 +341,17 @@
         $$('.symptom-chip[data-symptom]').forEach((c) => c.classList.remove('is-selected'));
         $(`.symptom-chip[data-symptom="${firstSymptom}"]`)?.classList.add('is-selected');
         state.selectedSymptom = firstSymptom;
-        showToast(` głos সমঃ ${firstSymptom} লক্ষণ চিহ্নেরস মিলে।`);
+        showToast(`শব্দ মিলেছে — "${firstSymptom}" লক্ষণ নির্বাচিত হয়েছে।`);
         updateProgress();
         updateNextButton();
       } else {
-        showToast('শব্দের সাথে মিলেয়ে এমন কোন লক্ষণ পাওয়া যায় নি। আবার চেষ্টা করুন।');
+        showToast('শব্দের সাথে মিলে এমন কোনো লক্ষণ পাওয়া যায়নি। আবার চেষ্টা করুন।');
       }
     };
 
     VOICE_INPUT.onError = (error) => {
       console.error('Wizard voice error:', error);
-      showToast('আপ声音 Recognition এর কোন সমস্যা হয়েছে: ' + error);
+      showToast('ভয়েস ইনপুটে সমস্যা হয়েছে: ' + error);
       $('#wizardVoiceMicBtn').innerHTML = `
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         <span>শোনতে চলে</span>
@@ -352,22 +367,9 @@
   }
 
   function wireWizardGlossary() {
-    // Add glossary buttons to symptom chips in step 3
-    $$('.symptom-chip[data-symptom]').forEach((chip) => {
-      const term = chip.dataset.symptom;
-      if (VOICE_GLOSSARY.GLOSSARY[term]) {
-        renderGlossaryButton(chip, term);
-      }
-    });
-    
-    // Add to result display area
-    const resultArea = $('#causeResults');
-    if (resultArea) {
-      const glossaryBtn = document.createElement('div');
-      glossaryBtn.style.marginTop = '8px';
-      glossaryBtn.style.fontSize = '0.8rem';
-      glossaryBtn.style.color = '#5A5A5A';
-      resultArea.appendChild(glossaryBtn);
+    // glossary buttons are wired by the shared voice-glossary module
+    if (window.VOICE_GLOSSARY && typeof window.VOICE_GLOSSARY.init === 'function') {
+      window.VOICE_GLOSSARY.init();
     }
   }
 
@@ -377,7 +379,7 @@
     const text = [
       'ফসল রোগনির্ণয় রিপোর্ট',
       'ফসল: ' + (crop ? crop.name_bn : 'অজানা'),
-      'লক্ষণ: ' + [...state.selectedSymptoms].join(', '),
+      'লক্ষণ: ' + [...state.selectedSymptoms].map(symLabel).join(', '),
       'সম্ভাব্য কারণ: ' + (results[0] ? results[0].name : 'নিশ্চিত নয়'),
       'শেয়ার করুন: এই গাইডটি ব্যবহার করুন'
     ].join('\n');
@@ -385,7 +387,7 @@
       navigator.share({ title: 'ফসল রোগনির্ণয়', text, url: location.href }).catch(() => {});
     } else {
       navigator.clipboard.writeText(text).then(() => {
-        showToast('কপি করা হয়েছে — যেকোনো অ্যাপে পেস্ট করুন');
+        showToast('কপি করা হয়েছে — যেকোনো অ্যাপে পেস্ট করুন');
       });
     }
   }

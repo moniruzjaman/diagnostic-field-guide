@@ -39,18 +39,18 @@
 
   const SYMPTOM_LABELS = {
     spots:    { label: 'পাতায় দাগ / ক্ষত', icon: '🟤' },
-    yellow:   { label: 'হলদে হওয়া', icon: '🟡' },
-    wilting:  { label: 'ঢhle পড়া (উইল্ট)', icon: '🥀' },
+    yellow:   { label: 'হলুদ হওয়া', icon: '🟡' },
+    wilting:  { label: 'ঢলে পড়া (উইল্ট)', icon: '🥀' },
     rot:      { label: 'পচন / নরম টিস্যু', icon: '🍂' },
     mosaic:   { label: 'মোজাইক / পাতা কুঁকড়ানো', icon: '🟢' },
-    holes:    { label: 'ছিদ্র / খাওয়ার দাগ', icon: '🕳️' },
+    holes:    { label: 'ছিদ্র / খাওয়ার দাগ', icon: '🕳️' },
     webbing:  { label: 'জাল / দৃশ্যমান পোকা', icon: '🕸️' },
     stunting: { label: 'খর্বাকৃতি / বৃদ্ধি কম', icon: '📉' },
     dieback:  { label: 'ডগা শুকানো', icon: '✂️' },
     ooze:     { label: 'আঠালো রস / নির্গমন', icon: '💧' },
     powder:   { label: 'গুঁড়া / ছত্রাকের বৃদ্ধি', icon: '🪶' },
-    margin:   { label: 'পাতার কিনারা পোড়া', icon: '🔥' },
-    curling:  { label: 'পাতা মোড়anao', icon: '🍃' }
+    margin:   { label: 'পাতার কিনারা পোড়া', icon: '🔥' },
+    curling:  { label: 'পাতা মোড়anao', icon: '🍃' }
   };
 
   async function init() {
@@ -96,7 +96,8 @@
     const fileInput = $('#fileInput');
     const cameraBtn = $('#btnCamera');
 
-    dropZone.addEventListener('click', () => fileInput.click());
+    // NOTE: the wrapping <label> natively activates the hidden input —
+    // an extra JS click() double-triggers and can kill the picker on mobile
     dropZone.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -111,13 +112,23 @@
     });
 
     cameraBtn.addEventListener('click', () => {
-      fileInput.click();
+      // temp input with capture → opens the camera directly; #fileInput
+      // (no capture) stays free for the gallery picker
+      const cam = document.createElement('input');
+      cam.type = 'file';
+      cam.accept = 'image/*';
+      cam.capture = 'environment';
+      cam.addEventListener('change', (e) => {
+        const f = e.target.files[0];
+        if (f) handleImageFile(f);
+      });
+      cam.click();
     });
   }
 
   function wireVoiceInput() {
     const micBtn = $('#voiceMicBtn');
-    if (!micBtn || !VOICE_INPUT.init()) {
+    if (!micBtn || !window.VOICE_INPUT || !VOICE_INPUT.init()) {
       micBtn && (micBtn.disabled = true);
       return;
     }
@@ -135,7 +146,7 @@
         VOICE_INPUT.stop();
         micBtn.innerHTML = `
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          <span>আপ声音 description দিন</span>
+          <span>মাইক চেপে লক্ষণ বলুন</span>
         `;
       }
     });
@@ -184,26 +195,26 @@
           $('#imgReference').src = refImg;
         }
 
-        showToast(` głos সমঃ ${firstSymptom} লক্ষণ চিহ্নেরস মিলে।`);
+        showToast(`শব্দ মিলেছে — "${firstSymptom}" লক্ষণ নির্বাচিত হয়েছে।`);
         updateNextButton();
       } else {
-        showToast('শব্দের সাথে মিলেয়ে এমন কোন লক্ষণ পাওয়া যায় নি। আবার চেষ্টা করুন।');
+        showToast('শব্দের সাথে মিলে এমন কোনো লক্ষণ পাওয়া যায়নি। আবার চেষ্টা করুন।');
       }
     };
 
     VOICE_INPUT.onError = (error) => {
       console.error('Voice error:', error);
-      showToast('আপ声音 Recognition এর কোন সমস্যা হয়েছে: ' + error);
+      showToast('ভয়েস ইনপুটে সমস্যা হয়েছে: ' + error);
       micBtn.innerHTML = `
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-        <span>আপ声音 description দিন</span>
+        <span>মাইক চেপে লক্ষণ বলুন</span>
       `;
     };
 
     VOICE_INPUT.onEnd = () => {
       micBtn.innerHTML = `
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-        <span>আপ声音 description দিন</span>
+        <span>মাইক চেপে লক্ষণ বলুন</span>
       `;
     };
   }
@@ -214,7 +225,7 @@
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      showToast('ছবি খুব বড় — ৫MB-er কম বেছে নিন।');
+      showToast('ছবি খুব বড় — ৫MB-এর কম বেছে নিন।');
       return;
     }
 
@@ -227,7 +238,7 @@
     state.referenceImageUrl = SYMPTOM_IMAGES.spots;
     $('#imgReference').src = state.referenceImageUrl;
 
-    showToast('ছবি লোড হয়েছে — রেফারেন্স ছবির সঙ্গে তুলনা করুন');
+    showToast('ছবি লোড হয়েছে — রেফারেন্স ছবির সঙ্গে তুলনা করুন');
     updateNextButton();
   }
   function wireSlider() {
@@ -293,10 +304,10 @@
     });
 
     const msg = val === true
-      ? 'মিল confirmed — লক্ষণ নিশ্চিত করুন'
+      ? 'মিল নিশ্চিত — লক্ষণ বেছে নিন'
       : val === false
         ? 'আলাদা — অন্য রেফারেন্স চেষ্টা করুন'
-        : 'ব当年ুনি — লক্ষণ দিয়ে Agrég করুন';
+        : 'নিশ্চিত নই — লক্ষণ দিয়ে আগে যাচাই করুন';
     showToast(msg);
     updateNextButton();
   }
@@ -340,11 +351,11 @@
     let msg = '';
     if (state.matchConfirmed === true && state.selectedSymptom) {
       const info = SYMPTOM_LABELS[state.selectedSymptom];
-      msg = `আপনার ছবি রেফারেন্স ছবির সঙ্গে মিলেছে। লক্ষণ: ${info.label}। এখন অধ্যায় ৪-এ এই লক্ষণ সম্পর্কে আরও পড়ুন।`;
+      msg = `আপনার ছবি রেফারেন্স ছবির সঙ্গে মিলেছে। লক্ষণ: ${info.label}। এখন অধ্যায় ৪-এ এই লক্ষণ সম্পর্কে আরও পড়ুন।`;
     } else if (state.matchConfirmed === false) {
-      msg = 'ছবিটি রেফারেন্সের সঙ্গে মেলেনি। অন্য ছবি তুলে আবার চেষ্টা করুন অথবা ওয়ার্কবেঞ্চে যান।';
+      msg = 'ছবিটি রেফারেন্সের সঙ্গে মেলেনি। অন্য ছবি তুলে আবার চেষ্টা করুন অথবা ওয়ার্কবেঞ্চে যান।';
     } else {
-      msg = 'মিল নিশ্চিত হয়নি। লক্ষণ বেছে নেয়া Jacksonville-পরের ধাপে যান।';
+      msg = 'মিল নিশ্চিত হয়নি। লক্ষণ বেছে নিয়ে পরের ধাপে যান।';
     }
     body.textContent = msg;
   }
@@ -367,7 +378,7 @@
       $('#imgUser').src = '';
       $('#imgReference').src = '';
       $('#dropZone').classList.remove('has-file');
-      $('#dropZoneText').textContent = 'গ্যালeri থেকে বেছে নিন অথবা ক্যামেরা ব্যবহার করুন';
+      $('#dropZoneText').textContent = 'গ্যালারি থেকে বেছে নিন অথবা ক্যামেরা ব্যবহার করুন';
       $$('.symptom-chip').forEach((c) => c.classList.remove('is-selected'));
       $('#matchConfirm').classList.remove('is-visible');
       $$('.btn-match').forEach((b) => {

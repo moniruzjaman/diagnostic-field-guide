@@ -498,7 +498,7 @@
       </span>
     </a>
   </div>
-  <p class="footer-note">উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড · বাংলা সংস্করণ v2.1.0 · মূল গ্রন্থ © CABI / Plantwise · CC BY-NC · অফলাইনে পড়া ও শোনা যায় · মতামত: mithun.hstu@gmail.com</p>
+  <p class="footer-note">উদ্ভিদ রোগনির্ণয় ফিল্ড গাইড · বাংলা সংস্করণ v2.1.5 · মূল গ্রন্থ © CABI / Plantwise · CC BY-NC · অফলাইনে পড়া ও শোনা যায় · মতামত: mithun.hstu@gmail.com</p>
 </footer>
 
 <button class="fab-share" id="fabShare" aria-label="শেয়ার করুন">
@@ -535,7 +535,7 @@
     <div class="onboarding-step">
       <div class="onboarding-icon">🔍</div>
       <h3>ছবি বড় করুন</h3>
-      <p>যেকোনো রোগনির্ণয়ের ছবি ট্যাপ করুন; প بھی জুম, টান করে স্ক্যান এবং ডাবল-ট্যাপে বড়-ছোট করুন।</p>
+      <p>যেকোনো রোগনির্ণয়ের ছবি ট্যাপ করুন; পিঞ্চ করে জুম, টান করে স্ক্যান এবং ডাবল-ট্যাপে বড়-ছোট করুন।</p>
     </div>
     <div class="onboarding-step">
       <div class="onboarding-icon">📂</div>
@@ -570,7 +570,7 @@ if ('serviceWorker' in navigator) {
 (function () {
   'use strict';
 
-  const CURRENT_VERSION = 'v2.1.4';
+  const CURRENT_VERSION = 'v2.1.5';
   const STORAGE_KEY = 'pwdfg-app-version';
 
   // Check for updates on page load
@@ -589,6 +589,9 @@ if ('serviceWorker' in navigator) {
       }
     }
 
+    // don't nag again if the user dismissed this exact version
+    const dismissed = localStorage.getItem('pwdfg-update-dismissed');
+    if (hasNewVersion && dismissed === CURRENT_VERSION) hasNewVersion = false;
     if (hasNewVersion) {
       showUpdateBanner(CURRENT_VERSION, oldVersion);
     }
@@ -607,9 +610,9 @@ if ('serviceWorker' in navigator) {
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3a2 2 0 0 1 2 2h3a2 2 0 0 1 2 2v7"/>
             <circle cx="10" cy="18" r="3"/><circle cx="20" cy="18" r="3"/>
           </svg>
-          <span>নতুন সংস্করণ অডিস:${newVersion}</span>
+          <span>নতুন সংস্করণ পাওয়া গেছে: ${newVersion}</span>
           ${oldVersion ? `<span>(পুরনো সংস্করণ: ${oldVersion})</span>` : ''}
-          <button class="btn btn-outline btn-sm pwdfg-ignore-update" style="margin-left: auto;">সূচি করুন</button>
+          <button class="btn btn-outline btn-sm pwdfg-ignore-update" style="margin-left: auto;">পরে করুন</button>
           <button class="btn btn-primary btn-sm pwdfg-update-now">আপডেট করুন</button>
         </div>
       </div>`;
@@ -619,6 +622,7 @@ if ('serviceWorker' in navigator) {
     const existingBanner = document.getElementById('pwdfg-update-banner');
     if (existingBanner) existingBanner.remove();
     document.body.insertBefore(banner, document.body.firstChild);
+    initBannerHandlers();
   }
 
   // Handle banner button clicks
@@ -630,7 +634,7 @@ if ('serviceWorker' in navigator) {
         const banner = document.getElementById('pwdfg-update-banner');
         if (banner) banner.remove();
         // Store that user dismissed this version
-        localStorage.setItem('pwdfg-update-dismissed', newVersion);
+        localStorage.setItem('pwdfg-update-dismissed', CURRENT_VERSION);
       });
     }
 
@@ -655,8 +659,8 @@ if ('serviceWorker' in navigator) {
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 6L9 17L4 12"/>
               </svg>
-              <p style="margin-top: 12px;">সফলভাবে আপডেট করা হয়েছে!</p>
-              <p>পেজটি রিলোড করুন যাতে নতুন বৈশিষ্ট্য সক্রি অবস্থায় হয়。</p>
+              <p style="margin-top: 12px;">সফলভাবে আপডেট করা হয়েছে!</p>
+              <p>পেজটি রিলোড করুন যাতে নতুন বৈশিষ্ট্য সক্রি অবস্থায় হয়।</p>
             </div>`;
           // Remove original banner elements
           const originalBanner = document.getElementById('pwdfg-update-banner');

@@ -1,8 +1,8 @@
 {
   "version": "1.0.0",
-  "disclaimer": "এই ডায়RECTORY শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে। পরামর্শের আগে স্থানীয় কৃষি সম্প্রসারন কর্মী বা প্লান্ট ডাক্তারের পরামর্শ নিন।",
-  "country": "বangladesh",
-  "division_bn": " বিভাগ",
+  "disclaimer": "এই ডিরেক্টরি শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে। এখানে দেওয়া ফোন/ইমেল নম্বরগুলো নমুনা হিসেবে দেওয়া — ব্যবহারের আগে অবশ্যই সঠিক নম্বর যাচাই করে নিন। পরামর্শের আগে স্থানীয় কৃষি সম্প্রসারণ কর্মী বা প্লান্ট ডাক্তারের পরামর্শ নিন।",
+  "country": "বাংলাদেশ",
+  "division_bn": "বিভাগ",
   "district_bn": "জেলা",
   "upazila_bn": "উপজেলা",
   "contact_type_bn": "যোগাযোগের ধরন",
@@ -10,12 +10,12 @@
     {
       "id": "dhaka-div-1",
       "division": "ঢাকা",
-      "division_bn": "ঢাকাdivision",
-      "district": " Dhaka",
+      "division_bn": "ঢাকা বিভাগ",
+      "district": "Dhaka",
       "district_bn": "ঢাকা",
       "upazilas": [
         {
-          "name_bn": "দর্শনিক",
+          "name_bn": "ঢাকা সদর",
           "name_en": "Dhaka Sadar",
           "phone_bn": "০২-9563456",
           "phone_en": "+8802-9563456",
@@ -25,11 +25,11 @@
           "email_en": "dhaka.sadar@agri.gov.bd",
           "working_hours_bn": "সকাল ১০:০০ থেকে বিকেল ৫:০০",
           "working_hours_en": "10:00 AM to 5:00 PM",
-          "note_bn": "ধাকা মেট্রopolitan অঞ্চলের জন্য primaire kontakt অফিস",
+          "note_bn": "ঢাকা মেট্রোপলিটন অঞ্চলের জন্য প্রধান যোগাযোগ অফিস",
           "note_en": "Primary contact office for Dhaka metropolitan area"
         },
         {
-          "name_bn": "গाजipore",
+          "name_bn": "গাজীপুর",
           "name_en": "Gazipur",
           "phone_bn": "০২-৭৫৫০৩৪০",
           "phone_en": "+8802-7550340",
@@ -39,34 +39,20 @@
           "email_en": "gajipur@agri.gov.bd",
           "working_hours_bn": "সকাল ১০:০০ থেকে বিকেল ৫:০০",
           "working_hours_en": "10:00 AM to 5:00 PM",
-          "note_bn": "Gazipur জেলা krops",
+          "note_bn": "গাজীপুর জেলা কৃষি অফিস",
           "note_en": "Gazipur district agriculture office"
-        },
-        {
-          "name_bn": "গازیয়ান",
-          "name_en": "Gaziali",
-          "phone_bn": "০২-৭৪০০৮৫৪",
-          "phone_en": "+8802-7400854",
-          "mobile_bn": "০১৭১৩-345678",
-          "mobile_en": "+8801713-345678",
-          "email_bn": "gazial@agri.gov.bd",
-          "email_en": "gazial@agri.gov.bd",
-          "working_hours_bn": "সকাল ১০:০০ থেকে বিকেল ৫:০০",
-          "working_hours_en": "10:00 AM to 5:00 PM",
-          "note_bn": "Gaziali জেলা krops",
-          "note_en": "Gaziali district agriculture office"
         }
       ]
     },
     {
       "id": "khulna-div-1",
       "division": "খুলনা",
-      "division_bn": "খুলনাdivision",
+      "division_bn": "খুলনা বিভাগ",
       "district": "Khulna",
       "district_bn": "খুলনা",
       "upazilas": [
         {
-          "name_bn": "khulna sadar",
+          "name_bn": "খুলনা সদর",
           "name_en": "Khulna Sadar",
           "phone_bn": "০৪১-৭৬১৩৫৭",
           "phone_en": "+88041-761357",
@@ -76,34 +62,20 @@
           "email_en": "khulna.sadar@agri.gov.bd",
           "working_hours_bn": "সকাল ১০:০০ থেকে বিকেল ৫:০০",
           "working_hours_en": "10:00 AM to 5:00 PM",
-          "note_bn": "Khulna জেলা krops",
+          "note_bn": "খুলনা জেলা কৃষি অফিস",
           "note_en": "Khulna district agriculture office"
-        },
-        {
-          "name_bn": "बarisal",
-          "name_en": "Barisal",
-          "phone_bn": "০৪৩১-৭৬১৩৫৮",
-          "phone_en": "+880431-761358",
-          "mobile_bn": "০১৭২২-345678",
-          "mobile_en": "+8801722-345678",
-          "email_bn": "barisal@agri.gov.bd",
-          "email_en": "barisal@agri.gov.bd",
-          "working_hours_bn": "সকাল ১০:০০ থেকে বিকেল ৫:০০",
-          "working_hours_en": "10:00 AM to 5:00 PM",
-          "note_bn": "Barisal divisional agriculture office",
-          "note_en": "Barisal divisional agriculture office"
         }
       ]
     },
     {
       "id": "rajshahi-div-1",
       "division": "রাজশাহী",
-      "division_bn": "রাজশাহীdivision",
+      "division_bn": "রাজশাহী বিভাগ",
       "district": "Rajshahi",
       "district_bn": "রাজশাহী",
       "upazilas": [
         {
-          "name_bn": "rajshahi sadar",
+          "name_bn": "রাজশাহী সদর",
           "name_en": "Rajshahi Sadar",
           "phone_bn": "০৭২-৭৭৪১২৩",
           "phone_en": "+88072-774123",
@@ -113,7 +85,7 @@
           "email_en": "rajshahi.sadar@agri.gov.bd",
           "working_hours_bn": "সকাল ১০:০০ থেকে বিকেল ৫:০০",
           "working_hours_en": "10:00 AM to 5:00 PM",
-          "note_bn": "Rajshahi divisional agriculture office",
+          "note_bn": "রাজশাহী বিভাগীয় কৃষি অফিস",
           "note_en": "Rajshahi divisional agriculture office"
         }
       ]
@@ -121,14 +93,14 @@
     {
       "id": "barisal-div-1",
       "division": "বরিশাল",
-      "division_bn": "বরিশালdivision",
+      "division_bn": "বরিশাল বিভাগ",
       "district": "Barisal",
       "district_bn": "বরিশাল",
       "upazilas": [
         {
-          "name_bn": "barisal sadar",
+          "name_bn": "বরিশাল সদর",
           "name_en": "Barisal Sadar",
-          "phone_bn": "০৪৩१-৭৬১৩৫৯",
+          "phone_bn": "০৪৩১-৭৬১৩৫৯",
           "phone_en": "+880431-761359",
           "mobile_bn": "০১৭৩২-567890",
           "mobile_en": "+8801732-567890",
@@ -136,7 +108,7 @@
           "email_en": "barisal.sadar@agri.gov.bd",
           "working_hours_bn": "সকাল ১০:০০ থেকে বিকেল ৫:০০",
           "working_hours_en": "10:00 AM to 5:00 PM",
-          "note_bn": "Barisal divisional agriculture office",
+          "note_bn": "বরিশাল জেলা কৃষি অফিস",
           "note_en": "Barisal divisional agriculture office"
         }
       ]
@@ -144,12 +116,12 @@
     {
       "id": "chittagong-div-1",
       "division": "চট্টগ্রাম",
-      "division_bn": "চট্টগ্রামdivision",
+      "division_bn": "চট্টগ্রাম বিভাগ",
       "district": "Chattogram",
       "district_bn": "চট্টগ্রাম",
       "upazilas": [
         {
-          "name_bn": "chattogram sadar",
+          "name_bn": "চট্টগ্রাম সদর",
           "name_en": "Chattogram Sadar",
           "phone_bn": "০৩১-৭২০৩৪৬",
           "phone_en": "+88031-720346",
@@ -159,7 +131,7 @@
           "email_en": "chattogram.sadar@agri.gov.bd",
           "working_hours_bn": "সকাল ১০:০০ থেকে বিকেল ৫:০০",
           "working_hours_en": "10:00 AM to 5:00 PM",
-          "note_bn": "Chattogram divisional agriculture office",
+          "note_bn": "চট্টগ্রাম বিভাগীয় কৃষি অফিস",
           "note_en": "Chattogram divisional agriculture office"
         }
       ]
