@@ -23,12 +23,11 @@ test('image matcher asks for a symptom before showing its reference comparison',
 test('every symptom in the local cause database has a real reference image', () => {
   const block = matcher.match(/const SYMPTOM_IMAGES = \{([\s\S]*?)\n  \};/);
   assert.ok(block, 'SYMPTOM_IMAGES map exists');
-  const ids = [...block[1].matchAll(/^\s*([a-z]+):\s*'img\//gm)].map((match) => match[1]);
-  const missing = database.symptoms.map((item) => item.id).filter((id) => !ids.includes(id));
+  const entries = [...block[1].matchAll(/^\s*([a-z]+):\s*'(img\/[^']+)'/gm)];
+  const references = Object.fromEntries(entries.map((match) => [match[1], match[2]]));
+  const missing = database.symptoms.map((item) => item.id).filter((id) => !references[id]);
   assert.deepEqual(missing, []);
-  for (const id of ids) {
-    const filename = block[1].match(new RegExp('^\\s*' + id + ':\\s*\\'(img/[^\\']+)\\'', 'm'))?.[1];
-    assert.ok(filename, 'reference path exists for ' + id);
+  for (const filename of Object.values(references)) {
     assert.ok(fs.existsSync(path.join(__dirname, '..', filename)), 'image file exists: ' + filename);
   }
 });
