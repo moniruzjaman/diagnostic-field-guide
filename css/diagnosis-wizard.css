@@ -404,3 +404,25 @@ html, body {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
+/* Natural document scrolling: long diagnosis steps must never be trapped. */
+html { min-height: 100%; scroll-behavior: smooth; }
+body { min-height: 100%; overflow-x: hidden; overflow-y: auto; }
+.wizard-page { min-height: 100svh; min-height: 100dvh; padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+.wizard-steps, .wizard-step-panel { overflow: visible; }
+.wizard-card { min-width: 0; }
+.symptom-grid, .crop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.symptom-chip, .crop-chip { min-width: 0; overflow-wrap: anywhere; }
+.wizard-actions { flex-wrap: wrap; margin-top: 0; padding-bottom: max(.5rem, env(safe-area-inset-bottom)); }
+.wizard-actions .btn { min-width: 0; min-height: 48px; flex: 1 1 42%; }
+button, .symptom-chip, .crop-chip { touch-action: manipulation; }
+@media (max-width: 360px) {
+  .wizard-page { padding-left: 12px; padding-right: 12px; }
+  .wizard-header h1 { font-size: 1.4rem; }
+  .symptom-grid, .crop-grid { grid-template-columns: minmax(0, 1fr); }
+  .wizard-actions { gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .wizard-step-panel { animation: none; }
+  *, *::before, *::after { transition-duration: .01ms !important; }
+}
