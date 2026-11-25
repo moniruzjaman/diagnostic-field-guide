@@ -230,6 +230,7 @@
       return;
     }
 
+    if (state.userImageUrl && state.userImageUrl.startsWith('blob:')) URL.revokeObjectURL(state.userImageUrl);
     const url = URL.createObjectURL(file);
     state.userImageUrl = url;
     $('#imgUser').src = url;
@@ -273,7 +274,7 @@
     container.addEventListener('click', (e) => {
       if (e.target === divider) return;
       const rect = container.getBoundingClientRect();
-      updateDivider(e.clientX - rect.left);
+      updateDivider(e.clientX);
     });
   }
 
