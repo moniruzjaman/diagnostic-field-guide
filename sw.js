@@ -10,7 +10,7 @@
    - navigation fallback: index.html (single-page app)
    ============================================================ */
 
-const VERSION = 'v2.1.6';
+const VERSION = 'v2.1.8';
 const SHELL_CACHE = `pwdfg-shell-${VERSION}`;
 const IMG_CACHE = `pwdfg-img-${VERSION}`;
 
@@ -36,6 +36,12 @@ const SHELL_ASSETS = [
     './js/cause-database.js',
     './js/diagnosis-wizard.js',
     './js/cause-database.json',
+    // v2.1.7: offline image-evidence picker
+    './js/image-picker.js',
+    './img/p015_00.jpg',
+    './img/p026_50.jpg',
+    './img/p043_106.jpg',
+    './img/p100_190.jpg',
     // Phase 2: Symptom Matcher assets
     './symptom-matcher.html',
     './css/symptom-matcher.css',

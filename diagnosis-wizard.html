@@ -66,6 +66,40 @@
           <p>আপনি যে লক্ষণ দেখছেন সেগুলি নির্বাচন করুন (একাধিক বেছে নেওয়া যাবে)।</p>
           <div class="symptom-grid" id="symptomGrid"></div>
         </div>
+
+        <!-- Offline image evidence (optional) -->
+        <div class="wizard-card wizard-image-card">
+          <h2>ছবি যোগ করুন (ঐচ্ছিক)</h2>
+          <p>আক্রান্ত পাতার ছবি তুলুন বা বেছে নিন। ছবি শুধু এই ডিভিসেই থাকে—কোথাও পাঠানো হয় না এবং এটি স্বয়ংক্রিয় রোগ শনাক্ত করে না।</p>
+          <div class="picker-drop" id="pickerDrop" tabindex="0" role="button" aria-label="ছবি আপলোড করুন">
+            <span class="picker-drop-icon">📷</span>
+            <span class="picker-drop-text">ছবি টেনে আনুন অথবা ক্লিক করুন</span>
+            <input type="file" id="pickerFile" accept="image/*" capture="environment" hidden>
+          </div>
+          <div class="picker-preview" id="pickerPreview" hidden>
+            <img id="pickerPreviewImg" alt="নির্বাচিত নমুনার ছবি">
+            <div class="picker-preview-actions">
+              <button type="button" class="btn btn-outline btn-sm" id="pickerReplace">বদলান</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="pickerRemove">সরান</button>
+            </div>
+          </div>
+          <div class="picker-gallery">
+            <p class="picker-gallery-label">অথবা নমুনা গ্যালারি থেকে বেছে নিন:</p>
+            <div class="picker-gallery-grid" id="pickerGallery"></div>
+          </div>
+          <p class="picker-status" id="pickerStatus" role="status" aria-live="polite"></p>
+
+          <!-- Optional online hand-off (no load on this ebook) -->
+          <div class="picker-handoff">
+            <p class="picker-handoff-title">স্বয়ংক্রিয় ছবি-শনাক্তকরণ চান?</p>
+            <p class="picker-handoff-note">নিচের অনলাইন অ্যাপগুলো নতুন ট্যাবে খুলবে। ছবি বা কেস স্বয়ংক্রিয়ভাবে পাঠানো হয় না—আপনি নিজে আপলোড করবেন। ইন্টারনেট প্রয়োজন।</p>
+            <div class="picker-handoff-links">
+              <a class="btn btn-outline btn-sm" href="https://cabi.krishiai.live/" target="_blank" rel="noopener noreferrer">উদ্ভিদ গোয়েন্দা (পূর্ণ অ্যাপ) ↗</a>
+              <a class="btn btn-outline btn-sm" href="https://moniruzjaman.github.io/diagnosis-assistant/" target="_blank" rel="noopener noreferrer">দ্রুত ছবি নির্ণয় ↗</a>
+            </div>
+          </div>
+        </div>
+
         <div class="wizard-actions">
           <button class="btn btn-secondary" id="btnSymptomBack">[← পেছনে]</button>
           <button class="btn btn-primary" id="btnSymptomNext" disabled>বিশ্লেষণ করুন →</button>
@@ -125,6 +159,7 @@
   <div class="wizard-toast" id="wizardToast"></div>
 
   <script src="js/cause-database.js"></script>
+  <script src="js/image-picker.js"></script>
   <script src="js/voice-input.js"></script>
   <script src="js/voice-glossary.js"></script>
   <script src="js/diagnosis-wizard.js"></script>

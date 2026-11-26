@@ -57,3 +57,31 @@ test('self-diagnosis wizard uses natural page scrolling and in-flow panels', () 
   assert.match(wizardCss, /\.wizard-step-panel\s*\{[^}]*height:\s*auto/s);
   assert.match(wizardCss, /body\s*\{[^}]*overflow-y:\s*auto/s);
 });
+
+test('offline image picker stays on-device and never calls a network/AI service', () => {
+  const picker = read('js/image-picker.js');
+  // IndexedDB (not localStorage) for blob storage
+  assert.match(picker, /indexedDB\.open\(DB_NAME/);
+  assert.doesNotMatch(picker, /localStorage\.(getItem|setItem|removeItem)/);
+  // No network calls of any kind
+  assert.doesNotMatch(picker, /\bfetch\s*\(/);
+  assert.doesNotMatch(picker, /XMLHttpRequest/);
+  // Downscales + re-encodes client-side
+  assert.match(picker, /canvas\.toDataURL\('image\/jpeg'/);
+  // Exposes the documented API
+  assert.match(picker, /root\.WIZARD_IMAGE_PICKER\s*=/);
+});
+
+test('wizard image card offers an optional online hand-off without embedding', () => {
+  const html = read('diagnosis-wizard.html');
+  // No iframe embedding of companion apps
+  assert.doesNotMatch(html, /<iframe/i);
+  // Both hand-off links present, open safely in a new tab
+  assert.match(html, /href="https:\/\/cabi\.krishiai\.live\/"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/);
+  assert.match(html, /href="https:\/\/moniruzjaman\.github\.io\/diagnosis-assistant\/"[^>]*rel="noopener noreferrer"/);
+  // Picker is wired into the wizard
+  assert.match(html, /<script src="js\/image-picker\.js"><\/script>/);
+  // Sample gallery + drop zone exist
+  assert.match(html, /id="pickerGallery"/);
+  assert.match(html, /id="pickerDrop"/);
+});

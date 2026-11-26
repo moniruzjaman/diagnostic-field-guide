@@ -32,6 +32,13 @@
     // voice/glossary helpers must never break the wizard core
     try { wireWizardVoiceInput(); } catch (e) { console.warn('voice input unavailable:', e); }
     try { wireWizardGlossary(); } catch (e) { console.warn('glossary unavailable:', e); }
+    // track offline image evidence for the share report
+    try {
+      if (window.WIZARD_IMAGE_PICKER) {
+        WIZARD_IMAGE_PICKER.onChange((img) => { state._hasPhoto = !!img; });
+        WIZARD_IMAGE_PICKER.get().then((img) => { state._hasPhoto = !!img; });
+      }
+    } catch (e) { console.warn('image picker unavailable:', e); }
     updateProgress();
     showStep(1);
   }
@@ -289,6 +296,7 @@
       state.selectedParts.clear();
       state.selectedDistribution = null;
       state.selectedCrop = null;
+      try { window.WIZARD_IMAGE_PICKER && WIZARD_IMAGE_PICKER.clear(); } catch (e) { console.warn(e); }
       $$('.symptom-chip.is-selected, .crop-chip.is-selected').forEach((c) => c.classList.remove('is-selected'));
       $('#btnCropNext').disabled = true;
       $('#btnSymptomNext').disabled = true;
@@ -377,13 +385,15 @@
   function shareCase() {
     const crop = state.db.crops.find((c) => c.id === state.selectedCrop);
     const results = scoreCauses();
+    const hasPhoto = !!(window.WIZARD_IMAGE_PICKER && state._hasPhoto);
     const text = [
       'ফসল রোগনির্ণয় রিপোর্ট',
       'ফসল: ' + (crop ? crop.name_bn : 'অজানা'),
       'লক্ষণ: ' + [...state.selectedSymptoms].map(symLabel).join(', '),
       'সম্ভাব্য কারণ: ' + (results[0] ? results[0].name : 'নিশ্চিত নয়'),
+      hasPhoto ? 'ছবি: সংযুক্ত আছে (এই ডিভিসে সংরক্ষিত)' : '',
       'শেয়ার করুন: এই গাইডটি ব্যবহার করুন'
-    ].join('\n');
+    ].filter(Boolean).join('\n');
     if (navigator.share) {
       navigator.share({ title: 'ফসল রোগনির্ণয়', text, url: location.href }).catch(() => {});
     } else {

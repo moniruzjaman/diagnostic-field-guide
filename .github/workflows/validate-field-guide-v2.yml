@@ -18,6 +18,7 @@ jobs:
       - run: node --check js/field-diagnosis.js
       - run: node --check js/symptom-matcher.js
       - run: node --check js/diagnosis-wizard.js
+      - run: node --check js/image-picker.js
       - run: node --test tests/*.cjs
       - name: Verify offline assets are registered
         run: |
@@ -25,6 +26,7 @@ jobs:
           test -f css/field-diagnosis.css
           grep -q "field-diagnosis.html" sw.js
           grep -q "field-diagnosis.js" sw.js
+          grep -q "image-picker.js" sw.js
       - name: Validate social preview generator
         run: |
           sudo apt-get update
