@@ -1804,6 +1804,102 @@ body.audio-visible .fab-share { bottom: calc(var(--audio-h) + 16px); }
 .conf-badge.possible { background: var(--c-accent-soft);  color: #9A7D0A;          border: 1px solid var(--c-accent); }
 .conf-badge.unlikely { background: var(--c-info-soft);    color: var(--c-info);    border: 1px solid var(--c-info); }
 
+/* Chapter 4: observation guide table */
+.obs-guide {
+    margin: 16px 0;
+    padding: 14px 16px;
+    background: var(--c-primary-50);
+    border: 1px solid var(--c-primary-100);
+    border-radius: 10px;
+}
+.obs-guide h4 {
+    margin: 0 0 8px 0;
+    font-family: var(--font-head);
+    font-size: 15px;
+    color: var(--c-primary);
+}
+.obs-guide p {
+    margin: 0 0 10px 0;
+    font-size: 12.5px;
+    color: var(--c-muted);
+}
+.obs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 8px 0 6px 0;
+}
+.obs-table th, .obs-table td {
+    border: 1px solid var(--c-line);
+    padding: 7px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+.obs-table thead th {
+    background: var(--c-primary);
+    color: var(--c-paper);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 12px;
+    position: sticky;
+    top: 0;
+}
+.obs-table tbody tr:nth-child(even) {
+    background: var(--c-paper-alt);
+}
+.obs-table td b {
+    color: var(--c-primary);
+}
+.obs-note {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--c-paper);
+    border: 1px solid var(--c-line);
+    border-radius: 8px;
+    font-size: 11.5px;
+    color: var(--c-muted);
+    font-style: italic;
+}
+
+/* Chapter 5: confusion comparison cards */
+.conf-cards {
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.conf-card {
+    border: 1px solid var(--c-line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: var(--c-paper);
+}
+.conf-card-title {
+    font-family: var(--font-head);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--c-primary);
+    margin: 0 0 6px 0;
+    border-bottom: 1px solid var(--c-primary-100);
+    padding-bottom: 4px;
+}
+.conf-card-row {
+    font-size: 12.5px;
+    color: var(--c-ink);
+    margin: 4px 0;
+}
+.conf-card-row b {
+    color: var(--c-primary);
+}
+.conf-card-tip {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--c-line);
+    font-size: 11.5px;
+    color: var(--c-muted);
+    font-style: italic;
+}
+
 /* Photo-table (Table 5 nutrient grid) */
 .nutri-table td img, .nutri-cell img { border-radius: 4px; }
 
